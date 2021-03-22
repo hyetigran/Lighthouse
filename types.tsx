@@ -4,14 +4,23 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+  Markets: undefined;
+  Portfolio: undefined;
+  Wallets: undefined;
 };
 
 export type TabOneParamList = {
   TabOneScreen: undefined;
 };
 
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
+export type MarketsTabParamList = {
+  CryptoListScreen: undefined;
+};
+
+export type PortfolioTabParamsList = {
+  MainPortfolioScreen: undefined;
+};
+
+export type WalletsTabParamsList = {
+  MainWalletsScreen: undefined;
 };

@@ -1,24 +1,29 @@
-import * as Linking from 'expo-linking';
+import * as Linking from "expo-linking";
 
 export default {
-  prefixes: [Linking.makeUrl('/')],
+  prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          Markets: {
             screens: {
-              TabOneScreen: 'one',
+              CryptoListScreen: "one",
             },
           },
-          TabTwo: {
+          Portfolio: {
             screens: {
-              TabTwoScreen: 'two',
+              MainPortfolioScreen: "two",
+            },
+          },
+          Wallets: {
+            screens: {
+              MainWalletsScreen: "three",
             },
           },
         },
       },
-      NotFound: '*',
+      NotFound: "*",
     },
   },
 };

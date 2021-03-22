@@ -5,12 +5,15 @@ import * as React from "react";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import TabOneScreen from "../screens/TabOneScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
 import CryptoListScreen from "../screens/Markets/CryptoListScreen";
 import MainPortfolioScreen from "../screens/Portfolio/MainPortfolioScreen";
 import MainWalletsScreen from "../screens/Wallet/MainWalletsScreen";
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
+import {
+  BottomTabParamList,
+  PortfolioTabParamsList,
+  MarketsTabParamList,
+  WalletsTabParamsList,
+} from "../types";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -19,11 +22,11 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="MarketsTab"
+      initialRouteName="Markets"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
       <BottomTab.Screen
-        name="MarketsTab"
+        name="Markets"
         component={TabMarketsNavigator}
         options={{
           tabBarIcon: ({ color }) => (
@@ -32,7 +35,7 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="PortfolioTab"
+        name="Portfolio"
         component={TabPortfolioNavigator}
         options={{
           tabBarIcon: ({ color }) => (
@@ -41,7 +44,7 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="WalletTab"
+        name="Wallets"
         component={TabWalletsNavigator}
         options={{
           tabBarIcon: ({ color }) => (
@@ -65,13 +68,13 @@ function TabBarIcon(props: {
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 
-const MarketsTabStack = createStackNavigator<TabTwoParamList>();
+const MarketsTabStack = createStackNavigator<MarketsTabParamList>();
 
 function TabMarketsNavigator() {
   return (
     <MarketsTabStack.Navigator>
       <MarketsTabStack.Screen
-        name="MarketsTab"
+        name="CryptoListScreen"
         component={CryptoListScreen}
         options={{ headerTitle: "Markets" }}
       />
@@ -79,26 +82,26 @@ function TabMarketsNavigator() {
   );
 }
 
-const PortfolioTabStack = createStackNavigator<TabTwoParamList>();
+const PortfolioTabStack = createStackNavigator<PortfolioTabParamsList>();
 
 function TabPortfolioNavigator() {
   return (
     <PortfolioTabStack.Navigator>
       <PortfolioTabStack.Screen
-        name="PortfolioTab"
+        name="MainPortfolioScreen"
         component={MainPortfolioScreen}
         options={{ headerTitle: "Main Portfolio" }}
       />
     </PortfolioTabStack.Navigator>
   );
 }
-const WalletsTabStack = createStackNavigator<TabTwoParamList>();
+const WalletsTabStack = createStackNavigator<WalletsTabParamsList>();
 
 function TabWalletsNavigator() {
   return (
     <WalletsTabStack.Navigator>
       <WalletsTabStack.Screen
-        name="WalletTab"
+        name="MainWalletsScreen"
         component={MainWalletsScreen}
         options={{ headerTitle: "Wallets" }}
       />
