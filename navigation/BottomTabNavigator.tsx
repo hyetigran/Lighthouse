@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -68,6 +69,20 @@ function TabBarIcon(props: {
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 
+const MarketsTopTab = createMaterialTopTabNavigator();
+
+function MarketsTopTabNavigator() {
+  return (
+    <MarketsTopTab.Navigator>
+      <MarketsTopTab.Screen
+        name="All Currencies"
+        component={CryptoListScreen}
+      />
+      <MarketsTopTab.Screen name="Favorites" component={CryptoListScreen} />
+    </MarketsTopTab.Navigator>
+  );
+}
+
 const MarketsTabStack = createStackNavigator<MarketsTabParamList>();
 
 function TabMarketsNavigator() {
@@ -75,7 +90,7 @@ function TabMarketsNavigator() {
     <MarketsTabStack.Navigator>
       <MarketsTabStack.Screen
         name="CryptoListScreen"
-        component={CryptoListScreen}
+        component={MarketsTopTabNavigator}
         options={{ headerTitle: "Markets" }}
       />
     </MarketsTabStack.Navigator>
