@@ -30,7 +30,7 @@ export default function BottomTabNavigator() {
         component={TabMarketsNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
+            <TabBarIcon name="ios-list" color={color} />
           ),
         }}
       />
@@ -39,7 +39,7 @@ export default function BottomTabNavigator() {
         component={TabPortfolioNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
+            <TabBarIcon name="ios-folder" color={color} />
           ),
         }}
       />
@@ -48,7 +48,7 @@ export default function BottomTabNavigator() {
         component={TabWalletsNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
+            <TabBarIcon name="ios-wallet" color={color} />
           ),
         }}
       />
