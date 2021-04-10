@@ -5,6 +5,7 @@ import { Text, View } from "../../components/Themed";
 
 import TopHeader from "../../components/Markets/TopHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import CoinRowCard from "../../components/Markets/CoinRowCard";
 
 export default function CryptoListScreen() {
   const coinData = useSelector((state) => state);
@@ -37,14 +38,14 @@ export default function CryptoListScreen() {
           </View>
         </TouchableOpacity>
       </View>
-      {}
+      <CoinRowCard />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
   },

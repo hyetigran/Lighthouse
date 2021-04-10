@@ -1,1 +1,6 @@
-export const marketReducer = () => {};
+export const marketReducer = (state = [], action) => {
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
