@@ -7,13 +7,17 @@ import TopHeader from "../../components/Markets/TopHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CoinRowCard from "../../components/Markets/CoinRowCard";
 
+import { thunkGetAllCurrencies } from "../../store/actions/marketActions";
+
 export default function CryptoListScreen() {
   const coinData = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
     // Initial coin fetch
+    dispatch(thunkGetAllCurrencies());
   });
+
   // TopHeader
   // TopBarNav
   // Sort Dropdown
