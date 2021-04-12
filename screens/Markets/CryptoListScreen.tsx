@@ -1,22 +1,23 @@
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, FlatList } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Text, View } from "../../components/Themed";
 
 import TopHeader from "../../components/Markets/TopHeader";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import CoinRowCard from "../../components/Markets/CoinRowCard";
+import { MarketState, Currency } from "../../store/types/marketTypes";
 
 import { thunkGetAllCurrencies } from "../../store/actions/marketActions";
 
 export default function CryptoListScreen() {
-  const coinData = useSelector((state) => state);
+  const coinData = useSelector((state: MarketState) => state.market);
+  //console.log("coinD", coinData.length);
   const dispatch = useDispatch();
 
   useEffect(() => {
     // Initial coin fetch
     dispatch(thunkGetAllCurrencies());
-  });
+  }, []);
 
   // TopHeader
   // TopBarNav
@@ -42,7 +43,17 @@ export default function CryptoListScreen() {
           </View>
         </TouchableOpacity>
       </View>
-      <CoinRowCard />
+      {coinData && (
+        <FlatList
+          data={coinData}
+          keyExtractor={(item) => {
+            return item.id + Math.random().toString();
+          }}
+          renderItem={(itemData: { index: number; item: Currency }) => {
+            return <CoinRowCard coinInfo={itemData.item} />;
+          }}
+        />
+      )}
     </View>
   );
 }

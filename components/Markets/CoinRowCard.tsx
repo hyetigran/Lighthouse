@@ -3,19 +3,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Colors from "../../constants/Colors";
+import { Currency } from "../../store/types/marketTypes";
 
-const coinInfo = {
-  logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/1.png`,
-  name: "Bitcoin",
-  rank: "1",
-  price: "$59,000",
-  isFav: false,
-  symbol: "BTC",
-  marketCap: "$2T",
-  percentChange24h: 0.091,
-};
-const CoinRowCard = () => {
-  const color = Colors.light.tint;
+interface ActionProps {
+  coinInfo: Currency;
+}
+const CoinRowCard = ({ coinInfo }: ActionProps) => {
+  const colorFav = Colors.light.tint;
   const {
     logo,
     name,
