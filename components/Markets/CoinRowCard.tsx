@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Colors from "../../constants/Colors";
 import { Currency } from "../../store/types/marketTypes";
+import { marketCapFormatter } from "../../helpers/utilities";
 
 interface ActionProps {
   coinInfo: Currency;
@@ -24,6 +25,7 @@ const CoinRowCard = ({ coinInfo }: ActionProps) => {
   let iconName = isFav ? "star" : "star-outline";
   let percentChangeColor = percentChange24h > 0 ? "#0dc18d" : "#f74909";
   let caretDirection = percentChange24h > 0 ? "caret-up" : "caret-down";
+  let formattedPrice = price >= 10 ? price.toFixed(2) : price.toFixed(4);
   return (
     <View style={styles.coinRowContainer}>
       <View style={styles.logoContainer}>
@@ -49,13 +51,18 @@ const CoinRowCard = ({ coinInfo }: ActionProps) => {
               color={percentChangeColor}
               name={caretDirection}
             />
-            <Text style={styles.secondaryText}>{percentChange24h}</Text>
+            <Text style={styles.secondaryText}>
+              {Math.abs(percentChange24h).toFixed(3)}
+            </Text>
           </View>
         </View>
       </View>
+      <View style={styles.spacer}></View>
       <View style={styles.priceContainer}>
-        <Text style={styles.primaryText}>{price}</Text>
-        <Text style={styles.secondaryText}>{`MCap ${marketCap}`}</Text>
+        <Text style={styles.primaryText}>{formattedPrice}</Text>
+        <Text style={styles.secondaryText}>{`MCap ${marketCapFormatter(
+          marketCap
+        )}`}</Text>
       </View>
       {/* <View style={styles.faveContainer}>
         <TouchableOpacity onPress={() => {}}>
@@ -75,13 +82,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     marginVertical: 2,
-    width: "100%",
     maxWidth: "100%",
   },
   logoContainer: {},
   logo: { width: 32, height: 32 },
   infoContainer: {
-    flex: 1,
     paddingHorizontal: 30,
   },
   info: {
@@ -101,6 +106,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     color: Colors.light.tabIconDefault,
+  },
+  spacer: {
+    flexGrow: 1,
   },
   priceContainer: {
     alignItems: "flex-end",

@@ -46,9 +46,7 @@ export default function CryptoListScreen() {
       {coinData && (
         <FlatList
           data={coinData}
-          keyExtractor={(item) => {
-            return item.id + Math.random().toString();
-          }}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={(itemData: { index: number; item: Currency }) => {
             return <CoinRowCard coinInfo={itemData.item} />;
           }}
