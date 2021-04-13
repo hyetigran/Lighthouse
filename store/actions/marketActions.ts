@@ -55,12 +55,18 @@ const fetchAllCurrencies = (allCurrencies: Currency[]): MarketActionTypes => {
 export const toggleFavorite = async (isFav: boolean, symbol: string) => {
   let result = await AsyncStorage.getItem("favoriteCoins");
   let favCoins: string[] = result != null ? JSON.parse(result) : [];
+
   if (isFav) {
+    // Handle coin unfavorited
     let updateFavCoins = favCoins!.filter((coin) => coin !== symbol);
     await AsyncStorage.setItem("favoriteCoins", JSON.stringify(updateFavCoins));
-    return {
-      type: TOGGLE_FAVORITE_COIN,
-      payload: symbol,
-    };
+  } else if (!isFav) {
+    // Handle coin favorited
+    let updateFavCoins = [...favCoins, symbol];
+    await AsyncStorage.setItem("favoriteCoins", JSON.stringify(updateFavCoins));
   }
+  return {
+    type: TOGGLE_FAVORITE_COIN,
+    payload: symbol,
+  };
 };
