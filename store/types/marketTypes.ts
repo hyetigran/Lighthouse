@@ -1,4 +1,5 @@
 export const FETCH_CURRENCIES_SUCCESS = "FETCH_CURRENCIES_SUCCESS";
+export const TOGGLE_FAVORITE_COIN = "TOGGLE_FAVORITE_COIN";
 
 export interface Currency {
   id: number;
@@ -18,4 +19,9 @@ interface getCurrenciesAction {
   type: typeof FETCH_CURRENCIES_SUCCESS;
   payload: Currency[];
 }
-export type MarketActionTypes = getCurrenciesAction;
+
+interface toggleFavoriteAction {
+  type: typeof TOGGLE_FAVORITE_COIN;
+  payload: string;
+}
+export type MarketActionTypes = getCurrenciesAction | toggleFavoriteAction;

@@ -2,10 +2,12 @@ import axios from "axios";
 import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { MARKETS_API_KEY } from "@env";
 import {
   FETCH_CURRENCIES_SUCCESS,
+  TOGGLE_FAVORITE_COIN,
   Currency,
   MarketActionTypes,
 } from "../types/marketTypes";
@@ -22,31 +24,6 @@ export const thunkGetAllCurrencies = (): ThunkAction<
       `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`,
       { headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY } }
     );
-
-    // const result: any = await axios.get(
-    //   `https://pro-api.coinmarketcap.com/v1/cryptocurrency/info`,
-    //   {
-    //     headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
-    //     params: {
-    //       symbol: `BTC,ETH,BNB,XRP,USDT,ADA,DOT,LTC,UNI,LINK,XLM,BCH,THETA,FIL,USDC,DOGE,TRX,WBTC,VET,SOL,KLAY,EOS,XMR,LUNA,MIOTA,BTT,CRO,FTT,BSV,BUSD,XTZ,ATOM,AAVE,NEO,AVAX,CAKE,ALGO,HT,EGLD,XEM,KSM,HOT,DAI,BTCB,DASH,HBAR,CHZ,ZEC,ENJ,RUNE,NEAR,DCR,GRT,ETC,MKR,COMP,ZIL,STX,SNX,BAT,LEO,BTG,SUSHI,TFUEL,MATIC,MANA,UST,CEL,NEXO,ZRX,YFI,WAVES,RVN,UMA,ICX,KCS,QTUM,ONT,OKB,HNT,OMG,ONE,DENT,FLOW,SC,BNT,VGX,NPXS,DGB,RSR,FTM,REV,ANKR,BTMX,CHSB,REN,CFX,CELO,IOST,PAX`,
-    //       aux: "logo",
-    //     },
-    //   }
-    // );
-    //console.log("result", result);
-    // let names = result.data.map((coin: any) => {
-    //   return coin.symbol;
-    // });
-    // interface LOGO {
-    //   [key: string]: any;
-    // }
-    // let logos: LOGO = {};
-    // for (let coin in result.data.data) {
-    //   let name: string = result.data.data[coin].symbol;
-    //   logos[name] = result.data.data[coin].logo;
-    // }
-    // console.log("names", logos);
-    // Access AsyncStorage for favorited currencies
 
     const currencyData = result.data.data.map((coin: any) => {
       return {
@@ -73,4 +50,17 @@ const fetchAllCurrencies = (allCurrencies: Currency[]): MarketActionTypes => {
     type: FETCH_CURRENCIES_SUCCESS,
     payload: allCurrencies,
   };
+};
+
+export const toggleFavorite = async (isFav: boolean, symbol: string) => {
+  let result = await AsyncStorage.getItem("favoriteCoins");
+  let favCoins: string[] = result != null ? JSON.parse(result) : [];
+  if (isFav) {
+    let updateFavCoins = favCoins!.filter((coin) => coin !== symbol);
+    await AsyncStorage.setItem("favoriteCoins", JSON.stringify(updateFavCoins));
+    return {
+      type: TOGGLE_FAVORITE_COIN,
+      payload: symbol,
+    };
+  }
 };
