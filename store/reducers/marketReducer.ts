@@ -29,6 +29,7 @@ export const marketReducer = (
         if (coin.symbol === action.payload) {
           coin.isFav = !coin.isFav;
         }
+        return coin;
       });
       return updateState;
     default:

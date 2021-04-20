@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,7 @@ import { marketCapFormatter } from "../../helpers/utilities";
 interface ActionProps {
   coinInfo: Currency;
 }
+
 const CoinRowCard = ({ coinInfo }: ActionProps) => {
   const colorFav = Colors.light.tint;
   const dispatch = useDispatch();
@@ -67,11 +68,6 @@ const CoinRowCard = ({ coinInfo }: ActionProps) => {
           marketCap
         )}`}</Text>
       </View>
-      {/* <View style={styles.faveContainer}>
-        <TouchableOpacity onPress={() => {}}>
-          <Ionicons size={22} color={color} name={iconName} />
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 };
@@ -86,6 +82,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginVertical: 2,
     maxWidth: "100%",
+    flex: 1,
   },
   logoContainer: {},
   logo: { width: 32, height: 32 },
