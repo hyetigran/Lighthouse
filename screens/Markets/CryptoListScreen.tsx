@@ -24,8 +24,8 @@ export default function CryptoListScreen() {
   const coinData = useSelector((state: MarketState) => state.market);
   const [currentSwipeUI, setCurrentSwipeUI] = useState<SwipeUI>({
     currentlyOpenSwipeable: null,
-    //rightActionActivated: false,
   });
+  const [currentTab, setCurrentTab] = useState<number>(0);
 
   console.log("coinD", coinData.length);
   const dispatch = useDispatch();
@@ -59,25 +59,24 @@ export default function CryptoListScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.filterHeaderContainer}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => currentTab === 1 && setCurrentTab(0)}>
           <View>
             <Text>All currencies</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => currentTab === 0 && setCurrentTab(1)}>
           <View>
             <Text>Favorites</Text>
           </View>
         </TouchableOpacity>
       </View>
-      {coinData.length > 1 && (
+      {coinData[currentTab].length > 1 && (
         <FlatList
           data={coinData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={(itemData: { index: number; item: Currency }) => {
             return (
               <Swipeable
-                //rightActionActivationDistance={200}
                 rightButtons={[
                   <TouchableOpacity
                     style={[

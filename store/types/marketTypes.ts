@@ -13,7 +13,7 @@ export interface Currency {
   isFav: boolean;
 }
 export interface MarketState {
-  market: Currency[];
+  market: { 0: Currency[]; 1: Currency[] };
 }
 interface getCurrenciesAction {
   type: typeof FETCH_CURRENCIES_SUCCESS;
