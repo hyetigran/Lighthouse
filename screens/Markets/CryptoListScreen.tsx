@@ -60,13 +60,17 @@ export default function CryptoListScreen() {
     <View style={styles.container}>
       <View style={styles.filterHeaderContainer}>
         <TouchableOpacity onPress={() => currentTab === 1 && setCurrentTab(0)}>
-          <View>
-            <Text>All currencies</Text>
+          <View style={currentTab === 0 && styles.activeTab}>
+            <Text style={currentTab === 0 && styles.activeTabText}>
+              All currencies
+            </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => currentTab === 0 && setCurrentTab(1)}>
-          <View>
-            <Text>Favorites</Text>
+          <View style={currentTab === 1 && styles.activeTab}>
+            <Text style={currentTab === 1 && styles.activeTabText}>
+              Favorites
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -123,6 +127,11 @@ const styles = StyleSheet.create({
   },
   filterHeaderContainer: {
     flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "100%",
+    minWidth: 400,
+    paddingVertical: 10,
   },
   title: {
     fontSize: 20,
@@ -132,5 +141,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingLeft: 20,
+  },
+  activeTab: {
+    borderColor: Colors.light.tint,
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  activeTabText: {
+    color: Colors.light.tint,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
