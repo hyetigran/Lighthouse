@@ -103,26 +103,6 @@ export default function CryptoListScreen() {
                     />
                   </TouchableOpacity>,
                 ]}
-                // onRightActionActivate={() =>
-                //   setCurrentSwipeUI({
-                //     ...currentSwipeUI,
-                //     rightActionActivated: true,
-                //   })
-                // }
-                // onRightActionDeactivate={() =>
-                //   setCurrentSwipeUI({
-                //     ...currentSwipeUI,
-                //     rightActionActivated: false,
-                //   })
-                // }
-                // onRightActionComplete={() => {
-                //   dispatch(
-                //     thunkToggleFavorite(
-                //       itemData.item.isFav,
-                //       itemData.item.symbol
-                //     )
-                //   );
-                // }}
                 onRightButtonsOpenRelease={onOpenHandler}
                 onRightButtonsCloseRelease={onCloseHandler}
               >
