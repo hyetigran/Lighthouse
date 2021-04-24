@@ -27,7 +27,7 @@ export default function CryptoListScreen() {
   });
   const [currentTab, setCurrentTab] = useState<number>(0);
 
-  console.log("coinD", coinData.length);
+  console.log("coinD", coinData[currentTab].length);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function CryptoListScreen() {
       </View>
       {coinData[currentTab].length > 1 && (
         <FlatList
-          data={coinData}
+          data={coinData[currentTab]}
           keyExtractor={(item) => item.id.toString()}
           renderItem={(itemData: { index: number; item: Currency }) => {
             return (

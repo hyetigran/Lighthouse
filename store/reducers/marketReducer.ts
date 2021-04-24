@@ -5,6 +5,7 @@ import {
 } from "../types/marketTypes";
 
 const initialState = {
+  // All currencies
   0: [
     {
       id: 0,
@@ -18,6 +19,7 @@ const initialState = {
       isFav: false,
     },
   ],
+  // Favorite currencies
   1: [
     {
       id: 0,
@@ -39,7 +41,7 @@ export const marketReducer = (
 ) => {
   switch (action.type) {
     case FETCH_CURRENCIES_SUCCESS:
-      return [...action.payload];
+      return { ...state, 0: action.payload };
     case TOGGLE_FAVORITE_COIN:
       let updateState = state[0].map((coin) => {
         if (coin.symbol === action.payload) {
