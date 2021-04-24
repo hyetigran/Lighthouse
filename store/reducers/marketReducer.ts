@@ -49,7 +49,7 @@ export const marketReducer = (
         }
         return coin;
       });
-      return updateState;
+      return { ...state, 0: updateState };
     default:
       return state;
   }

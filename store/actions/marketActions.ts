@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MARKETS_API_KEY } from "@env";
 import {
   FETCH_CURRENCIES_SUCCESS,
+  FETCH_FAV_CURRENCIES_SUCCESS,
   TOGGLE_FAVORITE_COIN,
   Currency,
   MarketActionTypes,
@@ -25,7 +26,18 @@ export const thunkGetAllCurrencies = (): ThunkAction<
       { headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY } }
     );
 
+    // FETCH FAVORITES FROM LOCAL STORAGE
+    let favCoinResult = await AsyncStorage.getItem("favoriteCoins");
+    let favCoins: string[] =
+      favCoinResult != null ? JSON.parse(favCoinResult) : [];
+
     const currencyData = result.data.data.map((coin: any) => {
+      let isFaved = favCoins.includes(coin.symbol) ? true : false;
+
+      if (isFaved) {
+        // Remove from list
+        favCoins.splice(favCoins.indexOf(coin.symbol), 1);
+      }
       return {
         id: coin.id,
         rank: coin.cmc_rank,
@@ -34,7 +46,7 @@ export const thunkGetAllCurrencies = (): ThunkAction<
         symbol: coin.symbol,
         marketCap: coin.quote.USD.market_cap,
         percentChange24h: coin.quote.USD.percent_change_24h,
-        isFav: false, // false by default
+        isFav: isFaved,
         logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`,
       };
     });
@@ -73,15 +85,25 @@ export const thunkGetFavoriteCurrencies = (
       };
     });
     console.log("fetched fav");
-    dispatch(fetchAllCurrencies(currencyData));
+    dispatch(fetchFavoriteCurrencies(currencyData));
   } catch (error) {
     console.log("err", error);
   }
 };
+
 const fetchAllCurrencies = (allCurrencies: Currency[]): MarketActionTypes => {
   return {
     type: FETCH_CURRENCIES_SUCCESS,
     payload: allCurrencies,
+  };
+};
+
+const fetchFavoriteCurrencies = (
+  favCurrencies: Currency[]
+): MarketActionTypes => {
+  return {
+    type: FETCH_FAV_CURRENCIES_SUCCESS,
+    payload: favCurrencies,
   };
 };
 
@@ -91,7 +113,6 @@ export const thunkToggleFavorite = (
 ): ThunkAction<void, RootState, unknown, Action<string>> => async (
   dispatch
 ) => {
-  console.log("here?", symbol);
   try {
     let result = await AsyncStorage.getItem("favoriteCoins");
     let favCoins: string[] = result != null ? JSON.parse(result) : [];

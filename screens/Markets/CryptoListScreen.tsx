@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector, useDispatch } from "react-redux";
-import { Text, View } from "../../components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 
+import { Text, View } from "../../components/Themed";
 import TopHeader from "../../components/Markets/TopHeader";
 import CoinRowCard from "../../components/Markets/CoinRowCard";
 import { MarketState, Currency } from "../../store/types/marketTypes";
-
 import Colors from "../../constants/Colors";
 import {
   thunkGetAllCurrencies,
@@ -35,10 +35,16 @@ export default function CryptoListScreen() {
     dispatch(thunkGetAllCurrencies());
   }, []);
 
-  // TopHeader
-  // TopBarNav
-  // Sort Dropdown
-  // List
+  const reconcileFavoriteHandler = async () => {
+    // Get list of fav coins
+    let result = await AsyncStorage.getItem("favoriteCoins");
+    let favCoins: string[] = result != null ? JSON.parse(result) : [];
+    console.log("favCoins", favCoins);
+
+    // Determine which are already fetched
+
+    // Fetch the extra coins
+  };
 
   // Filter Header Handler
   // onPress -
@@ -66,7 +72,12 @@ export default function CryptoListScreen() {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => currentTab === 0 && setCurrentTab(1)}>
+        <TouchableOpacity
+          onPress={() => {
+            if (currentTab === 0) setCurrentTab(1);
+            reconcileFavoriteHandler();
+          }}
+        >
           <View style={currentTab === 1 && styles.activeTab}>
             <Text style={currentTab === 1 && styles.activeTabText}>
               Favorites
