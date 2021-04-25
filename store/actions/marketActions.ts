@@ -2,10 +2,13 @@ import axios from "axios";
 import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { MARKETS_API_KEY } from "@env";
 import {
   FETCH_CURRENCIES_SUCCESS,
+  FETCH_FAV_CURRENCIES_SUCCESS,
+  TOGGLE_FAVORITE_COIN,
   Currency,
   MarketActionTypes,
 } from "../types/marketTypes";
@@ -20,35 +23,23 @@ export const thunkGetAllCurrencies = (): ThunkAction<
     // FETCH COINS
     const result: any = await axios.get(
       `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`,
-      { headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY } }
+      {
+        headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
+      }
     );
 
-    // const result: any = await axios.get(
-    //   `https://pro-api.coinmarketcap.com/v1/cryptocurrency/info`,
-    //   {
-    //     headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
-    //     params: {
-    //       symbol: `BTC,ETH,BNB,XRP,USDT,ADA,DOT,LTC,UNI,LINK,XLM,BCH,THETA,FIL,USDC,DOGE,TRX,WBTC,VET,SOL,KLAY,EOS,XMR,LUNA,MIOTA,BTT,CRO,FTT,BSV,BUSD,XTZ,ATOM,AAVE,NEO,AVAX,CAKE,ALGO,HT,EGLD,XEM,KSM,HOT,DAI,BTCB,DASH,HBAR,CHZ,ZEC,ENJ,RUNE,NEAR,DCR,GRT,ETC,MKR,COMP,ZIL,STX,SNX,BAT,LEO,BTG,SUSHI,TFUEL,MATIC,MANA,UST,CEL,NEXO,ZRX,YFI,WAVES,RVN,UMA,ICX,KCS,QTUM,ONT,OKB,HNT,OMG,ONE,DENT,FLOW,SC,BNT,VGX,NPXS,DGB,RSR,FTM,REV,ANKR,BTMX,CHSB,REN,CFX,CELO,IOST,PAX`,
-    //       aux: "logo",
-    //     },
-    //   }
-    // );
-    //console.log("result", result);
-    // let names = result.data.map((coin: any) => {
-    //   return coin.symbol;
-    // });
-    // interface LOGO {
-    //   [key: string]: any;
-    // }
-    // let logos: LOGO = {};
-    // for (let coin in result.data.data) {
-    //   let name: string = result.data.data[coin].symbol;
-    //   logos[name] = result.data.data[coin].logo;
-    // }
-    // console.log("names", logos);
-    // Access AsyncStorage for favorited currencies
+    // FETCH FAVORITES FROM LOCAL STORAGE
+    let favCoinResult = await AsyncStorage.getItem("favoriteCoins");
+    let favCoins: string[] =
+      favCoinResult != null ? JSON.parse(favCoinResult) : [];
 
     const currencyData = result.data.data.map((coin: any) => {
+      let isFaved = favCoins.includes(coin.symbol) ? true : false;
+
+      if (isFaved) {
+        // Remove from list
+        favCoins.splice(favCoins.indexOf(coin.symbol), 1);
+      }
       return {
         id: coin.id,
         rank: coin.cmc_rank,
@@ -57,12 +48,50 @@ export const thunkGetAllCurrencies = (): ThunkAction<
         symbol: coin.symbol,
         marketCap: coin.quote.USD.market_cap,
         percentChange24h: coin.quote.USD.percent_change_24h,
-        isFav: false, // false by default
+        isFav: isFaved,
         logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`,
       };
     });
-    console.log("fetched");
     dispatch(fetchAllCurrencies(currencyData));
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
+export const thunkGetFavoriteCurrencies = (
+  favSymbols: string
+): ThunkAction<void, RootState, unknown, Action<string>> => async (
+  dispatch
+) => {
+  try {
+    const currencyData: Currency[] = [];
+    // FETCH FAVORITE COINS
+    if (favSymbols) {
+      const result: any = await axios.get(
+        `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`,
+        {
+          headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
+          params: { symbol: favSymbols },
+        }
+      );
+
+      for (let idx in result.data.data) {
+        let coin = result.data.data[idx];
+        currencyData.push({
+          id: coin.id,
+          rank: coin.cmc_rank,
+          name: coin.name,
+          price: coin.quote.USD.price,
+          symbol: coin.symbol,
+          marketCap: coin.quote.USD.market_cap,
+          percentChange24h: coin.quote.USD.percent_change_24h,
+          isFav: true, // true by default
+          logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`,
+        });
+      }
+    }
+
+    dispatch(fetchFavoriteCurrencies(currencyData));
   } catch (error) {
     console.log("err", error);
   }
@@ -72,5 +101,52 @@ const fetchAllCurrencies = (allCurrencies: Currency[]): MarketActionTypes => {
   return {
     type: FETCH_CURRENCIES_SUCCESS,
     payload: allCurrencies,
+  };
+};
+
+const fetchFavoriteCurrencies = (
+  favCurrencies: Currency[]
+): MarketActionTypes => {
+  return {
+    type: FETCH_FAV_CURRENCIES_SUCCESS,
+    payload: favCurrencies,
+  };
+};
+
+export const thunkToggleFavorite = (
+  isFav: boolean,
+  symbol: string
+): ThunkAction<void, RootState, unknown, Action<string>> => async (
+  dispatch
+) => {
+  try {
+    let result = await AsyncStorage.getItem("favoriteCoins");
+    let favCoins: string[] = result != null ? JSON.parse(result) : [];
+
+    if (isFav) {
+      // Handle coin unfavorited
+      let updateFavCoins = favCoins!.filter((coin) => coin !== symbol);
+      await AsyncStorage.setItem(
+        "favoriteCoins",
+        JSON.stringify(updateFavCoins)
+      );
+    } else if (!isFav) {
+      // Handle coin favorited
+      let updateFavCoins = [...favCoins, symbol];
+      await AsyncStorage.setItem(
+        "favoriteCoins",
+        JSON.stringify(updateFavCoins)
+      );
+    }
+    dispatch(toggleFavorite(symbol));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const toggleFavorite = (symbol: string): MarketActionTypes => {
+  return {
+    type: TOGGLE_FAVORITE_COIN,
+    payload: symbol,
   };
 };
