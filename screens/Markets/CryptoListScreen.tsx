@@ -11,6 +11,7 @@ import { MarketState, Currency } from "../../store/types/marketTypes";
 import Colors from "../../constants/Colors";
 import {
   thunkGetAllCurrencies,
+  thunkGetFavoriteCurrencies,
   thunkToggleFavorite,
 } from "../../store/actions/marketActions";
 import Swipeable from "../../components/Markets/Swipeable";
@@ -39,11 +40,26 @@ export default function CryptoListScreen() {
     // Get list of fav coins
     let result = await AsyncStorage.getItem("favoriteCoins");
     let favCoins: string[] = result != null ? JSON.parse(result) : [];
-    console.log("favCoins", favCoins);
 
     // Determine which are already fetched
+    // TODO -- RE-ASSIGN TYPES TO CUR, ACC
+    let coinSymbolReduced = coinData[0].reduce((acc: any, cur: any) => {
+      let symbol = cur.symbol;
+      acc[symbol] = 1;
+      return acc;
+    }, {});
 
-    // Fetch the extra coins
+    let queryParam = "";
+    for (let sym of favCoins) {
+      if (!coinSymbolReduced.hasOwnProperty(sym)) {
+        sym += ",";
+        queryParam += sym;
+      }
+    }
+    let trimedQueryParam = queryParam.slice(0, -1);
+
+    // Fetch remaining coins
+    dispatch(thunkGetFavoriteCurrencies(trimedQueryParam));
   };
 
   // Filter Header Handler
