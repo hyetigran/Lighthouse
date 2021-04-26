@@ -1,19 +1,11 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
+import TransactionRow from "./TransactionRow";
 
-const BigHero = () => {
+const TransactionList = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.totalAmountText}>$ 100,000</Text>
-      <View style={styles.returnsContainer}>
-        <Text>+ $ 10,000</Text>
-        <Text> ^ 5%</Text>
-      </View>
-      <View style={styles.timePeriodContainer}>
-        {["1H", "1D", "1W", "1M", "1Y", "All"].map((txt: string) => {
-          return <Text>{txt}</Text>;
-        })}
-      </View>
+      <TransactionRow />
     </View>
   );
 };
@@ -38,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BigHero;
+export default TransactionList;

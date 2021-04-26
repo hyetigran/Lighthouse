@@ -1,9 +1,9 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
 
-import EditScreenInfo from "../../components/EditScreenInfo";
 import { Text, View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
+import TransactionList from "../../components/Portfolio/TransactionList";
 
 export default function MainPortfolioScreen() {
   return (
@@ -14,7 +14,7 @@ export default function MainPortfolioScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <EditScreenInfo path="/screens/MainPortfolioScreen.tsx" />
+      <TransactionList />
     </View>
   );
 }

@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
+    minHeight: 250,
   },
   totalAmountText: {
     fontSize: 36,
