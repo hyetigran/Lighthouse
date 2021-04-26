@@ -3,11 +3,12 @@ import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "../../components/EditScreenInfo";
 import { Text, View } from "../../components/Themed";
+import BigHero from "../../components/Portfolio/BigHero";
 
 export default function MainPortfolioScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
+      <BigHero />
       <View
         style={styles.separator}
         lightColor="#eee"

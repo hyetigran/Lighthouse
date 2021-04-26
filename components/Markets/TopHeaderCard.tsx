@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
+// NOT USED
 const TopHeaderCard = () => {
   return <View></View>;
 };
