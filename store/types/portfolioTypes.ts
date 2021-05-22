@@ -7,6 +7,10 @@ interface Transaction {
   name: string;
   symbol: string;
   amount: number;
+  currentPriceUSD: number;
+  gainUSD: number;
+  gainRate: number;
+  logo: string;
 }
 
 interface Portfolio {
