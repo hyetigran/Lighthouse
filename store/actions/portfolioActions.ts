@@ -2,19 +2,19 @@ import axios from "axios";
 import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
-import { FETCH_PORTFOLIO_SUCCESS } from "../types/portfolioTypes";
+import { FETCH_PORTFOLIO_SUCCESS, PortfolioActionTypes } from "../types/portfolioTypes";
 
 export const thunkFetchPortfolio =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
     async (dispatch) => {
       try {
-        const result = Promise.resolve(dummyData);
+        const result: any = await Promise.resolve(dummyData);
         dispatch(fetchPortfolio(result));
       } catch (error) {
         console.log(error);
       }
     };
-export const fetchPortfolio = (payload: any) => {
+export const fetchPortfolio = (payload: PortfolioActionTypes) => {
   return {
     type: FETCH_PORTFOLIO_SUCCESS,
     payload,

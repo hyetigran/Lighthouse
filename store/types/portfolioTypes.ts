@@ -10,39 +10,38 @@ interface Transaction {
   spotPrice: number
 }
 
-interface PortfolioCoin {
+export interface PortfolioCoin {
   id: number,
   rank: number,
   logo: string,
+  name: string,
   symbol: string,
   spotPrice: number,
-  crytpoTotal: number,
+  cryptoTotal: number,
   fiatTotal: number,
   transactions: Transaction[]
-  historicalPrices: number[]
+  historicalPrice: number[]
 }
-interface Portfolio {
-  portfolio: PortfolioCoin[]
-}
+
 
 interface getPortfolioAction {
   type: typeof FETCH_PORTFOLIO_SUCCESS;
-  payload: Portfolio;
+  payload: PortfolioCoin[];
 }
 
 interface createTransactionAction {
   type: typeof CREATE_TRANSACTION_SUCCESS;
-  payload: Portfolio;
+  payload: string;
 }
 
 interface updateTransactionAction {
   type: typeof UPDATE_TRANSACTION_SUCCESS;
-  payload: Portfolio;
+  payload: string;
 }
 
 interface deleteTransactionAction {
   type: typeof DELETE_TRANSACTION_SUCCESS;
-  payload: Portfolio;
+  payload: string;
 }
 
 export type PortfolioActionTypes =

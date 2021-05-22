@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { thunkFetchPortfolio } from "../../store/actions/portfolioActions";
@@ -8,10 +8,15 @@ import BigHero from "../../components/Portfolio/BigHero";
 import TransactionList from "../../components/Portfolio/TransactionList";
 
 export default function MainPortfolioScreen() {
+  const [isLoading, setIsLoading] = useState(false)
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(thunkFetchPortfolio)
-  })
+    setIsLoading(true)
+    dispatch(thunkFetchPortfolio())
+    setIsLoading(false)
+  }, [])
+
   return (
     <View style={styles.container}>
       <BigHero />
@@ -20,7 +25,7 @@ export default function MainPortfolioScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <TransactionList />
+      <TransactionList isLoading={isLoading} />
     </View>
   );
 }
