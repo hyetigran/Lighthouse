@@ -42,7 +42,7 @@ function RootNavigator() {
     <Stack.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        ...TransitionPresets.SlideFromRightIOS,
+        ...TransitionPresets.ModalSlideFromBottomIOS,
       })}
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
