@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
+import { useSelector } from "react-redux";
+
 import TransactionRow from "./TransactionRow";
 
 const TransactionList = () => {
+  const mainPortfolio = useSelector(state => state.portfolio);
+
   return (
     <View style={styles.container}>
       <TransactionRow />

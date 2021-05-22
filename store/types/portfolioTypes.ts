@@ -4,17 +4,25 @@ export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 
 interface Transaction {
-  name: string;
-  symbol: string;
-  amount: number;
-  currentPriceUSD: number;
-  gainUSD: number;
-  gainRate: number;
-  logo: string;
+  txId: number,
+  datePurchased: string,
+  cryptoAmount: number,
+  spotPrice: number
 }
 
+interface PortfolioCoin {
+  id: number,
+  rank: number,
+  logo: string,
+  symbol: string,
+  spotPrice: number,
+  crytpoTotal: number,
+  fiatTotal: number,
+  transactions: Transaction[]
+  historicalPrices: number[]
+}
 interface Portfolio {
-  transactions: Transaction[];
+  portfolio: PortfolioCoin[]
 }
 
 interface getPortfolioAction {

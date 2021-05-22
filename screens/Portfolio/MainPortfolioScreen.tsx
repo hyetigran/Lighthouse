@@ -1,11 +1,17 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
+import { thunkFetchPortfolio } from "../../store/actions/portfolioActions";
 
 import { Text, View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
 import TransactionList from "../../components/Portfolio/TransactionList";
 
 export default function MainPortfolioScreen() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(thunkFetchPortfolio)
+  })
   return (
     <View style={styles.container}>
       <BigHero />

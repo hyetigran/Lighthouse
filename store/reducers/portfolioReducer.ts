@@ -16,7 +16,7 @@ const initialState = {
   ],
 };
 
-export const marketReducer = (
+export const portfolioReducer = (
   state = initialState,
   action: PortfolioActionTypes
 ) => {
