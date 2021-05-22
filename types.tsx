@@ -1,5 +1,6 @@
 export type RootStackParamList = {
   Root: undefined;
+  Transaction: undefined;
   NotFound: undefined;
 };
 
@@ -24,3 +25,7 @@ export type PortfolioTabParamsList = {
 export type WalletsTabParamsList = {
   MainWalletsScreen: undefined;
 };
+
+export type TransactionParamList = {
+  TransactionScreen: undefined;
+}

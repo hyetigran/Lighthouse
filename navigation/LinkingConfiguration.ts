@@ -23,6 +23,7 @@ export default {
           },
         },
       },
+      Transaction: "four",
       NotFound: "*",
     },
   },
