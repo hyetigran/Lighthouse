@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useDispatch } from "react-redux";
 
 import Colors from "../../constants/Colors";
@@ -12,8 +12,6 @@ interface ActionProps {
 }
 
 const CoinRowCard = ({ coinInfo }: ActionProps) => {
-  const colorFav = Colors.light.tint;
-  const dispatch = useDispatch();
 
   const {
     logo,

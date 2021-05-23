@@ -63,39 +63,39 @@ export const thunkGetFavoriteCurrencies = (
 ): ThunkAction<void, RootState, unknown, Action<string>> => async (
   dispatch
 ) => {
-  try {
-    const currencyData: Currency[] = [];
-    // FETCH FAVORITE COINS
-    if (favSymbols) {
-      const result: any = await axios.get(
-        `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`,
-        {
-          headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
-          params: { symbol: favSymbols },
+    try {
+      const currencyData: Currency[] = [];
+      // FETCH FAVORITE COINS
+      if (favSymbols) {
+        const result: any = await axios.get(
+          `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`,
+          {
+            headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
+            params: { symbol: favSymbols },
+          }
+        );
+
+        for (let idx in result.data.data) {
+          let coin = result.data.data[idx];
+          currencyData.push({
+            id: coin.id,
+            rank: coin.cmc_rank,
+            name: coin.name,
+            price: coin.quote.USD.price,
+            symbol: coin.symbol,
+            marketCap: coin.quote.USD.market_cap,
+            percentChange24h: coin.quote.USD.percent_change_24h,
+            isFav: true, // true by default
+            logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`,
+          });
         }
-      );
-
-      for (let idx in result.data.data) {
-        let coin = result.data.data[idx];
-        currencyData.push({
-          id: coin.id,
-          rank: coin.cmc_rank,
-          name: coin.name,
-          price: coin.quote.USD.price,
-          symbol: coin.symbol,
-          marketCap: coin.quote.USD.market_cap,
-          percentChange24h: coin.quote.USD.percent_change_24h,
-          isFav: true, // true by default
-          logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`,
-        });
       }
-    }
 
-    dispatch(fetchFavoriteCurrencies(currencyData));
-  } catch (error) {
-    console.log("err", error);
-  }
-};
+      dispatch(fetchFavoriteCurrencies(currencyData));
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
 
 const fetchAllCurrencies = (allCurrencies: Currency[]): MarketActionTypes => {
   return {
@@ -119,30 +119,30 @@ export const thunkToggleFavorite = (
 ): ThunkAction<void, RootState, unknown, Action<string>> => async (
   dispatch
 ) => {
-  try {
-    let result = await AsyncStorage.getItem("favoriteCoins");
-    let favCoins: string[] = result != null ? JSON.parse(result) : [];
+    try {
+      let result = await AsyncStorage.getItem("favoriteCoins");
+      let favCoins: string[] = result != null ? JSON.parse(result) : [];
 
-    if (isFav) {
-      // Handle coin unfavorited
-      let updateFavCoins = favCoins!.filter((coin) => coin !== symbol);
-      await AsyncStorage.setItem(
-        "favoriteCoins",
-        JSON.stringify(updateFavCoins)
-      );
-    } else if (!isFav) {
-      // Handle coin favorited
-      let updateFavCoins = [...favCoins, symbol];
-      await AsyncStorage.setItem(
-        "favoriteCoins",
-        JSON.stringify(updateFavCoins)
-      );
+      if (isFav) {
+        // Handle coin unfavorited
+        let updateFavCoins = favCoins!.filter((coin) => coin !== symbol);
+        await AsyncStorage.setItem(
+          "favoriteCoins",
+          JSON.stringify(updateFavCoins)
+        );
+      } else if (!isFav) {
+        // Handle coin favorited
+        let updateFavCoins = [...favCoins, symbol];
+        await AsyncStorage.setItem(
+          "favoriteCoins",
+          JSON.stringify(updateFavCoins)
+        );
+      }
+      dispatch(toggleFavorite(symbol));
+    } catch (error) {
+      console.log(error);
     }
-    dispatch(toggleFavorite(symbol));
-  } catch (error) {
-    console.log(error);
-  }
-};
+  };
 
 const toggleFavorite = (symbol: string): MarketActionTypes => {
   return {
