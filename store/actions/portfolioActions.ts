@@ -8,7 +8,16 @@ export const thunkFetchPortfolio =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
     async (dispatch) => {
       try {
+        // GET PORTFOLIO COINS
         const result: any = await Promise.resolve(dummyData);
+
+        // GET SPOT PRICE FOR EACH COIN
+
+        // REDUCE TOTAL PER COIN
+
+        // REDUCE TOTAL
+
+        // CALCULATE GAIN 1H, 1D, 1M, 1Y, All
         dispatch(fetchPortfolio(result));
       } catch (error) {
         console.log(error);

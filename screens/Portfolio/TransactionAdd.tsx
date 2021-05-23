@@ -2,14 +2,18 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const AddTransactionScreen = () => {
-  const { goBack } = useNavigation();
+const TransactionAdd = () => {
+  const { navigate, goBack } = useNavigation();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goBack}>
         <Text>Go Back</Text>
       </TouchableOpacity>
-      <Text>AddTransactionScreen</Text>
+      <TouchableOpacity onPress={() => {}}>
+        <Text>Next Screen</Text>
+      </TouchableOpacity>
+      <Text>TransactionAdd</Text>
     </View>
   );
 };
@@ -20,4 +24,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-export default AddTransactionScreen;
+export default TransactionAdd;

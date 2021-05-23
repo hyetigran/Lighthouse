@@ -23,7 +23,12 @@ export default {
           },
         },
       },
-      Transaction: "four",
+      TransactionSearch: {
+        screens: {
+          TransactionSearch: "four",
+          TransactionAdd: "five"
+        }
+      },
       NotFound: "*",
     },
   },
