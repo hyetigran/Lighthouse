@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -22,20 +22,34 @@ interface SearchResults {
 }
 const TransactionSearch = () => {
   const [searchInput, setSearchInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] =
     useState<SearchResults[]>(coinsData);
   const { navigate } = useNavigation();
+
+  useEffect(() => {
+    filterSearchResults(searchInput);
+  }, [searchInput]);
 
   const changeSearchHandler = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ): void => {
     setSearchInput(e.nativeEvent.text);
+  };
+
+  const filterSearchResults = async (value: string) => {
+    let lcValue = value.toLowerCase();
     let filteredResults = coinsData.filter(
-      (crypto) => crypto.name === searchInput || crypto.symbol === searchInput
+      (crypto) =>
+        crypto.name.toLowerCase().includes(lcValue) ||
+        crypto.symbol.toLowerCase().includes(lcValue)
     );
-    console.log("E", searchInput);
-    console.log("F", filteredResults);
-    setSearchResults(filteredResults);
+    if (filterSearchResults.length === 0) {
+      // API CALL TO CMC
+      setIsLoading(true);
+    } else {
+      setSearchResults(filteredResults);
+    }
   };
 
   return (

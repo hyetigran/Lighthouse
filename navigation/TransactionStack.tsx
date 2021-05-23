@@ -8,6 +8,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import TransactionSearch from "../screens/Portfolio/TransactionSearch";
 import TransactionAdd from "../screens/Portfolio/TransactionAdd";
 import { TransactionParamList } from "../types";
+import HeaderTitle from "../components/HeaderTitle";
 
 const Stack = createStackNavigator<TransactionParamList>();
 
@@ -28,7 +29,7 @@ export default function TransactionNavigator() {
         name="TransactionAdd"
         component={TransactionAdd}
         options={({ route }) => ({
-          headerTitle: route.params.name,
+          headerTitle: () => <HeaderTitle {...route.params} />,
           headerBackTitle: "Portfolio",
         })}
       />
