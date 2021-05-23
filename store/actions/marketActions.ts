@@ -40,7 +40,7 @@ export const thunkGetAllCurrencies = (): ThunkAction<
         // Remove from list
         favCoins.splice(favCoins.indexOf(coin.symbol), 1);
       }
-      console.log(`{id: ${coin.id}, name: "${coin.name}", symbol: "${coin.symbol}"},`)
+
       return {
         id: coin.id,
         rank: coin.cmc_rank,
