@@ -30,7 +30,7 @@ export default function TransactionNavigator() {
         component={TransactionAdd}
         options={({ route }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
-          headerBackTitle: "Portfolio",
+          headerBackTitle: "Search",
         })}
       />
     </Stack.Navigator>
