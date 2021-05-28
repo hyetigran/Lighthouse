@@ -9,10 +9,10 @@ export default {
     tint: tintColorLight,
     tabIconDefault: "#ccc",
     tabIconSelected: tintColorLight,
-    gainGreen: "#0dc18d",
-    gainGreener: "",
+    gainGreen: "#0a9a70",
+    gainGreenLite: "#0dc18d",
     lossRed: "#f74909",
-    lossRedder: "",
+    lossRedLite: "#f97b4d",
   },
   dark: {
     text: "#fff",
