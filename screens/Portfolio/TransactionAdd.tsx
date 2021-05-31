@@ -1,11 +1,12 @@
-import React, { useState, createRef } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
   Dimensions,
+  NativeSyntheticEvent as NSE,
+  TextInputChangeEventData as TICED,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -25,23 +26,22 @@ const {
   tint,
 } = Colors.light;
 
-const actionSheetRef = createRef();
-
+const initialTransaction = {};
 const TransactionAdd = () => {
   const [isBuy, setIsBuy] = useState(true);
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [buyPrice, setBuyPrice] = useState<string>("");
 
   const { navigate, goBack } = useNavigation();
 
   // SELECTOR --> coin
 
-  //   const onChangeDate = (event, selectedDate) => {
-  //     const currentDate = selectedDate || date;
-  //     setShow(Platform.OS === "ios");
-  //     setDate(currentDate);
-  //   };
+  const onChangeDate = (event: Event, selectedDate: Date) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+  };
 
   const showMode = (currentMode: string) => {
     setShow(true);
@@ -55,8 +55,13 @@ const TransactionAdd = () => {
   const showTimepicker = () => {
     showMode("time");
   };
+
   const closeModal = () => {
     setShow(false);
+  };
+
+  const onChangePrice = (e: NSE<TICED>) => {
+    setBuyPrice(e.nativeEvent.text);
   };
   const addButtonColor = {
     backgroundColor: isBuy ? gainGreenLite : lossRedLite,
@@ -92,6 +97,8 @@ const TransactionAdd = () => {
           data={{ symbol: "BTC" }}
           showDatepicker={showDatepicker}
           date={date}
+          buyPrice={buyPrice}
+          onChangePrice={onChangePrice}
         />
       </View>
       <View style={[styles.btnContainer, addButtonColor]}>
@@ -103,13 +110,17 @@ const TransactionAdd = () => {
         <View style={[styles.modalHeader]}>
           {mode === "time" ? (
             <>
-              <Text onPress={showDatepicker}>Previous</Text>
-              <Text>Done</Text>
+              <Text style={styles.modalText} onPress={showDatepicker}>
+                Previous
+              </Text>
+              <Text style={styles.modalText} onPress={closeModal}>
+                Done
+              </Text>
             </>
           ) : (
             <>
               <View style={{ flexGrow: 1 }}></View>
-              <Text style={styles.nextText} onPress={showTimepicker}>
+              <Text style={styles.modalText} onPress={showTimepicker}>
                 Next
               </Text>
             </>
@@ -121,7 +132,8 @@ const TransactionAdd = () => {
           mode={mode}
           is24Hour={true}
           display="spinner"
-          //onChange={onChange}
+          maximumDate={new Date()}
+          onChange={onChangeDate}
         />
       </Modal>
     </View>
@@ -186,12 +198,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     alignSelf: "center",
+    marginVertical: 10,
   },
   modalText: {
     color: tint,
-  },
-  nextText: {
-    alignItems: "flex-end",
     fontSize: 20,
   },
 });
