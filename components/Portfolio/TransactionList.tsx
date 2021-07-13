@@ -18,9 +18,9 @@ const TransactionList = ({ isLoading }: ActionProps) => {
       style={styles.container}
     >
       {isLoading && <ActivityIndicator />}
-      {mainPortfolio.length && !isLoading ? (
-        mainPortfolio.map((pCoin) => (
-          <TransactionRow key={pCoin.id} data={pCoin} />
+      {mainPortfolio!.portfolioCoins.length && !isLoading ? (
+        mainPortfolio?.portfolioCoins.map((pCoin) => (
+          <TransactionRow key={pCoin.coinId} data={pCoin} />
         ))
       ) : (
         <Text>No transactions found.</Text>
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    width: "90%"
+    width: "90%",
     //alignItems: "center",
     //alignContent: "center",
   },

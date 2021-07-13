@@ -4,17 +4,22 @@ import {
   FETCH_PORTFOLIO_SUCCESS,
   UPDATE_TRANSACTION_SUCCESS,
   PortfolioActionTypes,
-  PortfolioCoin
+  PortfolioCoin,
+  Portfolio
 } from "../types/portfolioTypes";
 
-
+const initialState = {
+  portfolioCoins: [],
+  portfolioName: "",
+  portfolioId: "",
+}
 export const portfolioReducer = (
-  state: PortfolioCoin[] | never[] = [],
+  state: Portfolio = initialState,
   action: PortfolioActionTypes
 ) => {
   switch (action.type) {
     case FETCH_PORTFOLIO_SUCCESS:
-      return [...action.payload];
+      return { ...action.payload };
     case CREATE_TRANSACTION_SUCCESS:
       return state;
     case UPDATE_TRANSACTION_SUCCESS:

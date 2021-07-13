@@ -1,7 +1,7 @@
 import React from "react";
 import {
   StyleSheet,
-  TextInput,
+  ScrollView,
   View,
   Text,
   TouchableWithoutFeedback,
@@ -16,8 +16,12 @@ interface ActionProps {
   data: any;
   showDatepicker: () => void;
   date: Date;
-  buyPrice: string;
+  buyPrice: number;
   onChangePrice: (e: NSE<TICED>) => void;
+  priceType: number;
+  togglePriceType: () => void;
+  coinAmount: number;
+  handleCoinAmount: (e: NSE<TICED>) => void;
 }
 const {
   tabIconDefault: colorBorder,
@@ -31,9 +35,14 @@ const TransactionForm = ({
   date,
   buyPrice,
   onChangePrice,
+  priceType,
+  togglePriceType,
+  coinAmount,
+  handleCoinAmount,
 }: ActionProps) => {
+  const rightPriceText = priceType ? "in total" : "per coin";
   return (
-    <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <Input label="Exchange" placeholder="Global avg." disabled />
       <Input label="Trading Pair" placeholder={`${symbol}/USD`} disabled />
       <TouchableWithoutFeedback onPress={showDatepicker}>
@@ -48,16 +57,28 @@ const TransactionForm = ({
         label={buyPrice ? "Buy Price" : " "}
         placeholder="Buy Price"
         value={buyPrice}
+        keyboardType="numeric"
+        numeric
         onChange={onChangePrice}
-        rightIcon={() => <Text>Per coin</Text>}
+        rightIcon={() => (
+          <Text style={styles.rightTextToggle} onPress={togglePriceType}>
+            {rightPriceText}
+          </Text>
+        )}
       />
-    </View>
+      <Input
+        label={coinAmount ? "Amount Bought" : " "}
+        placeholder="Amount Bought"
+        value={coinAmount}
+        keyboardType="numeric"
+        onChange={handleCoinAmount}
+      />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
     width: "90%",
     alignSelf: "center",
   },
@@ -76,6 +97,15 @@ const styles = StyleSheet.create({
   dateValue: {
     fontSize: 18,
     paddingVertical: 9,
+  },
+  rightTextToggle: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    backgroundColor: Colors.light.secondaryText,
+    borderWidth: 1,
+    borderColor: Colors.light.darkGrey,
+    borderRadius: 12,
+    overflow: "hidden",
   },
 });
 

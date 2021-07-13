@@ -3,7 +3,7 @@ import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+// @ts-ignore
 import { MARKETS_API_KEY } from "@env";
 import {
   FETCH_CURRENCIES_SUCCESS,

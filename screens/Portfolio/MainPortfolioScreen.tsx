@@ -3,12 +3,21 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import uuid from "react-native-uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// @ts-ignore
+import { PORTFOLIO_API_URL } from "@env";
 
-import { thunkFetchPortfolio } from "../../store/actions/portfolioActions";
+import {
+  thunkFetchPortfolio,
+  thunkCreatePortfolio,
+} from "../../store/actions/portfolioActions";
 import { Text, View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
 import TransactionList from "../../components/Portfolio/TransactionList";
 import Colors from "../../constants/Colors";
+import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 
 const { tint, tabIconDefault, secondaryText } = Colors.light;
 
@@ -19,12 +28,43 @@ export default function MainPortfolioScreen() {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(thunkFetchPortfolio());
+    dispatch(handleInitialLoad());
     setIsLoading(false);
   }, []);
 
   const addTransactionHandler = () => {
     navigate("Transaction");
+  };
+
+  const handleInitialLoad = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      // Login
+      const deviceId = await AsyncStorage.getItem("deviceId");
+      const resultLogin = axios.post(`${PORTFOLIO_API_URL}/login`, {
+        device_id: deviceId,
+      });
+      // Get 'Main' portfolio
+      dispatch(thunkFetchPortfolio());
+    } else {
+      const newDeviceId = uuid.v4();
+      if (typeof newDeviceId === "string") {
+        const strDevID: string = newDeviceId;
+        await AsyncStorage.setItem("deviceId", strDevID);
+        // Register
+        const resultRegister = await axios.post(
+          `${PORTFOLIO_API_URL}/register`,
+          {
+            device_id: strDevID,
+          }
+        );
+        // Set Token to Async Storage
+        await AsyncStorage.setItem("token", resultRegister.data.access_token);
+
+        // Create 'Main' portfolio
+        dispatch(thunkCreatePortfolio());
+      }
+    }
   };
 
   return (
