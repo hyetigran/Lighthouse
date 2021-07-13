@@ -1,12 +1,9 @@
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const axiosWithAuth = () => {
-    const token = AsyncStorage.getItem("token");
-
+export const axiosWithAuth = (token: string) => {
     return axios.create({
         headers: {
-            Authorization: `Token ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 };

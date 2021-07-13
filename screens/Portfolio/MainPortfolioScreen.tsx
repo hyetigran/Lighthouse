@@ -28,7 +28,7 @@ export default function MainPortfolioScreen() {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(handleInitialLoad());
+    handleInitialLoad();
     setIsLoading(false);
   }, []);
 
@@ -41,9 +41,10 @@ export default function MainPortfolioScreen() {
     if (token) {
       // Login
       const deviceId = await AsyncStorage.getItem("deviceId");
-      const resultLogin = axios.post(`${PORTFOLIO_API_URL}/login`, {
+      const resultLogin = await axios.post(`${PORTFOLIO_API_URL}/login`, {
         device_id: deviceId,
       });
+      await AsyncStorage.setItem("token", resultLogin.data.access_token);
       // Get 'Main' portfolio
       dispatch(thunkFetchPortfolio());
     } else {
