@@ -12,10 +12,15 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
+// @ts-ignore
+import { PORTFOLIO_API_URL } from "@env";
 import Colors from "../../constants/Colors";
 import TransactionForm from "../../components/Portfolio/TransactionForm";
 import Modal from "../../components/Modal/ModalComponent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { axiosWithAuth } from "../../helpers/axiosWithAuth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "../../store";
 
 const { width } = Dimensions.get("window");
 const {
@@ -42,6 +47,7 @@ const TransactionAdd = () => {
   const { navigate, goBack } = useNavigation();
 
   // SELECTOR --> coin
+  const { portfolioId } = useSelector((state: RootState) => state.portfolio);
   const dispatch = useDispatch();
 
   const onChangeDate = (event: Event, selectedDate: Date) => {
@@ -76,6 +82,46 @@ const TransactionAdd = () => {
 
   const handleCoinAmount = (e: NSE<TICED>) => {
     setCoinAmount(+e.nativeEvent.text);
+  };
+
+  const validateInputs = () => {
+    // TODO - ENHANCE VALIDATION
+    if (coinAmount <= 0 || buyPrice <= 0 || !date) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleAddTransaction = async () => {
+    console.log("CLICKED");
+    // VALIDATE
+    if (validateInputs()) {
+      return;
+    }
+
+    const purchaseDate = date.getTime();
+    console.log("PD", purchaseDate);
+    const data = {
+      purchase_date: purchaseDate,
+      coin_amount: coinAmount,
+      // convert to 'per coin'
+      spot_price: priceType ? buyPrice : buyPrice / coinAmount,
+      exchange: "Global",
+      fiat: "USD",
+      coin_id: 1,
+      portfolio_id: portfolioId,
+      is_buy: isBuy,
+    };
+    // SEND NETWORK REQUEST
+    const token = await AsyncStorage.getItem("token");
+    const result = await axiosWithAuth(token!).post(
+      `${PORTFOLIO_API_URL}/transaction-create`,
+      data
+    );
+
+    // SAVE TRANSACTION TO PORTFOLIO STATE
+
+    // TODO - PERSIST LOCALLY WITH SQLite
   };
 
   const addButtonColor = {
@@ -126,11 +172,11 @@ const TransactionAdd = () => {
           />
         </View>
       </KeyboardAvoidingView>
-      <View style={[styles.btnContainer, addButtonColor]}>
-        <Text style={styles.btnAdd} onPress={() => {}}>
-          Add Transaction
-        </Text>
-      </View>
+      <TouchableOpacity onPress={handleAddTransaction}>
+        <View style={[styles.btnContainer, addButtonColor]}>
+          <Text style={styles.btnAdd}>Add Transaction</Text>
+        </View>
+      </TouchableOpacity>
       <Modal isVisible={show} closeModal={closeModal}>
         <View style={[styles.modalHeader]}>
           {mode === "time" ? (

@@ -13,11 +13,10 @@ import {
   thunkFetchPortfolio,
   thunkCreatePortfolio,
 } from "../../store/actions/portfolioActions";
-import { Text, View } from "../../components/Themed";
+import { View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
 import TransactionList from "../../components/Portfolio/TransactionList";
 import Colors from "../../constants/Colors";
-import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 
 const { tint, tabIconDefault, secondaryText } = Colors.light;
 
