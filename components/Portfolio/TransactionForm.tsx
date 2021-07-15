@@ -14,14 +14,16 @@ import Colors from "../../constants/Colors";
 
 interface ActionProps {
   data: any;
-  showDatepicker: () => void;
   date: Date;
   buyPrice: string;
-  onChangePrice: (text: string) => void;
   priceType: number;
-  togglePriceType: () => void;
   coinAmount: string;
+  error: { coin: boolean; price: boolean; date: boolean };
+  togglePriceType: () => void;
+  onChangePrice: (text: string) => void;
+  showDatepicker: () => void;
   handleCoinAmount: (text: string) => void;
+  validateField: (text: string) => void;
 }
 const {
   tabIconDefault: colorBorder,
@@ -31,14 +33,16 @@ const {
 
 const TransactionForm = ({
   data: { symbol },
-  showDatepicker,
   date,
   buyPrice,
-  onChangePrice,
   priceType,
-  togglePriceType,
   coinAmount,
+  error,
+  showDatepicker,
+  onChangePrice,
+  togglePriceType,
   handleCoinAmount,
+  validateField,
 }: ActionProps) => {
   const rightPriceText = priceType ? "in total" : "per coin";
 
@@ -60,6 +64,8 @@ const TransactionForm = ({
         value={buyPrice}
         keyboardType="numeric"
         onChangeText={onChangePrice}
+        errorMessage={error.price ? "Required field" : ""}
+        onBlur={() => validateField("price")}
         rightIcon={() => (
           <Text style={styles.rightTextToggle} onPress={togglePriceType}>
             {rightPriceText}
@@ -73,6 +79,8 @@ const TransactionForm = ({
         defaultValue={coinAmount}
         keyboardType="numeric"
         onChangeText={handleCoinAmount}
+        errorMessage={error.coin ? "Required field" : ""}
+        onBlur={() => validateField("coin")}
       />
     </ScrollView>
   );

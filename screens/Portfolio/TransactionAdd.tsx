@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../store";
+import { useEffect } from "react";
 
 const { width } = Dimensions.get("window");
 const {
@@ -34,7 +35,11 @@ const {
 } = Colors.light;
 
 const initialTransaction = {};
-
+const initialErrorState = {
+  price: false,
+  coin: false,
+  date: false,
+};
 const TransactionAdd = () => {
   const [isBuy, setIsBuy] = useState(true);
   const [date, setDate] = useState(new Date());
@@ -43,8 +48,17 @@ const TransactionAdd = () => {
   const [priceType, setPriceType] = useState(0);
   const [buyPrice, setBuyPrice] = useState<string>("");
   const [coinAmount, setCoinAmount] = useState<string>("");
+  const [error, setError] = useState(initialErrorState);
 
   const { navigate, goBack } = useNavigation();
+
+  useEffect(() => {
+    if (error.price) {
+      validateField("price");
+    } else if (error.coin) {
+      validateField("coin");
+    }
+  }, [buyPrice, coinAmount]);
 
   // SELECTOR --> coin
   const { portfolioId } = useSelector((state: RootState) => state.portfolio);
@@ -106,6 +120,19 @@ const TransactionAdd = () => {
       return true;
     }
     return false;
+  };
+
+  const validateField = (field: string) => {
+    switch (field) {
+      case "coin":
+        setError({ ...error, coin: !coinAmount.trim().length });
+        break;
+      case "price":
+        setError({ ...error, price: !buyPrice.trim().length });
+        break;
+      case "date":
+        break;
+    }
   };
 
   const handleAddTransaction = async () => {
@@ -184,6 +211,8 @@ const TransactionAdd = () => {
             priceType={priceType}
             coinAmount={coinAmount}
             handleCoinAmount={handleCoinAmount}
+            error={error}
+            validateField={validateField}
           />
         </View>
       </KeyboardAvoidingView>
