@@ -16,12 +16,12 @@ interface ActionProps {
   data: any;
   showDatepicker: () => void;
   date: Date;
-  buyPrice: number;
-  onChangePrice: (e: NSE<TICED>) => void;
+  buyPrice: string;
+  onChangePrice: (text: string) => void;
   priceType: number;
   togglePriceType: () => void;
-  coinAmount: number;
-  handleCoinAmount: (e: NSE<TICED>) => void;
+  coinAmount: string;
+  handleCoinAmount: (text: string) => void;
 }
 const {
   tabIconDefault: colorBorder,
@@ -41,6 +41,7 @@ const TransactionForm = ({
   handleCoinAmount,
 }: ActionProps) => {
   const rightPriceText = priceType ? "in total" : "per coin";
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <Input label="Exchange" placeholder="Global avg." disabled />
@@ -58,8 +59,7 @@ const TransactionForm = ({
         placeholder="Buy Price"
         value={buyPrice}
         keyboardType="numeric"
-        numeric
-        onChange={onChangePrice}
+        onChangeText={onChangePrice}
         rightIcon={() => (
           <Text style={styles.rightTextToggle} onPress={togglePriceType}>
             {rightPriceText}
@@ -70,8 +70,9 @@ const TransactionForm = ({
         label={coinAmount ? "Amount Bought" : " "}
         placeholder="Amount Bought"
         value={coinAmount}
+        defaultValue={coinAmount}
         keyboardType="numeric"
-        onChange={handleCoinAmount}
+        onChangeText={handleCoinAmount}
       />
     </ScrollView>
   );

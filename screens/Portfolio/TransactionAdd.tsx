@@ -41,8 +41,8 @@ const TransactionAdd = () => {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [priceType, setPriceType] = useState(0);
-  const [buyPrice, setBuyPrice] = useState<number>(0);
-  const [coinAmount, setCoinAmount] = useState<number>(0);
+  const [buyPrice, setBuyPrice] = useState<string>("");
+  const [coinAmount, setCoinAmount] = useState<string>("");
 
   const { navigate, goBack } = useNavigation();
 
@@ -72,28 +72,43 @@ const TransactionAdd = () => {
     setShow(false);
   };
 
-  const onChangePrice = (e: NSE<TICED>) => {
-    setBuyPrice(+e.nativeEvent.text);
+  const onChangePrice = (text: string) => {
+    const [leftSide, rightSide] = text.split(".");
+    if (
+      isNaN(+text) ||
+      (rightSide && rightSide.length > 8) ||
+      (leftSide && leftSide.length > 14)
+    ) {
+      return;
+    }
+    setBuyPrice(text);
   };
 
   const togglePriceType = () => {
     setPriceType((prevState: number) => (prevState ? 0 : 1));
   };
 
-  const handleCoinAmount = (e: NSE<TICED>) => {
-    setCoinAmount(+e.nativeEvent.text);
+  const handleCoinAmount = (text: string) => {
+    const [leftSide, rightSide] = text.split(".");
+    if (
+      isNaN(+text) ||
+      (rightSide && rightSide.length > 8) ||
+      (leftSide && leftSide.length > 14)
+    ) {
+      return;
+    }
+    setCoinAmount(text);
   };
 
   const validateInputs = () => {
     // TODO - ENHANCE VALIDATION
-    if (coinAmount <= 0 || buyPrice <= 0 || !date) {
+    if (+coinAmount <= 0 || +buyPrice <= 0 || !date) {
       return true;
     }
     return false;
   };
 
   const handleAddTransaction = async () => {
-    console.log("CLICKED");
     // VALIDATE
     if (validateInputs()) {
       return;
@@ -105,7 +120,7 @@ const TransactionAdd = () => {
       purchase_date: purchaseDate,
       coin_amount: coinAmount,
       // convert to 'per coin'
-      spot_price: priceType ? buyPrice : buyPrice / coinAmount,
+      spot_price: priceType ? buyPrice : +buyPrice / +coinAmount,
       exchange: "Global",
       fiat: "USD",
       coin_id: 1,
