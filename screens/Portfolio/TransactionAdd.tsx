@@ -9,7 +9,7 @@ import {
   TextInputChangeEventData as TICED,
   KeyboardAvoidingView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 // @ts-ignore
@@ -22,6 +22,9 @@ import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../store";
 import { useEffect } from "react";
+import { TransactionParamList } from "../../types";
+import { TransactionRouteProp } from "../../navigation/TransactionStack";
+import { thunkCreateTransaction } from "../../store/actions/portfolioActions";
 
 const { width } = Dimensions.get("window");
 const {
@@ -51,6 +54,7 @@ const TransactionAdd = () => {
   const [error, setError] = useState(initialErrorState);
 
   const { navigate, goBack } = useNavigation();
+  const { params } = useRoute<TransactionRouteProp>();
 
   useEffect(() => {
     if (error.price) {
@@ -138,31 +142,31 @@ const TransactionAdd = () => {
   const handleAddTransaction = async () => {
     // VALIDATE
     if (validateInputs()) {
+      setError({
+        ...error,
+        coin: !coinAmount.trim().length,
+        price: !buyPrice.trim().length,
+      });
       return;
     }
 
     const purchaseDate = date.getTime();
-    console.log("PD", purchaseDate);
+
     const data = {
       purchase_date: purchaseDate,
       coin_amount: coinAmount,
       // convert to 'per coin'
-      spot_price: priceType ? buyPrice : +buyPrice / +coinAmount,
+      spot_price: priceType ? +buyPrice : +buyPrice / +coinAmount,
       exchange: "Global",
       fiat: "USD",
-      coin_id: 1,
+      coin_id: params.id,
       portfolio_id: portfolioId,
       is_buy: isBuy,
     };
-    // SEND NETWORK REQUEST
-    const token = await AsyncStorage.getItem("token");
-    const result = await axiosWithAuth(token!).post(
-      `${PORTFOLIO_API_URL}/transaction-create`,
-      data
-    );
+    // CREATE TRANSACTION
+    dispatch(thunkCreateTransaction(data));
 
-    // SAVE TRANSACTION TO PORTFOLIO STATE
-
+    navigate("/Portfolio");
     // TODO - PERSIST LOCALLY WITH SQLite
   };
 
@@ -216,7 +220,10 @@ const TransactionAdd = () => {
           />
         </View>
       </KeyboardAvoidingView>
-      <TouchableOpacity onPress={handleAddTransaction}>
+      <TouchableOpacity
+        onPress={handleAddTransaction}
+        disabled={error.coin || error.price || error.date}
+      >
         <View style={[styles.btnContainer, addButtonColor]}>
           <Text style={styles.btnAdd}>Add Transaction</Text>
         </View>

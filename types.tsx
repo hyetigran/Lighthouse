@@ -28,5 +28,5 @@ export type WalletsTabParamsList = {
 
 export type TransactionParamList = {
   TransactionSearch: undefined;
-  TransactionAdd: undefined;
+  TransactionAdd: { id: number; name: string };
 };

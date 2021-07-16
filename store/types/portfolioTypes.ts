@@ -3,13 +3,14 @@ export const CREATE_TRANSACTION_SUCCESS = "CREATE_TRANSACTION_SUCCESS";
 export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 
-interface Transaction {
+export interface Transaction {
   txId: number,
   purchaseDate: string,
   purchasePrice: number,
   exchange: string,
   coinAmount: number,
-  fiat: string
+  fiat: string,
+  isBuy: boolean
 }
 
 export interface PortfolioCoin {
@@ -37,7 +38,10 @@ interface getPortfolioAction {
 
 interface createTransactionAction {
   type: typeof CREATE_TRANSACTION_SUCCESS;
-  payload: string;
+  payload: {
+    transaction: Transaction
+    coinId: number
+  };
 }
 
 interface updateTransactionAction {
