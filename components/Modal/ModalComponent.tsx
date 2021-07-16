@@ -30,7 +30,6 @@ function ModalComponent({
   const ref = useRef<any>(null);
 
   useEffect(() => {
-    console.log("isVisible", isVisible);
     if (isVisible) {
       ref.current?.setModalVisible(true);
     } else {

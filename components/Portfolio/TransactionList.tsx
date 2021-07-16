@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, Text, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../../store/index";
+import { Portfolio } from "../../store/types/portfolioTypes";
 import TransactionRow from "./TransactionRow";
 
 interface ActionProps {
@@ -10,7 +11,9 @@ interface ActionProps {
 }
 
 const TransactionList = ({ isLoading }: ActionProps) => {
-  const mainPortfolio = useSelector((state: RootState) => state.portfolio);
+  const mainPortfolio: Portfolio = useSelector(
+    (state: RootState) => state.portfolio
+  );
 
   return (
     <ScrollView

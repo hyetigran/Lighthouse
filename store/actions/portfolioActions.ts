@@ -15,6 +15,16 @@ import {
 import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const fetchCoinDataCMC = async (params: string) => {
+  return await axios.get(
+    `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`,
+    {
+      headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
+      params: { id: params },
+    }
+  );
+}
+
 export const thunkFetchPortfolio =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
     async (dispatch) => {
@@ -46,13 +56,7 @@ export const thunkFetchPortfolio =
             .slice(0, -1);
 
           if (coinIds !== "") {
-            const result: any = await axios.get(
-              `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`,
-              {
-                headers: { "X-CMC_PRO_API_KEY": MARKETS_API_KEY },
-                params: { id: coinIds },
-              }
-            );
+            const result: any = await fetchCoinDataCMC(coinIds)
 
             let coinData: any = {};
             for (let idx in result.data.data) {
@@ -180,7 +184,7 @@ export const thunkCreateTransaction =
     portfolio_id: string;
     is_buy: boolean;
   }): ThunkAction<void, RootState, unknown, Action<string>> =>
-    async (dispatch) => {
+    async (dispatch, getState) => {
       try {
         // SEND NETWORK REQUEST
         const token = await AsyncStorage.getItem("token");
@@ -188,8 +192,7 @@ export const thunkCreateTransaction =
           `${PORTFOLIO_API_URL}/transaction-create`,
           data
         );
-        console.log("RESULT", result);
-        // SAVE TRANSACTION TO PORTFOLIO STATE
+        // MAP RESULT TO 'Transaction' TYPE
         const {
           id,
           is_buy,
@@ -200,6 +203,7 @@ export const thunkCreateTransaction =
           purchase_date,
           spot_price,
         } = result.data.data;
+
         const transaction = {
           txId: id,
           purchaseDate: purchase_date,
@@ -209,15 +213,53 @@ export const thunkCreateTransaction =
           exchange,
           fiat,
         };
-        dispatch(createTransaction({ transaction, coin_id }));
+
+        const { portfolio }: { portfolio: Portfolio } = getState()
+        let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
+        // FIRST COIN TRANSACTION
+        const isFirstCoinTxn = portfolio.portfolioCoins.findIndex(coin => coin.coinId === coin_id)
+        if (!isFirstCoinTxn) {
+          const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
+
+          const { name, symbol, price, logo } = coinResult.data.data[coin_id];
+          const newPortfolioCoin = {
+            coinId: coin_id,
+            name: name,
+            symbol: symbol,
+            spotPrice: price,
+            logo: logo,
+            cryptoTotal: coin_amount,
+            fiatTotal: coin_amount * price,
+            transactions: [transaction],
+            historicalPrice: [0],
+          };
+          updatedCoins.push(newPortfolioCoin);
+        } else {
+          // ADD TRANSACTION TO EXISTING COIN
+          updatedCoins = updatedCoins.map(coin => {
+            if (coin.coinId === coin_id) {
+              const newCryptoTotal = coin.cryptoTotal + transaction.coinAmount
+              return {
+                ...coin,
+                cryptoTotal: newCryptoTotal,
+                fiatTotal: newCryptoTotal * coin.spotPrice!,
+                transactions: [
+                  ...coin.transactions,
+                  transaction
+                ]
+              }
+            }
+            return coin;
+          })
+        }
+
+        // SAVE COIN TO PORTFOLIO STATE
+        dispatch(createTransaction(updatedCoins));
       } catch (error) {
         console.log(error);
       }
     };
-export const createTransaction = (payload: {
-  transaction: Transaction;
-  coin_id: number;
-}) => {
+export const createTransaction = (payload: PortfolioCoin[]) => {
   return {
     type: CREATE_TRANSACTION_SUCCESS,
     payload,

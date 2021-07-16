@@ -166,7 +166,7 @@ const TransactionAdd = () => {
     // CREATE TRANSACTION
     dispatch(thunkCreateTransaction(data));
 
-    navigate("/Portfolio");
+    navigate("Portfolio");
     // TODO - PERSIST LOCALLY WITH SQLite
   };
 
