@@ -1,5 +1,7 @@
 import React from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import Colors from "../../../constants/Colors";
 import { PortfolioCoin } from "../../../store/types/portfolioTypes";
 
@@ -13,21 +15,18 @@ const {
 } = Colors.light;
 
 const CoinRow = ({ data }: ActionProps) => {
-  const {
-    logo,
-    name,
-    symbol,
-    spotPrice,
-    cryptoTotal,
-    fiatTotal,
-    transactions,
-    historicalPrice,
-  } = data;
-
+  const { logo, name, symbol, spotPrice, cryptoTotal, fiatTotal, coinId } =
+    data;
+  const { navigate } = useNavigation();
   let gainLossColor = gainGreen;
 
+  const handleNavigate = () => {
+    navigate("TransactionDetail", { id: coinId, name });
+  };
+
   return (
-    <View style={styles.container}>
+    // <View >
+    <TouchableOpacity style={styles.container} onPress={handleNavigate}>
       <View style={styles.imgContainer}>
         <Image
           style={styles.logo}
@@ -68,7 +67,8 @@ const CoinRow = ({ data }: ActionProps) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
+    // </View>
   );
 };
 

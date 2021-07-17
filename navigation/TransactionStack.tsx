@@ -38,6 +38,14 @@ export default function TransactionNavigator() {
           headerBackTitle: "Search",
         })}
       />
+      <Stack.Screen
+        name="TransactionDetail"
+        component={TransactionAdd}
+        options={({ route }) => ({
+          headerTitle: () => <HeaderTitle {...route.params} />,
+          headerBackTitle: "Portfolio",
+        })}
+      />
     </Stack.Navigator>
   );
 }

@@ -26,7 +26,8 @@ export default {
       TransactionSearch: {
         screens: {
           TransactionSearch: "four",
-          TransactionAdd: "five"
+          TransactionAdd: "five",
+          TransactionDetail: "five",
         }
       },
       NotFound: "*",
