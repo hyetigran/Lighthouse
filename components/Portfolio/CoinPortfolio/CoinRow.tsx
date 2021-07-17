@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
-import Colors from "../../constants/Colors";
-import { PortfolioCoin } from "../../store/types/portfolioTypes";
+import Colors from "../../../constants/Colors";
+import { PortfolioCoin } from "../../../store/types/portfolioTypes";
 
 interface ActionProps {
   data: PortfolioCoin;
@@ -12,7 +12,7 @@ const {
   gainGreen,
 } = Colors.light;
 
-const TransactionRow = ({ data }: ActionProps) => {
+const CoinRow = ({ data }: ActionProps) => {
   const {
     logo,
     name,
@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransactionRow;
+export default CoinRow;
