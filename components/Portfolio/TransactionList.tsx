@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, Text, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../../store/index";
+import { Portfolio } from "../../store/types/portfolioTypes";
 import TransactionRow from "./TransactionRow";
 
 interface ActionProps {
@@ -10,7 +11,9 @@ interface ActionProps {
 }
 
 const TransactionList = ({ isLoading }: ActionProps) => {
-  const mainPortfolio = useSelector((state: RootState) => state.portfolio);
+  const mainPortfolio: Portfolio = useSelector(
+    (state: RootState) => state.portfolio
+  );
 
   return (
     <ScrollView
@@ -18,9 +21,9 @@ const TransactionList = ({ isLoading }: ActionProps) => {
       style={styles.container}
     >
       {isLoading && <ActivityIndicator />}
-      {mainPortfolio.length && !isLoading ? (
-        mainPortfolio.map((pCoin) => (
-          <TransactionRow key={pCoin.id} data={pCoin} />
+      {mainPortfolio!.portfolioCoins.length && !isLoading ? (
+        mainPortfolio?.portfolioCoins.map((pCoin) => (
+          <TransactionRow key={pCoin.coinId} data={pCoin} />
         ))
       ) : (
         <Text>No transactions found.</Text>
@@ -33,7 +36,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    width: "90%"
+    width: "90%",
     //alignItems: "center",
     //alignContent: "center",
   },

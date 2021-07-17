@@ -6,7 +6,11 @@ import { PortfolioCoin } from "../../store/types/portfolioTypes";
 interface ActionProps {
   data: PortfolioCoin;
 }
-const { tabIconDefault: colorBorder, secondaryText: darkGrey, gainGreen } = Colors.light;
+const {
+  tabIconDefault: colorBorder,
+  secondaryText: darkGrey,
+  gainGreen,
+} = Colors.light;
 
 const TransactionRow = ({ data }: ActionProps) => {
   const {
@@ -38,18 +42,30 @@ const TransactionRow = ({ data }: ActionProps) => {
           <Text style={[styles.textPadd, styles.bigText]}>{name}</Text>
         </View>
         <View style={styles.bottom}>
-          <Text style={[styles.textPadd, styles.greyText]}>{cryptoTotal}</Text>
+          <Text style={[styles.textPadd, styles.greyText]}>
+            {cryptoTotal.toFixed(2)}
+          </Text>
           <View style={styles.dividor} />
-          <Text style={[styles.textPadd, styles.greyText]}>{spotPrice}</Text>
+          <Text style={[styles.textPadd, styles.greyText]}>
+            {spotPrice!.toFixed(2)}
+          </Text>
         </View>
       </View>
       <View style={styles.priceContainer}>
         <View>
-          <Text style={[styles.textPadd, styles.bigAndBold]}>{fiatTotal}</Text>
+          <Text style={[styles.textPadd, styles.bigAndBold]}>
+            {fiatTotal!.toFixed(2)}
+          </Text>
         </View>
         <View style={styles.bottom}>
-          <Text style={[styles.textPadd, { color: gainLossColor }]}>abs gain</Text>
-          <Text style={[styles.textPadd, styles.boldText, { color: gainLossColor }]}>% gain</Text>
+          <Text style={[styles.textPadd, { color: gainLossColor }]}>
+            abs gain
+          </Text>
+          <Text
+            style={[styles.textPadd, styles.boldText, { color: gainLossColor }]}
+          >
+            % gain
+          </Text>
         </View>
       </View>
     </View>
@@ -81,7 +97,6 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: "space-around",
     paddingHorizontal: 5,
-
   },
   infoTop: {
     flexDirection: "row",
@@ -114,9 +129,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   greyText: {
-    color: colorBorder
+    color: colorBorder,
   },
-
 });
 
 export default TransactionRow;

@@ -3,7 +3,7 @@ import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+// @ts-ignore
 import { MARKETS_API_KEY } from "@env";
 import {
   FETCH_CURRENCIES_SUCCESS,
@@ -40,6 +40,7 @@ export const thunkGetAllCurrencies = (): ThunkAction<
         // Remove from list
         favCoins.splice(favCoins.indexOf(coin.symbol), 1);
       }
+
       return {
         id: coin.id,
         rank: coin.cmc_rank,

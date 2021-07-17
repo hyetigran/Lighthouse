@@ -28,7 +28,7 @@ export default function CryptoListScreen() {
   });
   const [currentTab, setCurrentTab] = useState<number>(0);
 
-  console.log("coinD", coinData[currentTab].length);
+  // console.log("coinD", coinData[currentTab].length);
   const dispatch = useDispatch();
 
   useEffect(() => {

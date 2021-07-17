@@ -46,7 +46,11 @@ function RootNavigator() {
       })}
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen name="Transaction" component={TransactionStack} />
+      <Stack.Screen
+        name="Transaction"
+        options={{ gestureEnabled: false }}
+        component={TransactionStack}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}

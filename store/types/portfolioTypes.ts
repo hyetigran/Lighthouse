@@ -3,35 +3,45 @@ export const CREATE_TRANSACTION_SUCCESS = "CREATE_TRANSACTION_SUCCESS";
 export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 
-interface Transaction {
+export interface Transaction {
   txId: number,
-  datePurchased: string,
-  cryptoAmount: number,
-  spotPrice: number
+  purchaseDate: string,
+  purchasePrice: number,
+  exchange: string,
+  coinAmount: number,
+  fiat: string,
+  isBuy: boolean
 }
 
 export interface PortfolioCoin {
-  id: number,
-  rank: number,
-  logo: string,
+  coinId: number,
   name: string,
   symbol: string,
-  spotPrice: number,
+  logo: string,
+  spotPrice?: number,
   cryptoTotal: number,
-  fiatTotal: number,
+  fiatTotal?: number,
   transactions: Transaction[]
-  historicalPrice: number[]
+  historicalPrice?: number[]
 }
 
+export interface Portfolio {
+  portfolioCoins: PortfolioCoin[],
+  portfolioName: string,
+  portfolioId: string,
+}
 
 interface getPortfolioAction {
   type: typeof FETCH_PORTFOLIO_SUCCESS;
-  payload: PortfolioCoin[];
+  payload: Portfolio;
 }
 
 interface createTransactionAction {
   type: typeof CREATE_TRANSACTION_SUCCESS;
-  payload: string;
+  payload: {
+    transaction: Transaction
+    coinId: number
+  };
 }
 
 interface updateTransactionAction {
