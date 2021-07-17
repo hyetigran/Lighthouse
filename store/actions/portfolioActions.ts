@@ -218,16 +218,18 @@ export const thunkCreateTransaction =
         let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
         // FIRST COIN TRANSACTION
         const isFirstCoinTxn = portfolio.portfolioCoins.findIndex(coin => coin.coinId === coin_id)
-        if (!isFirstCoinTxn) {
+        if (isFirstCoinTxn === -1) {
+
           const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
 
-          const { name, symbol, price, logo } = coinResult.data.data[coin_id];
+          const { name, symbol, quote: { USD: { price } } } = coinResult.data.data[coin_id];
+
           const newPortfolioCoin = {
             coinId: coin_id,
             name: name,
             symbol: symbol,
             spotPrice: price,
-            logo: logo,
+            logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin_id}.png`,
             cryptoTotal: coin_amount,
             fiatTotal: coin_amount * price,
             transactions: [transaction],
