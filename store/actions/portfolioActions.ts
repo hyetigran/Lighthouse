@@ -24,6 +24,13 @@ const fetchCoinDataCMC = async (params: string) => {
     }
   );
 }
+const calcGainAbs = (newPrice: number, oldPrice: number, coins: number) => {
+  return (newPrice - oldPrice) * coins
+}
+
+const calcGainPercent = (newPrice: number, oldPrice: number) => {
+  return ((newPrice - oldPrice) / oldPrice) * 100
+}
 
 export const thunkFetchPortfolio =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
@@ -83,6 +90,10 @@ export const thunkFetchPortfolio =
                   exchange,
                   is_buy,
                 } = txn;
+                const { name, symbol, price, logo } = coinData[coin_id];
+
+                const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
+                const gainLossPercent = calcGainPercent(price, spot_price)
 
                 const transactionMapped = {
                   txId: id,
@@ -91,10 +102,13 @@ export const thunkFetchPortfolio =
                   purchasePrice: spot_price,
                   isBuy: is_buy,
                   exchange: exchange,
+                  marketValue: coin_amount * price,
+                  costBasis: coin_amount * spot_price,
+                  gainLossAbs,
+                  gainLossPercent,
                   fiat,
                 };
 
-                let { name, symbol, price, logo } = coinData[coin_id];
                 if (!mapCoinIdToIndex.hasOwnProperty(coin_id)) {
                   const portfolioCoin = {
                     coinId: coin_id,
@@ -103,7 +117,8 @@ export const thunkFetchPortfolio =
                     spotPrice: price,
                     logo: logo,
                     cryptoTotal: coin_amount,
-                    fiatTotal: coin_amount * price,
+                    marketValue: coin_amount * price,
+                    costBasis: coin_amount * spot_price,
                     transactions: [transactionMapped],
                     historicalPrice: [0],
                   };
@@ -113,7 +128,8 @@ export const thunkFetchPortfolio =
                 } else {
                   let index = mapCoinIdToIndex[coin_id];
                   acc[index].cryptoTotal += coin_amount;
-                  acc[index].fiatTotal = acc[index].cryptoTotal * price;
+                  acc[index].marketValue = acc[index].cryptoTotal * price;
+                  acc[index].costBasis += transactionMapped.costBasis;
                   acc[index].transactions = [
                     ...acc[index].transactions,
                     transactionMapped,
@@ -204,14 +220,25 @@ export const thunkCreateTransaction =
           spot_price,
         } = result.data.data;
 
+        const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
+
+        const { name, symbol, quote: { USD: { price } } } = coinResult.data.data[coin_id];
+
+        const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
+        const gainLossPercent = calcGainPercent(price, spot_price)
+
         const transaction = {
           txId: id,
           purchaseDate: purchase_date,
           purchasePrice: spot_price,
           coinAmount: coin_amount,
+          marketValue: coin_amount * price,
+          costBasis: coin_amount * spot_price,
           isBuy: is_buy,
           exchange,
           fiat,
+          gainLossAbs,
+          gainLossPercent
         };
 
         const { portfolio }: { portfolio: Portfolio } = getState()
@@ -219,11 +246,6 @@ export const thunkCreateTransaction =
         // FIRST COIN TRANSACTION
         const isFirstCoinTxn = portfolio.portfolioCoins.findIndex(coin => coin.coinId === coin_id)
         if (isFirstCoinTxn === -1) {
-
-          const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
-
-          const { name, symbol, quote: { USD: { price } } } = coinResult.data.data[coin_id];
-
           const newPortfolioCoin = {
             coinId: coin_id,
             name: name,
@@ -231,7 +253,8 @@ export const thunkCreateTransaction =
             spotPrice: price,
             logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin_id}.png`,
             cryptoTotal: coin_amount,
-            fiatTotal: coin_amount * price,
+            marketValue: coin_amount * price,
+            costBasis: coin_amount * spot_price,
             transactions: [transaction],
             historicalPrice: [0],
           };
@@ -244,7 +267,7 @@ export const thunkCreateTransaction =
               return {
                 ...coin,
                 cryptoTotal: newCryptoTotal,
-                fiatTotal: newCryptoTotal * coin.spotPrice!,
+                marketValue: newCryptoTotal * coin.spotPrice!,
                 transactions: [
                   ...coin.transactions,
                   transaction

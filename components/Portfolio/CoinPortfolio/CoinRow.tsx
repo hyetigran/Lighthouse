@@ -15,13 +15,16 @@ const {
 } = Colors.light;
 
 const CoinRow = ({ data }: ActionProps) => {
-  const { logo, name, symbol, spotPrice, cryptoTotal, fiatTotal, coinId } =
+  const { logo, name, symbol, spotPrice, cryptoTotal, marketValue, coinId } =
     data;
   const { navigate } = useNavigation();
   let gainLossColor = gainGreen;
 
   const handleNavigate = () => {
-    navigate("TransactionDetail", { id: coinId, name });
+    navigate("Transaction", {
+      screen: "TransactionDetail",
+      params: { id: coinId, name },
+    });
   };
 
   return (
@@ -53,7 +56,7 @@ const CoinRow = ({ data }: ActionProps) => {
       <View style={styles.priceContainer}>
         <View>
           <Text style={[styles.textPadd, styles.bigAndBold]}>
-            {fiatTotal!.toFixed(2)}
+            {marketValue!.toFixed(2)}
           </Text>
         </View>
         <View style={styles.bottom}>

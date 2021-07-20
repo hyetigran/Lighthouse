@@ -10,6 +10,7 @@ import TransactionAdd from "../screens/Portfolio/TransactionAdd";
 import { TransactionParamList } from "../types";
 import HeaderTitle from "../components/HeaderTitle";
 import { RouteProp } from "@react-navigation/native";
+import TransactionDetail from "../screens/Portfolio/TransactionDetail";
 
 export type TransactionRouteProp = RouteProp<ParamList, "Add">;
 type ParamList = {
@@ -40,7 +41,7 @@ export default function TransactionNavigator() {
       />
       <Stack.Screen
         name="TransactionDetail"
-        component={TransactionAdd}
+        component={TransactionDetail}
         options={({ route }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
           headerBackTitle: "Portfolio",
