@@ -15,27 +15,59 @@ interface ActionProps {
   totalOwned: number;
   totalFiat: number;
   totalProfit: number;
+  avgBuyPrice: number;
+  avgSellPrice: number;
+  numTransactions: number;
 }
 const TransactionHero = ({
   totalFiat,
   totalOwned,
   totalProfit,
+  avgBuyPrice,
+  avgSellPrice,
+  numTransactions,
 }: ActionProps) => {
-  let gainLossColor = totalProfit >= 0 ? gainGreen : lossRed;
+  let gainLossColor;
+  let sign;
+  if (totalProfit >= 0) {
+    gainLossColor = gainGreen;
+    sign = "+";
+  } else {
+    gainLossColor = lossRed;
+    sign = "-";
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.header_container}>
           <Text style={styles.header_label}>Owned</Text>
-          <Text>crypto total</Text>
+          <Text>{totalOwned.toFixed(2)}</Text>
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}>Market Value</Text>
-          <Text>fiat total</Text>
+          <Text>{`$${totalFiat.toFixed(2)}`}</Text>
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}>Total Profil</Text>
-          <Text style={{ color: gainLossColor }}>P/L %</Text>
+          <Text
+            style={{ color: gainLossColor }}
+          >{`${sign}$${totalProfit.toFixed(2)}`}</Text>
+        </View>
+      </View>
+      <View style={styles.header}>
+        <View style={styles.header_container}>
+          <Text style={styles.header_label}>Avg. Buy Price</Text>
+          <Text>{totalOwned.toFixed(2)}</Text>
+        </View>
+        <View style={styles.header_container}>
+          <Text style={styles.header_label}>Avg. Sell Price</Text>
+          <Text>{`$${totalFiat.toFixed(2)}`}</Text>
+        </View>
+        <View style={styles.header_container}>
+          <Text style={styles.header_label}># Transactions</Text>
+          <Text
+            style={{ color: gainLossColor }}
+          >{`${sign}$${totalProfit.toFixed(2)}`}</Text>
         </View>
       </View>
     </View>

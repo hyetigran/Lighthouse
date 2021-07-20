@@ -10,7 +10,6 @@ import {
   CREATE_TRANSACTION_SUCCESS,
   Portfolio,
   PortfolioCoin,
-  Transaction,
 } from "../types/portfolioTypes";
 import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,14 +52,13 @@ export const thunkFetchPortfolio =
           };
 
           // GET COINS INFO - CMC
-          const coinIds = portfolio.transactions
+          const coinIds = Object.keys(portfolio.transactions
             .reduce((acc: any, cur: any) => {
               if (!acc[cur.coin_id]) {
-                return (acc += `${cur.coin_id},`);
+                acc[cur.coin_id] = 1;
               }
               return acc;
-            }, "")
-            .slice(0, -1);
+            }, {})).join(",")
 
           if (coinIds !== "") {
             const result: any = await fetchCoinDataCMC(coinIds)

@@ -13,12 +13,13 @@ const TransactionDetail = () => {
   const [coinTxns] = useSelector(({ portfolio }: { portfolio: Portfolio }) =>
     portfolio.portfolioCoins!.filter((coin) => coin.coinId === params.id)
   );
+  const totalProfit = coinTxns.marketValue - coinTxns.costBasis;
   return (
     <View style={styles.container}>
       <TransactionHero
         totalFiat={coinTxns.marketValue!}
         totalOwned={coinTxns.cryptoTotal}
-        totalProfit={coinTxns.gainLoss}
+        totalProfit={totalProfit}
       />
       <TransactionList />
     </View>
