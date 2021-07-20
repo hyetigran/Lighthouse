@@ -65,9 +65,7 @@ const TransactionHero = ({
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}># Transactions</Text>
-          <Text
-            style={{ color: gainLossColor }}
-          >{`${sign}$${totalProfit.toFixed(2)}`}</Text>
+          <Text style={{ color: gainLossColor }}>{numTransactions}</Text>
         </View>
       </View>
     </View>

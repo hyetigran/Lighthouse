@@ -10,16 +10,19 @@ import { Portfolio } from "../../store/types/portfolioTypes";
 
 const TransactionDetail = () => {
   const { params } = useRoute<TransactionRouteProp>();
-  const [coinTxns] = useSelector(({ portfolio }: { portfolio: Portfolio }) =>
+  const [coin] = useSelector(({ portfolio }: { portfolio: Portfolio }) =>
     portfolio.portfolioCoins!.filter((coin) => coin.coinId === params.id)
   );
-  const totalProfit = coinTxns.marketValue - coinTxns.costBasis;
+  const totalProfit = coin.marketValue - coin.costBasis;
   return (
     <View style={styles.container}>
       <TransactionHero
-        totalFiat={coinTxns.marketValue!}
-        totalOwned={coinTxns.cryptoTotal}
+        totalFiat={coin.marketValue!}
+        totalOwned={coin.cryptoTotal}
         totalProfit={totalProfit}
+        avgBuyPrice={coin.avgBuyPrice}
+        avgSellPrice={coin.avgSellPrice}
+        numTransactions={coin.transactions.length}
       />
       <TransactionList />
     </View>

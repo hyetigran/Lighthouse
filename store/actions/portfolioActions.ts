@@ -10,6 +10,7 @@ import {
   CREATE_TRANSACTION_SUCCESS,
   Portfolio,
   PortfolioCoin,
+  Transaction,
 } from "../types/portfolioTypes";
 import { axiosWithAuth } from "../../helpers/axiosWithAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,6 +30,11 @@ const calcGainAbs = (newPrice: number, oldPrice: number, coins: number) => {
 
 const calcGainPercent = (newPrice: number, oldPrice: number) => {
   return ((newPrice - oldPrice) / oldPrice) * 100
+}
+
+const calcAvgPrice = (txns: Transaction[]) => {
+  const totalAsset = txns.reduce((acc, cur) => acc += cur.coinAmount, 0)
+  return txns.reduce((acc, cur) => acc += ((cur.coinAmount / totalAsset) * cur.purchasePrice), 0)
 }
 
 export const thunkFetchPortfolio =
@@ -117,6 +123,8 @@ export const thunkFetchPortfolio =
                     cryptoTotal: coin_amount,
                     marketValue: coin_amount * price,
                     costBasis: coin_amount * spot_price,
+                    avgBuyPrice: 0,
+                    avgSellPrice: 0,
                     transactions: [transactionMapped],
                     historicalPrice: [0],
                   };
@@ -137,7 +145,14 @@ export const thunkFetchPortfolio =
               },
               []
             );
-            portfolioData.portfolioCoins = portfolioCoins;
+            const portCoinsWithAvgs = portfolioCoins.map((coin: PortfolioCoin) => {
+              const buyTxns = coin.transactions.filter(txn => txn.isBuy)
+              const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
+              coin.avgBuyPrice = calcAvgPrice(buyTxns)
+              coin.avgSellPrice = calcAvgPrice(sellTxns)
+              return coin;
+            })
+            portfolioData.portfolioCoins = portCoinsWithAvgs;
           }
           // CALCULATE GAIN 1H, 1D, 1M, 1Y, All
           dispatch(fetchPortfolio(portfolioData));
@@ -253,6 +268,8 @@ export const thunkCreateTransaction =
             cryptoTotal: coin_amount,
             marketValue: coin_amount * price,
             costBasis: coin_amount * spot_price,
+            avgBuyPrice: 0,
+            avgSellPrice: 0,
             transactions: [transaction],
             historicalPrice: [0],
           };

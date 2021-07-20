@@ -26,6 +26,8 @@ export interface PortfolioCoin {
   cryptoTotal: number,
   marketValue: number,
   costBasis: number,
+  avgBuyPrice: number,
+  avgSellPrice: number,
   transactions: Transaction[]
   historicalPrice?: number[]
 }
