@@ -13,13 +13,13 @@ const TransactionList = ({ coin }: ActionProps) => {
   return (
     <View style={styles.container}>
       <Text>Transaction List </Text>
+      <View style={styles.verticalLine}></View>
       <FlatList
         data={coin.transactions}
         keyExtractor={(item) => item.txId.toString()}
-        renderItem={({ item }) => {
-          //   console.log("DATA", data);
-          return <TransactionRow transaction={item} />;
-        }}
+        renderItem={({ item }) => (
+          <TransactionRow transaction={item} symbol={coin.symbol} />
+        )}
       />
     </View>
   );
@@ -29,5 +29,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  verticalLine: {},
 });
 export default TransactionList;
