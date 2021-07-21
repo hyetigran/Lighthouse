@@ -16,9 +16,9 @@ const TransactionList = ({ coin }: ActionProps) => {
       <FlatList
         data={coin.transactions}
         keyExtractor={(item) => item.txId.toString()}
-        renderItem={(data) => {
-          console.log("DATA", data);
-          return <TransactionRow />;
+        renderItem={({ item }) => {
+          //   console.log("DATA", data);
+          return <TransactionRow transaction={item} />;
         }}
       />
     </View>

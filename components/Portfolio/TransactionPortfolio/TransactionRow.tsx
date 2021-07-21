@@ -12,7 +12,7 @@ const {
 } = Colors.light;
 
 interface ActionProps {
-  //   transaction: Transaction;
+  transaction: Transaction;
 }
 const TransactionRow = ({}: ActionProps) => {
   return <View style={styles.container}></View>;

@@ -24,7 +24,7 @@ const TransactionDetail = () => {
         avgSellPrice={coin.avgSellPrice}
         numTransactions={coin.transactions.length}
       />
-      <TransactionList />
+      <TransactionList coin={coin} />
     </View>
   );
 };

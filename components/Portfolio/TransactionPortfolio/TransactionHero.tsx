@@ -36,6 +36,8 @@ const TransactionHero = ({
     gainLossColor = lossRed;
     sign = "-";
   }
+  const formatAvgBuyPrice = avgBuyPrice === 0 ? "-" : avgBuyPrice.toFixed(2);
+  const formatAvgSellPrice = avgSellPrice === 0 ? "-" : avgSellPrice.toFixed(2);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -57,15 +59,21 @@ const TransactionHero = ({
       <View style={styles.header}>
         <View style={styles.header_container}>
           <Text style={styles.header_label}>Avg. Buy Price</Text>
-          <Text>{totalOwned.toFixed(2)}</Text>
+          <Text style={avgBuyPrice === 0 && styles.center}>
+            {formatAvgBuyPrice}
+          </Text>
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}>Avg. Sell Price</Text>
-          <Text>{`$${totalFiat.toFixed(2)}`}</Text>
+          <Text style={avgSellPrice === 0 && styles.center}>
+            {formatAvgSellPrice}
+          </Text>
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}># Transactions</Text>
-          <Text style={{ color: gainLossColor }}>{numTransactions}</Text>
+          <Text style={[styles.center, { color: gainLossColor }]}>
+            {numTransactions}
+          </Text>
         </View>
       </View>
     </View>
@@ -89,6 +97,9 @@ const styles = StyleSheet.create({
   },
   header_label: {
     color: darkGrey,
+  },
+  center: {
+    textAlign: "center",
   },
 });
 export default TransactionHero;
