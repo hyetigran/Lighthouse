@@ -1,10 +1,26 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  PortfolioCoin,
+  Transaction,
+} from "../../../store/types/portfolioTypes";
+import TransactionRow from "./TransactionRow";
 
-const TransactionList = () => {
+interface ActionProps {
+  coin: PortfolioCoin;
+}
+const TransactionList = ({ coin }: ActionProps) => {
   return (
     <View style={styles.container}>
       <Text>Transaction List </Text>
+      <FlatList
+        data={coin.transactions}
+        keyExtractor={(item) => item.txId.toString()}
+        renderItem={(data) => {
+          console.log("DATA", data);
+          return <TransactionRow />;
+        }}
+      />
     </View>
   );
 };

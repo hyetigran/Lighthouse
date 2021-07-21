@@ -259,6 +259,7 @@ export const thunkCreateTransaction =
         // FIRST COIN TRANSACTION
         const isFirstCoinTxn = portfolio.portfolioCoins.findIndex(coin => coin.coinId === coin_id)
         if (isFirstCoinTxn === -1) {
+
           const newPortfolioCoin = {
             coinId: coin_id,
             name: name,
@@ -268,8 +269,8 @@ export const thunkCreateTransaction =
             cryptoTotal: coin_amount,
             marketValue: coin_amount * price,
             costBasis: coin_amount * spot_price,
-            avgBuyPrice: 0,
-            avgSellPrice: 0,
+            avgBuyPrice: transaction.isBuy ? coin_amount * spot_price : 0,
+            avgSellPrice: transaction.isBuy ? 0 : coin_amount * spot_price,
             transactions: [transaction],
             historicalPrice: [0],
           };
@@ -279,10 +280,16 @@ export const thunkCreateTransaction =
           updatedCoins = updatedCoins.map(coin => {
             if (coin.coinId === coin_id) {
               const newCryptoTotal = coin.cryptoTotal + transaction.coinAmount
+              const buyTxns = coin.transactions.filter(txn => txn.isBuy)
+              const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
+              const avgBuyPrice = calcAvgPrice(buyTxns)
+              const avgSellPrice = calcAvgPrice(sellTxns)
               return {
                 ...coin,
                 cryptoTotal: newCryptoTotal,
                 marketValue: newCryptoTotal * coin.spotPrice!,
+                avgBuyPrice,
+                avgSellPrice,
                 transactions: [
                   ...coin.transactions,
                   transaction
