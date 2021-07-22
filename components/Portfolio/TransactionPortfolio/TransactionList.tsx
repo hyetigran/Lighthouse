@@ -4,7 +4,10 @@ import {
   PortfolioCoin,
   Transaction,
 } from "../../../store/types/portfolioTypes";
+import Colors from "../../../constants/Colors";
 import TransactionRow from "./TransactionRow";
+
+const { background, darkGrey } = Colors.light;
 
 interface ActionProps {
   coin: PortfolioCoin;
@@ -12,11 +15,12 @@ interface ActionProps {
 const TransactionList = ({ coin }: ActionProps) => {
   return (
     <View style={styles.container}>
-      <Text>Transaction List </Text>
-      <View style={styles.verticalLine}></View>
+      {/* <View style={styles.verticalLine}></View> */}
       <FlatList
         data={coin.transactions}
+        // columnWrapperStyle={{ justifyContent: "space-between" }}
         keyExtractor={(item) => item.txId.toString()}
+        contentContainerStyle={styles.flatList}
         renderItem={({ item }) => (
           <TransactionRow transaction={item} symbol={coin.symbol} />
         )}
@@ -28,7 +32,10 @@ const TransactionList = ({ coin }: ActionProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: background,
   },
-  verticalLine: {},
+  flatList: {
+    paddingBottom: 30,
+  },
 });
 export default TransactionList;

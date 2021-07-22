@@ -4,7 +4,7 @@ import Colors from "../../../constants/Colors";
 import { PortfolioCoin } from "../../../store/types/portfolioTypes";
 
 const {
-  tabIconDefault: darkGrey,
+  darkGrey,
   gainGreen,
   lossRed,
   background,
@@ -71,9 +71,7 @@ const TransactionHero = ({
         </View>
         <View style={styles.header_container}>
           <Text style={styles.header_label}># Transactions</Text>
-          <Text style={[styles.center, { color: gainLossColor }]}>
-            {numTransactions}
-          </Text>
+          <Text style={styles.center}>{numTransactions}</Text>
         </View>
       </View>
     </View>
