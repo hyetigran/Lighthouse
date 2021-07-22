@@ -36,7 +36,6 @@ const TransactionList = ({ coin }: ActionProps) => {
               size={38}
               style={{ alignSelf: "center" }}
               color={"white"}
-              // @ts-ignore
               name={"add"}
             />
           </View>
