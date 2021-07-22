@@ -10,7 +10,11 @@ export interface Transaction {
   exchange: string,
   coinAmount: number,
   fiat: string,
-  isBuy: boolean
+  isBuy: boolean,
+  marketValue: number,
+  costBasis: number,
+  gainLossAbs: number,
+  gainLossPercent: number,
 }
 
 export interface PortfolioCoin {
@@ -18,9 +22,12 @@ export interface PortfolioCoin {
   name: string,
   symbol: string,
   logo: string,
-  spotPrice?: number,
+  spotPrice: number,
   cryptoTotal: number,
-  fiatTotal?: number,
+  marketValue: number,
+  costBasis: number,
+  avgBuyPrice: number,
+  avgSellPrice: number,
   transactions: Transaction[]
   historicalPrice?: number[]
 }

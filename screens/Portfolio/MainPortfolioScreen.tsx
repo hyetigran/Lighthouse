@@ -15,7 +15,7 @@ import {
 } from "../../store/actions/portfolioActions";
 import { View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
-import TransactionList from "../../components/Portfolio/TransactionList";
+import CoinList from "../../components/Portfolio/CoinPortfolio/CoinList";
 import Colors from "../../constants/Colors";
 
 const { tint, tabIconDefault, secondaryText } = Colors.light;
@@ -75,7 +75,7 @@ export default function MainPortfolioScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <TransactionList isLoading={isLoading} />
+      <CoinList isLoading={isLoading} />
       <TouchableOpacity
         style={styles.actionButton}
         onPress={addTransactionHandler}

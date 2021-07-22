@@ -1,7 +1,9 @@
 import React from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
-import Colors from "../../constants/Colors";
-import { PortfolioCoin } from "../../store/types/portfolioTypes";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+import Colors from "../../../constants/Colors";
+import { PortfolioCoin } from "../../../store/types/portfolioTypes";
 
 interface ActionProps {
   data: PortfolioCoin;
@@ -12,22 +14,22 @@ const {
   gainGreen,
 } = Colors.light;
 
-const TransactionRow = ({ data }: ActionProps) => {
-  const {
-    logo,
-    name,
-    symbol,
-    spotPrice,
-    cryptoTotal,
-    fiatTotal,
-    transactions,
-    historicalPrice,
-  } = data;
-
+const CoinRow = ({ data }: ActionProps) => {
+  const { logo, name, symbol, spotPrice, cryptoTotal, marketValue, coinId } =
+    data;
+  const { navigate } = useNavigation();
   let gainLossColor = gainGreen;
 
+  const handleNavigate = () => {
+    navigate("Transaction", {
+      screen: "TransactionDetail",
+      params: { id: coinId, name },
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    // <View >
+    <TouchableOpacity style={styles.container} onPress={handleNavigate}>
       <View style={styles.imgContainer}>
         <Image
           style={styles.logo}
@@ -54,7 +56,7 @@ const TransactionRow = ({ data }: ActionProps) => {
       <View style={styles.priceContainer}>
         <View>
           <Text style={[styles.textPadd, styles.bigAndBold]}>
-            {fiatTotal!.toFixed(2)}
+            {marketValue!.toFixed(2)}
           </Text>
         </View>
         <View style={styles.bottom}>
@@ -68,7 +70,8 @@ const TransactionRow = ({ data }: ActionProps) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
+    // </View>
   );
 };
 
@@ -133,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransactionRow;
+export default CoinRow;

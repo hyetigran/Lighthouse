@@ -12,7 +12,6 @@ interface ActionProps {
 }
 
 const CoinRowCard = ({ coinInfo }: ActionProps) => {
-
   const {
     logo,
     name,
@@ -51,6 +50,7 @@ const CoinRowCard = ({ coinInfo }: ActionProps) => {
             <Ionicons
               size={18}
               color={percentChangeColor}
+              // @ts-ignore
               name={caretDirection}
             />
             <Text style={styles.secondaryText}>
