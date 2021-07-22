@@ -26,26 +26,30 @@ const TransactionList = ({ coin }: ActionProps) => {
   };
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.addTxnButton}
-        onPress={handleAddNewTransaction}
-      >
-        <View style={styles.iconWrapper}>
-          <View style={styles.addTxnButtonIcon}>
-            <Ionicons
-              size={38}
-              style={{ alignSelf: "center" }}
-              color={"white"}
-              name={"add"}
-            />
-          </View>
-        </View>
-        <Text style={styles.addTxnButtonText}>Add New Transaction</Text>
-      </TouchableOpacity>
       <FlatList
         data={coin.transactions}
         keyExtractor={(item) => item.txId.toString()}
         contentContainerStyle={styles.flatList}
+        ListHeaderComponent={() => {
+          return (
+            <TouchableOpacity
+              style={styles.addTxnButton}
+              onPress={handleAddNewTransaction}
+            >
+              <View style={styles.iconWrapper}>
+                <View style={styles.addTxnButtonIcon}>
+                  <Ionicons
+                    size={38}
+                    style={{ alignSelf: "center" }}
+                    color={"white"}
+                    name={"add"}
+                  />
+                </View>
+              </View>
+              <Text style={styles.addTxnButtonText}>Add New Transaction</Text>
+            </TouchableOpacity>
+          );
+        }}
         renderItem={({ item }) => (
           <TransactionRow transaction={item} symbol={coin.symbol} />
         )}
