@@ -5,9 +5,11 @@ const { darkGrey } = Colors.light;
 
 interface ActionProps {
   isTop: boolean;
+  topNum?: number;
 }
-const Dash = ({ isTop }: ActionProps) => {
-  const top = isTop ? -25 : 25;
+const Dash = ({ isTop, topNum }: ActionProps) => {
+  const num = topNum || 25;
+  const top = isTop ? -num : num;
   return <View style={[styles.dash, { top: top }]}></View>;
 };
 

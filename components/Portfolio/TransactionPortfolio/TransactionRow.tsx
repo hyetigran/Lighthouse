@@ -6,15 +6,8 @@ import Colors from "../../../constants/Colors";
 import { Transaction } from "../../../store/types/portfolioTypes";
 import Dash from "../../UI/Dash";
 
-const {
-  darkGrey,
-  gainGreen,
-  gainGreenLite,
-  lossRed,
-  lossRedLite,
-  background,
-  secondaryText: borderGrey,
-} = Colors.light;
+const { darkGrey, gainGreen, gainGreenLite, lossRed, lossRedLite, background } =
+  Colors.light;
 
 interface ActionProps {
   transaction: Transaction;

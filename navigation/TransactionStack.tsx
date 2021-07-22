@@ -36,7 +36,8 @@ export default function TransactionNavigator() {
         component={TransactionAdd}
         options={({ route }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
-          headerBackTitle: "Search",
+          // DEFAULT to "Back"
+          headerBackTitle: "",
         })}
       />
       <Stack.Screen
