@@ -28,6 +28,10 @@ const TransactionDetail = () => {
     setSelectedTxn(data);
   };
 
+  const handleCloseModal = () => {
+    setIsVisible(false);
+  };
+
   const totalProfit = coin.marketValue - coin.costBasis;
   return (
     <View style={styles.container}>
@@ -43,9 +47,9 @@ const TransactionDetail = () => {
       <Modal
         modalHeight={200}
         isVisible={isVisible}
-        closeModal={() => setIsVisible(false)}
+        closeModal={handleCloseModal}
       >
-        <TransactionModal txn={selectedTxn} />
+        <TransactionModal txn={selectedTxn} closeModal={handleCloseModal} />
       </Modal>
     </View>
   );

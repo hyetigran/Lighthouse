@@ -54,7 +54,7 @@ function ModalComponent({
       onClose={closeModal}
       //indicatorColor={line ? INACTIVE : "transparent"}
       containerStyle={styles.content}
-      gestureEnabled
+      // gestureEnabled
       closeOnPressBack
       //hideUnderlay
       {...rest}
