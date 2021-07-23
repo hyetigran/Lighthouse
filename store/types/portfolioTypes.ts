@@ -4,7 +4,7 @@ export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 
 export interface Transaction {
-  txId: number,
+  txId: string,
   purchaseDate: string,
   purchasePrice: number,
   exchange: string,

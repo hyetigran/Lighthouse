@@ -12,9 +12,12 @@ const { darkGrey, gainGreen, gainGreenLite, lossRed, lossRedLite, background } =
 interface ActionProps {
   transaction: Transaction;
   symbol: string;
+  coinId: number;
+  handleTxnOption: ({ txId, coinId }: { txId: string; coinId: number }) => void;
 }
 const TransactionRow = ({
   transaction: {
+    txId,
     isBuy,
     purchaseDate,
     exchange,
@@ -26,11 +29,14 @@ const TransactionRow = ({
     gainLossPercent,
   },
   symbol,
+  handleTxnOption,
+  coinId,
 }: ActionProps) => {
   const formatDate = dayjs(purchaseDate).format("D MMM YYYY [at] HH:mm");
 
   const handleTransactionOption = () => {
     // OPEN BOTTOM ACTIVE SHEET MODAL
+    handleTxnOption({ txId, coinId });
   };
 
   const actionText = isBuy ? "Buy" : "Sell";

@@ -12,14 +12,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { PortfolioCoin } from "../../../store/types/portfolioTypes";
 import Colors from "../../../constants/Colors";
 import TransactionRow from "./TransactionRow";
-import Dash from "../../UI/Dash";
 
 const { background, darkGrey, text } = Colors.light;
 
 interface ActionProps {
   coin: PortfolioCoin;
+  handleTxnOption: ({ txId, coinId }: { txId: string; coinId: number }) => void;
 }
-const TransactionList = ({ coin }: ActionProps) => {
+const TransactionList = ({ coin, handleTxnOption }: ActionProps) => {
   const { navigate } = useNavigation();
   const handleAddNewTransaction = () => {
     navigate("TransactionAdd", { id: coin.coinId, name: coin.name });
@@ -51,7 +51,12 @@ const TransactionList = ({ coin }: ActionProps) => {
           );
         }}
         renderItem={({ item }) => (
-          <TransactionRow transaction={item} symbol={coin.symbol} />
+          <TransactionRow
+            transaction={item}
+            symbol={coin.symbol}
+            coinId={coin.coinId}
+            handleTxnOption={handleTxnOption}
+          />
         )}
       />
     </View>
