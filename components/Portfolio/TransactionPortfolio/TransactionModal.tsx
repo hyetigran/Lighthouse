@@ -7,11 +7,16 @@ import Colors from "../../../constants/Colors";
 const { darkGrey, text, secondaryText } = Colors.light;
 
 interface ActionProps {
-  txn: { txId: string; coinId: number };
+  //   txn: { txId: string; coinId: number };
   closeModal: () => void;
+  handleDeleteAlert: () => void;
 }
 
-const TransactionModal = ({ txn, closeModal }: ActionProps) => {
+const TransactionModal = ({
+  //   txn,
+  closeModal,
+  handleDeleteAlert,
+}: ActionProps) => {
   return (
     <View style={styles.container}>
       <View>
@@ -24,7 +29,10 @@ const TransactionModal = ({ txn, closeModal }: ActionProps) => {
         </TouchableOpacity>
       </View>
       <View>
-        <TouchableOpacity style={styles.txnActionContainer}>
+        <TouchableOpacity
+          style={styles.txnActionContainer}
+          onPress={handleDeleteAlert}
+        >
           <Ionicons size={30} color={text} name={"remove-circle-outline"} />
           <Text style={styles.text}>Remove Transaction</Text>
         </TouchableOpacity>

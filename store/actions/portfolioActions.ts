@@ -8,6 +8,7 @@ import { RootState } from "../index";
 import {
   FETCH_PORTFOLIO_SUCCESS,
   CREATE_TRANSACTION_SUCCESS,
+  DELETE_TRANSACTION_SUCCESS,
   Portfolio,
   PortfolioCoin,
   Transaction,
@@ -312,3 +313,68 @@ export const createTransaction = (payload: PortfolioCoin[]) => {
     payload,
   };
 };
+
+
+export const thunkDeleteTransaction =
+  ({ txId, coinId }: { txId: string, coinId: number }): ThunkAction<void, RootState, unknown, Action<string>> =>
+    async (dispatch, getState) => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (typeof token === "string") {
+          const data: any = await axiosWithAuth(token).delete(
+            `${PORTFOLIO_API_URL}/transaction/${txId}`
+          );
+          // TODO - USE message FROM data RESPONSE IN TOAST
+          // RE-CALIBRATE PORTFOLIO
+          const { portfolio }: { portfolio: Portfolio } = getState()
+          let updatedPortfolioCoins: PortfolioCoin[] = []
+          const selectedCoin = portfolio.portfolioCoins.find(coin => coin.coinId === coinId)!
+          const filteredPortfolio = portfolio.portfolioCoins.filter(coin => coin.coinId !== coinId)
+          if (selectedCoin.transactions.length > 1) {
+            // HANDLE MORE THAN 1 TRANSACTION FOR COIN
+
+            const filteredTransactions = selectedCoin.transactions.filter(txn => txn.txId !== txId)
+            const filteredTransactionsBuy = filteredTransactions.filter(txn => txn.isBuy)
+            const filteredTransactionsSell = filteredTransactions.filter(txn => !txn.isBuy)
+
+            const { cryptoTotal, marketValue, costBasis } = filteredTransactions.reduce((acc, cur) => {
+              acc.cryptoTotal += cur.coinAmount
+              acc.costBasis += cur.costBasis
+              acc.marketValue += cur.marketValue
+              return acc
+            }, {
+              cryptoTotal: 0,
+              marketValue: 0,
+              costBasis: 0,
+            })
+            updatedPortfolioCoins = [
+              ...filteredPortfolio,
+              {
+                ...selectedCoin,
+                transactions: filteredTransactions,
+                cryptoTotal,
+                marketValue,
+                costBasis,
+                avgBuyPrice: calcAvgPrice(filteredTransactionsBuy),
+                avgSellPrice: calcAvgPrice(filteredTransactionsSell),
+              }
+            ];
+          } else {
+            // HANDLE ONLY 1 TRANSACTION FOR COIN
+            updatedPortfolioCoins = filteredPortfolio
+
+          }
+          dispatch(deleteTransaction(updatedPortfolioCoins));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+export const deleteTransaction = (payload: PortfolioCoin[]) => {
+
+  return {
+    type: DELETE_TRANSACTION_SUCCESS,
+    payload,
+  }
+}

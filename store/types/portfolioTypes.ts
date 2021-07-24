@@ -58,7 +58,7 @@ interface updateTransactionAction {
 
 interface deleteTransactionAction {
   type: typeof DELETE_TRANSACTION_SUCCESS;
-  payload: string;
+  payload: PortfolioCoin[];
 }
 
 export type PortfolioActionTypes =

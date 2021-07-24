@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRoute } from "@react-navigation/core";
-import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { View, StyleSheet, Alert } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import TransactionHero from "../../components/Portfolio/TransactionPortfolio/TransactionHero";
 import TransactionList from "../../components/Portfolio/TransactionPortfolio/TransactionList";
@@ -9,6 +9,8 @@ import TransactionModal from "../../components/Portfolio/TransactionPortfolio/Tr
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import { Portfolio } from "../../store/types/portfolioTypes";
 import Modal from "../../components/Modal/ModalComponent";
+
+import { thunkDeleteTransaction } from "../../store/actions/portfolioActions";
 
 interface ActionState {
   txId: string;
@@ -23,6 +25,8 @@ const TransactionDetail = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState({ txId: "", coinId: 0 });
 
+  const dispatch = useDispatch();
+
   const handleTxnOption = (data: ActionState) => {
     setIsVisible(true);
     setSelectedTxn(data);
@@ -32,6 +36,23 @@ const TransactionDetail = () => {
     setIsVisible(false);
   };
 
+  const handleDeleteAlert = () => {
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
+      [
+        {
+          text: "Yes",
+          onPress: () => dispatch(thunkDeleteTransaction(selectedTxn)),
+          style: "destructive",
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ]
+    );
+  };
   const totalProfit = coin.marketValue - coin.costBasis;
   return (
     <View style={styles.container}>
@@ -49,7 +70,10 @@ const TransactionDetail = () => {
         isVisible={isVisible}
         closeModal={handleCloseModal}
       >
-        <TransactionModal txn={selectedTxn} closeModal={handleCloseModal} />
+        <TransactionModal
+          handleDeleteAlert={handleDeleteAlert}
+          closeModal={handleCloseModal}
+        />
       </Modal>
     </View>
   );
