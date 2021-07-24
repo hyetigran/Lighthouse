@@ -220,7 +220,7 @@ const TransactionAdd = () => {
           <Text style={styles.btnAdd}>Add Transaction</Text>
         </View>
       </TouchableOpacity>
-      <Modal isVisible={show} closeModal={closeModal}>
+      <Modal isVisible={show} closeModal={closeModal} modalHeight={300}>
         <View style={[styles.modalHeader]}>
           {mode === "time" ? (
             <>
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     alignSelf: "center",
-    marginVertical: 10,
+    marginVertical: 20,
   },
   modalText: {
     color: tint,
