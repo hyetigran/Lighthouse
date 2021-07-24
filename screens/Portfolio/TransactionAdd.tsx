@@ -1,28 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  NativeSyntheticEvent as NSE,
-  TextInputChangeEventData as TICED,
   KeyboardAvoidingView,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-// @ts-ignore
-import { PORTFOLIO_API_URL } from "@env";
 import Colors from "../../constants/Colors";
 import TransactionForm from "../../components/Portfolio/TransactionForm";
 import Modal from "../../components/Modal/ModalComponent";
-import { useDispatch, useSelector } from "react-redux";
-import { axiosWithAuth } from "../../helpers/axiosWithAuth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../store";
-import { useEffect } from "react";
-import { TransactionParamList } from "../../types";
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import { thunkCreateTransaction } from "../../store/actions/portfolioActions";
 
@@ -53,7 +45,7 @@ const TransactionAdd = () => {
   const [coinAmount, setCoinAmount] = useState<string>("");
   const [error, setError] = useState(initialErrorState);
 
-  const { navigate, goBack } = useNavigation();
+  const { navigate } = useNavigation();
   const { params } = useRoute<TransactionRouteProp>();
 
   useEffect(() => {
