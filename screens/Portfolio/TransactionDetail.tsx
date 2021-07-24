@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useRoute } from "@react-navigation/core";
-import { View, StyleSheet, Alert } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/core";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import TransactionHero from "../../components/Portfolio/TransactionPortfolio/TransactionHero";
@@ -9,6 +9,7 @@ import TransactionModal from "../../components/Portfolio/TransactionPortfolio/Tr
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import { Portfolio } from "../../store/types/portfolioTypes";
 import Modal from "../../components/Modal/ModalComponent";
+import Spinner from "../../components/UI/Spinner";
 
 import { thunkDeleteTransaction } from "../../store/actions/portfolioActions";
 
@@ -22,11 +23,17 @@ const TransactionDetail = () => {
   const [coin] = useSelector(({ portfolio }: { portfolio: Portfolio }) =>
     portfolio.portfolioCoins!.filter((coin) => coin.coinId === params.id)
   );
+
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState({ txId: "", coinId: 0 });
 
   const dispatch = useDispatch();
+  const { navigate, goBack } = useNavigation();
 
+  if (!coin) {
+    goBack();
+    return <Spinner />;
+  }
   const handleTxnOption = (data: ActionState) => {
     setIsVisible(true);
     setSelectedTxn(data);
@@ -43,7 +50,12 @@ const TransactionDetail = () => {
       [
         {
           text: "Yes",
-          onPress: () => dispatch(thunkDeleteTransaction(selectedTxn)),
+          onPress: () => {
+            dispatch(thunkDeleteTransaction(selectedTxn));
+            if (coin.transactions.length > 1) {
+              setIsVisible(false);
+            }
+          },
           style: "destructive",
         },
         {
@@ -53,7 +65,7 @@ const TransactionDetail = () => {
       ]
     );
   };
-  const totalProfit = coin.marketValue - coin.costBasis;
+  const totalProfit = coin ? coin.marketValue - coin.costBasis : 0;
   return (
     <View style={styles.container}>
       <TransactionHero
