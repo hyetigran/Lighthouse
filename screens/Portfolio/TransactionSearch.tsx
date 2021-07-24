@@ -70,7 +70,11 @@ const TransactionSearch = () => {
           <TouchableOpacity
             key={crypto.id}
             onPress={() =>
-              navigate("TransactionAdd", { id: crypto.id, name: crypto.name })
+              navigate("TransactionAdd", {
+                id: crypto.id,
+                name: crypto.name,
+                symbol: crypto.symbol,
+              })
             }
           >
             <SearchCoinRow data={crypto} />

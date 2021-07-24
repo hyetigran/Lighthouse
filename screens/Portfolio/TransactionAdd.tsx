@@ -148,7 +148,7 @@ const TransactionAdd = () => {
       purchase_date: purchaseDate,
       coin_amount: coinAmount,
       // convert to 'per coin'
-      spot_price: priceType ? +buyPrice : +buyPrice / +coinAmount,
+      spot_price: !priceType ? +buyPrice : +buyPrice / +coinAmount,
       exchange: "Global",
       fiat: "USD",
       coin_id: params.id,
@@ -198,7 +198,7 @@ const TransactionAdd = () => {
       >
         <View style={{ flexGrow: 1 }}>
           <TransactionForm
-            data={{ symbol: "BTC" }}
+            data={{ symbol: params.symbol }}
             showDatepicker={showDatepicker}
             date={date}
             buyPrice={buyPrice}

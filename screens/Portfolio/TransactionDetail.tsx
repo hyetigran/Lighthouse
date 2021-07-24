@@ -28,12 +28,12 @@ const TransactionDetail = () => {
   const [selectedTxn, setSelectedTxn] = useState({ txId: "", coinId: 0 });
 
   const dispatch = useDispatch();
-  const { navigate, goBack } = useNavigation();
+  const { navigate } = useNavigation();
 
   if (!coin) {
-    goBack();
     return <Spinner />;
   }
+
   const handleTxnOption = (data: ActionState) => {
     setIsVisible(true);
     setSelectedTxn(data);
@@ -54,6 +54,8 @@ const TransactionDetail = () => {
             dispatch(thunkDeleteTransaction(selectedTxn));
             if (coin.transactions.length > 1) {
               setIsVisible(false);
+            } else {
+              navigate("Portfolio");
             }
           },
           style: "destructive",
