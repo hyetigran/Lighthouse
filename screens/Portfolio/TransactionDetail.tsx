@@ -67,6 +67,17 @@ const TransactionDetail = () => {
       ]
     );
   };
+
+  const handleEditNavigate = () => {
+    navigate("TransactionAdd", {
+      id: coin.coinId,
+      name: coin.name,
+      symbol: coin.symbol,
+      action: "edit",
+    });
+    setIsVisible(false);
+  };
+
   const totalProfit = coin ? coin.marketValue - coin.costBasis : 0;
   return (
     <View style={styles.container}>
@@ -86,6 +97,7 @@ const TransactionDetail = () => {
       >
         <TransactionModal
           handleDeleteAlert={handleDeleteAlert}
+          handleEditNavigate={handleEditNavigate}
           closeModal={handleCloseModal}
         />
       </Modal>
