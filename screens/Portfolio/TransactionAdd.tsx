@@ -1,28 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  NativeSyntheticEvent as NSE,
-  TextInputChangeEventData as TICED,
   KeyboardAvoidingView,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-// @ts-ignore
-import { PORTFOLIO_API_URL } from "@env";
 import Colors from "../../constants/Colors";
 import TransactionForm from "../../components/Portfolio/TransactionForm";
 import Modal from "../../components/Modal/ModalComponent";
-import { useDispatch, useSelector } from "react-redux";
-import { axiosWithAuth } from "../../helpers/axiosWithAuth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../store";
-import { useEffect } from "react";
-import { TransactionParamList } from "../../types";
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import { thunkCreateTransaction } from "../../store/actions/portfolioActions";
 
@@ -53,7 +45,7 @@ const TransactionAdd = () => {
   const [coinAmount, setCoinAmount] = useState<string>("");
   const [error, setError] = useState(initialErrorState);
 
-  const { navigate, goBack } = useNavigation();
+  const { navigate } = useNavigation();
   const { params } = useRoute<TransactionRouteProp>();
 
   useEffect(() => {
@@ -156,7 +148,7 @@ const TransactionAdd = () => {
       purchase_date: purchaseDate,
       coin_amount: coinAmount,
       // convert to 'per coin'
-      spot_price: priceType ? +buyPrice : +buyPrice / +coinAmount,
+      spot_price: !priceType ? +buyPrice : +buyPrice / +coinAmount,
       exchange: "Global",
       fiat: "USD",
       coin_id: params.id,
@@ -206,7 +198,7 @@ const TransactionAdd = () => {
       >
         <View style={{ flexGrow: 1 }}>
           <TransactionForm
-            data={{ symbol: "BTC" }}
+            data={{ symbol: params.symbol }}
             showDatepicker={showDatepicker}
             date={date}
             buyPrice={buyPrice}
@@ -228,7 +220,7 @@ const TransactionAdd = () => {
           <Text style={styles.btnAdd}>Add Transaction</Text>
         </View>
       </TouchableOpacity>
-      <Modal isVisible={show} closeModal={closeModal}>
+      <Modal isVisible={show} closeModal={closeModal} modalHeight={300}>
         <View style={[styles.modalHeader]}>
           {mode === "time" ? (
             <>
@@ -323,7 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     alignSelf: "center",
-    marginVertical: 10,
+    marginVertical: 20,
   },
   modalText: {
     color: tint,

@@ -1,12 +1,22 @@
-import React from "react";
-import { useRoute } from "@react-navigation/core";
-import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useRoute, useNavigation } from "@react-navigation/core";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import TransactionHero from "../../components/Portfolio/TransactionPortfolio/TransactionHero";
 import TransactionList from "../../components/Portfolio/TransactionPortfolio/TransactionList";
+import TransactionModal from "../../components/Portfolio/TransactionPortfolio/TransactionModal";
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import { Portfolio } from "../../store/types/portfolioTypes";
+import Modal from "../../components/Modal/ModalComponent";
+import Spinner from "../../components/UI/Spinner";
+
+import { thunkDeleteTransaction } from "../../store/actions/portfolioActions";
+
+interface ActionState {
+  txId: string;
+  coinId: number;
+}
 
 const TransactionDetail = () => {
   const { params } = useRoute<TransactionRouteProp>();
@@ -14,7 +24,50 @@ const TransactionDetail = () => {
     portfolio.portfolioCoins!.filter((coin) => coin.coinId === params.id)
   );
 
-  const totalProfit = coin.marketValue - coin.costBasis;
+  const [isVisible, setIsVisible] = useState(false);
+  const [selectedTxn, setSelectedTxn] = useState({ txId: "", coinId: 0 });
+
+  const dispatch = useDispatch();
+  const { navigate } = useNavigation();
+
+  if (!coin) {
+    return <Spinner />;
+  }
+
+  const handleTxnOption = (data: ActionState) => {
+    setIsVisible(true);
+    setSelectedTxn(data);
+  };
+
+  const handleCloseModal = () => {
+    setIsVisible(false);
+  };
+
+  const handleDeleteAlert = () => {
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            dispatch(thunkDeleteTransaction(selectedTxn));
+            if (coin.transactions.length > 1) {
+              setIsVisible(false);
+            } else {
+              navigate("Portfolio");
+            }
+          },
+          style: "destructive",
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ]
+    );
+  };
+  const totalProfit = coin ? coin.marketValue - coin.costBasis : 0;
   return (
     <View style={styles.container}>
       <TransactionHero
@@ -25,7 +78,17 @@ const TransactionDetail = () => {
         avgSellPrice={coin.avgSellPrice}
         numTransactions={coin.transactions.length}
       />
-      <TransactionList coin={coin} />
+      <TransactionList coin={coin} handleTxnOption={handleTxnOption} />
+      <Modal
+        modalHeight={200}
+        isVisible={isVisible}
+        closeModal={handleCloseModal}
+      >
+        <TransactionModal
+          handleDeleteAlert={handleDeleteAlert}
+          closeModal={handleCloseModal}
+        />
+      </Modal>
     </View>
   );
 };

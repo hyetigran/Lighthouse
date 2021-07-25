@@ -14,7 +14,7 @@ import TransactionDetail from "../screens/Portfolio/TransactionDetail";
 
 export type TransactionRouteProp = RouteProp<ParamList, "Add">;
 type ParamList = {
-  Add: { id: number; name: string };
+  Add: { id: number; name: string; symbol: string };
 };
 const Stack = createStackNavigator<TransactionParamList>();
 
