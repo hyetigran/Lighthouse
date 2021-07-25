@@ -280,7 +280,8 @@ export const thunkCreateTransaction =
           // ADD TRANSACTION TO EXISTING COIN
           updatedCoins = updatedCoins.map(coin => {
             if (coin.coinId === coin_id) {
-              const newCryptoTotal = coin.cryptoTotal + transaction.coinAmount
+              const sign = transaction.isBuy ? 1 : -1;
+              const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
               const buyTxns = coin.transactions.filter(txn => txn.isBuy)
               const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
               const avgBuyPrice = calcAvgPrice(buyTxns)
