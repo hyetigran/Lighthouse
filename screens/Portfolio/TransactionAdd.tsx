@@ -16,7 +16,10 @@ import TransactionForm from "../../components/Portfolio/TransactionForm";
 import Modal from "../../components/Modal/ModalComponent";
 import { RootState } from "../../store";
 import { TransactionRouteProp } from "../../navigation/TransactionStack";
-import { thunkCreateTransaction } from "../../store/actions/portfolioActions";
+import {
+  thunkCreateTransaction,
+  thunkUpdateTransaction,
+} from "../../store/actions/portfolioActions";
 
 const { width } = Dimensions.get("window");
 const {
@@ -47,7 +50,15 @@ const TransactionAdd = () => {
 
   const { navigate } = useNavigation();
   const { params } = useRoute<TransactionRouteProp>();
+  const isEditMode = params.action === "edit";
 
+  const editableTransaction = useSelector((state: RootState) => {
+    if (isEditMode) {
+      return state.portfolio.portfolioCoins
+        .find((coin) => coin.coinId === params.id)!
+        .transactions.find((transaction) => transaction.txId === params.txId);
+    }
+  });
   useEffect(() => {
     if (error.price) {
       validateField("price");
@@ -56,8 +67,22 @@ const TransactionAdd = () => {
     }
   }, [buyPrice, coinAmount]);
 
+  // EDIT MODE
+  useEffect(() => {
+    if (isEditMode) {
+      const { isBuy, purchaseDate, purchasePrice, priceType, coinAmount } =
+        editableTransaction!;
+      setIsBuy(isBuy);
+      setDate(new Date(purchaseDate));
+      setPriceType(priceType);
+      setBuyPrice(purchasePrice.toString());
+      setCoinAmount(coinAmount.toString());
+    }
+  }, [params.action, editableTransaction]);
+
   // SELECTOR --> coin
   const { portfolioId } = useSelector((state: RootState) => state.portfolio);
+
   const dispatch = useDispatch();
 
   const onChangeDate = (event: Event, selectedDate: Date) => {
@@ -157,8 +182,14 @@ const TransactionAdd = () => {
       // 1 = "in total", 0 = "per coin"
       price_type: priceType,
     };
-    // CREATE TRANSACTION
-    dispatch(thunkCreateTransaction(data));
+    if (isEditMode) {
+      data.txId = editableTransaction?.txId;
+      // UPDATE TRANSACTION
+      dispatch(thunkUpdateTransaction(data));
+    } else {
+      // CREATE TRANSACTION
+      dispatch(thunkCreateTransaction(data));
+    }
 
     navigate("Portfolio");
     // TODO - PERSIST LOCALLY WITH SQLite
@@ -168,6 +199,10 @@ const TransactionAdd = () => {
     backgroundColor: isBuy ? gainGreenLite : lossRedLite,
     borderColor: isBuy ? gainGreen : lossRed,
   };
+
+  const submitButtonText = isEditMode
+    ? "Update Transaction"
+    : "Add Transaction";
 
   return (
     <View style={styles.container}>
@@ -220,7 +255,7 @@ const TransactionAdd = () => {
         disabled={error.coin || error.price || error.date}
       >
         <View style={[styles.btnContainer, addButtonColor]}>
-          <Text style={styles.btnAdd}>Add Transaction</Text>
+          <Text style={styles.btnAdd}>{submitButtonText}</Text>
         </View>
       </TouchableOpacity>
       <Modal isVisible={show} closeModal={closeModal} modalHeight={300}>

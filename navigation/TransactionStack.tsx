@@ -20,9 +20,16 @@ import Colors from "../constants/Colors";
 
 const { text } = Colors.light;
 
+// TODO - DUPLICATE? -- see types.tsx
 export type TransactionRouteProp = RouteProp<ParamList, "Add">;
 type ParamList = {
-  Add: { id: number; name: string; symbol: string; action?: string };
+  Add: {
+    id: number;
+    name: string;
+    symbol: string;
+    action?: string;
+    txId?: string;
+  };
 };
 const Stack = createStackNavigator<TransactionParamList>();
 
@@ -47,7 +54,7 @@ export default function TransactionNavigator() {
           headerLeft: (props) => {
             if (route.params.action === "edit") {
               return (
-                <TouchableOpacity>
+                <TouchableOpacity style={{ paddingLeft: 15 }}>
                   <Ionicons size={24} color={text} name={"trash-outline"} />
                 </TouchableOpacity>
               );
@@ -57,7 +64,7 @@ export default function TransactionNavigator() {
           headerRight: () => {
             if (route.params.action === "edit") {
               return (
-                <TouchableOpacity>
+                <TouchableOpacity style={{ paddingRight: 15 }}>
                   <Ionicons
                     size={30}
                     color={text}

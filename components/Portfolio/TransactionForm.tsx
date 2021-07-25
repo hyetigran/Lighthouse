@@ -43,7 +43,6 @@ const TransactionForm = ({
   const rightPriceText = priceType ? "in total" : "per coin";
   const priceInput = isBuy ? "Buy Price" : "Sell Price";
   const amountInput = isBuy ? "Amount Bought" : "Amount Sold";
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <Input label="Exchange" placeholder="Global avg." disabled />

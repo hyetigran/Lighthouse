@@ -22,7 +22,12 @@ interface ActionProps {
 const TransactionList = ({ coin, handleTxnOption }: ActionProps) => {
   const { navigate } = useNavigation();
   const handleAddNewTransaction = () => {
-    navigate("TransactionAdd", { id: coin.coinId, name: coin.name });
+    navigate("TransactionAdd", {
+      id: coin.coinId,
+      name: coin.name,
+      symbol: coin.symbol,
+      action: "new",
+    });
   };
   return (
     <View style={styles.container}>
