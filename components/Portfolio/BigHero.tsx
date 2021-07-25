@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors";
 
 const BigHero = () => {
-  const [periodUI, setPeriodUI] = useState<number>(5);
+  // const [periodUI, setPeriodUI] = useState<number>(5);
   return (
     <View style={styles.container}>
       <Text style={styles.totalAmountText}>$ 100,000</Text>
@@ -11,7 +11,7 @@ const BigHero = () => {
         <Text>+ $ 10,000</Text>
         <Text> ^ 5%</Text>
       </View>
-      <View style={styles.timePeriodContainer}>
+      {/* <View style={styles.timePeriodContainer}>
         {["1H", "1D", "1W", "1M", "1Y", "All"].map(
           (txt: string, index: number) => {
             return (
@@ -35,7 +35,7 @@ const BigHero = () => {
             );
           }
         )}
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    minHeight: 250,
+    minHeight: 180,
   },
   totalAmountText: {
     fontSize: 36,
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   activeTimePeriod: {
     backgroundColor: Colors.light.text,
     borderRadius: 30,
-    // borderWidth: 1,
   },
   timePeriodText: {
     fontWeight: "bold",

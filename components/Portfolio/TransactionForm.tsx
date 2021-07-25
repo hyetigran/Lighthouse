@@ -5,13 +5,12 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  NativeSyntheticEvent as NSE,
-  TextInputChangeEventData as TICED,
 } from "react-native";
 import { Input } from "react-native-elements";
 import moment from "moment";
 import Colors from "../../constants/Colors";
 
+const { darkGrey, secondaryText } = Colors.light;
 interface ActionProps {
   data: any;
   date: Date;
@@ -26,11 +25,6 @@ interface ActionProps {
   handleCoinAmount: (text: string) => void;
   validateField: (text: string) => void;
 }
-const {
-  tabIconDefault: colorBorder,
-  secondaryText: darkGrey,
-  gainGreen,
-} = Colors.light;
 
 const TransactionForm = ({
   data: { symbol },
@@ -70,6 +64,7 @@ const TransactionForm = ({
         onChangeText={onChangePrice}
         errorMessage={error.price ? "Required field" : ""}
         onBlur={() => validateField("price")}
+        // @ts-ignore
         rightIcon={() => (
           <Text style={styles.rightTextToggle} onPress={togglePriceType}>
             {rightPriceText}
@@ -98,12 +93,12 @@ const styles = StyleSheet.create({
   dateContainer: {
     marginHorizontal: 10,
     borderBottomWidth: 1,
-    borderColor: Colors.light.darkGrey,
+    borderColor: darkGrey,
     justifyContent: "center",
     marginBottom: 20,
   },
   dateLabel: {
-    color: Colors.light.darkGrey,
+    color: darkGrey,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -114,9 +109,9 @@ const styles = StyleSheet.create({
   rightTextToggle: {
     paddingHorizontal: 6,
     paddingVertical: 2,
-    backgroundColor: Colors.light.secondaryText,
+    backgroundColor: secondaryText,
     borderWidth: 1,
-    borderColor: Colors.light.darkGrey,
+    borderColor: darkGrey,
     borderRadius: 12,
     overflow: "hidden",
   },

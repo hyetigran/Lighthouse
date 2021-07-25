@@ -15,6 +15,7 @@ export interface Transaction {
   costBasis: number,
   gainLossAbs: number,
   gainLossPercent: number,
+  priceType: number,
 }
 
 export interface PortfolioCoin {

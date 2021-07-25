@@ -94,6 +94,7 @@ export const thunkFetchPortfolio =
                   coin_amount,
                   exchange,
                   is_buy,
+                  price_type
                 } = txn;
                 const { name, symbol, price, logo } = coinData[coin_id];
                 const sign = is_buy ? 1 : -1;
@@ -112,6 +113,7 @@ export const thunkFetchPortfolio =
                   costBasis: coin_amount * spot_price,
                   gainLossAbs,
                   gainLossPercent,
+                  priceType: price_type,
                   fiat,
                 };
 
@@ -214,6 +216,7 @@ export const thunkCreateTransaction =
     coin_id: number;
     portfolio_id: string;
     is_buy: boolean;
+    price_type: number;
   }): ThunkAction<void, RootState, unknown, Action<string>> =>
     async (dispatch, getState) => {
       try {
@@ -233,6 +236,7 @@ export const thunkCreateTransaction =
           coin_amount,
           purchase_date,
           spot_price,
+          price_type
         } = result.data.data;
 
         const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
@@ -250,13 +254,14 @@ export const thunkCreateTransaction =
           marketValue: coin_amount * price,
           costBasis: coin_amount * spot_price,
           isBuy: is_buy,
+          priceType: price_type,
           exchange,
           fiat,
           gainLossAbs,
           gainLossPercent
         };
-
         const sign = transaction.isBuy ? 1 : -1;
+
         const { portfolio }: { portfolio: Portfolio } = getState()
         let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
         // FIRST COIN TRANSACTION

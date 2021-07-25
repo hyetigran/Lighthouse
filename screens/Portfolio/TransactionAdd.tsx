@@ -154,6 +154,8 @@ const TransactionAdd = () => {
       coin_id: params.id,
       portfolio_id: portfolioId,
       is_buy: isBuy,
+      // 1 = "in total", 0 = "per coin"
+      price_type: priceType,
     };
     // CREATE TRANSACTION
     dispatch(thunkCreateTransaction(data));
