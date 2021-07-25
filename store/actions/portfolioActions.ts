@@ -96,6 +96,7 @@ export const thunkFetchPortfolio =
                   is_buy,
                 } = txn;
                 const { name, symbol, price, logo } = coinData[coin_id];
+                const sign = is_buy ? 1 : -1;
 
                 const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
                 const gainLossPercent = calcGainPercent(price, spot_price)
@@ -121,8 +122,8 @@ export const thunkFetchPortfolio =
                     symbol: symbol,
                     spotPrice: price,
                     logo: logo,
-                    cryptoTotal: coin_amount,
-                    marketValue: coin_amount * price,
+                    cryptoTotal: coin_amount * sign,
+                    marketValue: coin_amount * sign * price,
                     costBasis: coin_amount * spot_price,
                     avgBuyPrice: 0,
                     avgSellPrice: 0,
@@ -134,7 +135,7 @@ export const thunkFetchPortfolio =
                   acc[index] = portfolioCoin;
                 } else {
                   let index = mapCoinIdToIndex[coin_id];
-                  acc[index].cryptoTotal += coin_amount;
+                  acc[index].cryptoTotal += coin_amount * sign;
                   acc[index].marketValue = acc[index].cryptoTotal * price;
                   acc[index].costBasis += transactionMapped.costBasis;
                   acc[index].transactions = [
@@ -255,6 +256,7 @@ export const thunkCreateTransaction =
           gainLossPercent
         };
 
+        const sign = transaction.isBuy ? 1 : -1;
         const { portfolio }: { portfolio: Portfolio } = getState()
         let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
         // FIRST COIN TRANSACTION
@@ -267,8 +269,8 @@ export const thunkCreateTransaction =
             symbol: symbol,
             spotPrice: price,
             logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin_id}.png`,
-            cryptoTotal: coin_amount,
-            marketValue: coin_amount * price,
+            cryptoTotal: coin_amount * sign,
+            marketValue: coin_amount * sign * price,
             costBasis: coin_amount * spot_price,
             avgBuyPrice: transaction.isBuy ? coin_amount * spot_price : 0,
             avgSellPrice: transaction.isBuy ? 0 : coin_amount * spot_price,
@@ -280,7 +282,6 @@ export const thunkCreateTransaction =
           // ADD TRANSACTION TO EXISTING COIN
           updatedCoins = updatedCoins.map(coin => {
             if (coin.coinId === coin_id) {
-              const sign = transaction.isBuy ? 1 : -1;
               const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
               const buyTxns = coin.transactions.filter(txn => txn.isBuy)
               const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
@@ -339,7 +340,8 @@ export const thunkDeleteTransaction =
             const filteredTransactionsSell = filteredTransactions.filter(txn => !txn.isBuy)
 
             const { cryptoTotal, marketValue, costBasis } = filteredTransactions.reduce((acc, cur) => {
-              acc.cryptoTotal += cur.coinAmount
+              const sign = cur.isBuy ? 1 : -1
+              acc.cryptoTotal += cur.coinAmount * sign
               acc.costBasis += cur.costBasis
               acc.marketValue += cur.marketValue
               return acc
