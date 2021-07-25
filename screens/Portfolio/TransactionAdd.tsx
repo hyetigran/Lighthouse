@@ -209,6 +209,7 @@ const TransactionAdd = () => {
             handleCoinAmount={handleCoinAmount}
             error={error}
             validateField={validateField}
+            isBuy={isBuy}
           />
         </View>
       </KeyboardAvoidingView>

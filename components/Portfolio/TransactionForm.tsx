@@ -19,6 +19,7 @@ interface ActionProps {
   priceType: number;
   coinAmount: string;
   error: { coin: boolean; price: boolean; date: boolean };
+  isBuy: boolean;
   togglePriceType: () => void;
   onChangePrice: (text: string) => void;
   showDatepicker: () => void;
@@ -43,8 +44,11 @@ const TransactionForm = ({
   togglePriceType,
   handleCoinAmount,
   validateField,
+  isBuy,
 }: ActionProps) => {
   const rightPriceText = priceType ? "in total" : "per coin";
+  const priceInput = isBuy ? "Buy Price" : "Sell Price";
+  const amountInput = isBuy ? "Amount Bought" : "Amount Sold";
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -59,8 +63,8 @@ const TransactionForm = ({
         </View>
       </TouchableWithoutFeedback>
       <Input
-        label={buyPrice ? "Buy Price" : " "}
-        placeholder="Buy Price"
+        label={buyPrice ? priceInput : " "}
+        placeholder={priceInput}
         value={buyPrice}
         keyboardType="numeric"
         onChangeText={onChangePrice}
@@ -73,8 +77,8 @@ const TransactionForm = ({
         )}
       />
       <Input
-        label={coinAmount ? "Amount Bought" : " "}
-        placeholder="Amount Bought"
+        label={coinAmount ? amountInput : " "}
+        placeholder={amountInput}
         value={coinAmount}
         defaultValue={coinAmount}
         keyboardType="numeric"
