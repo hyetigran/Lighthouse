@@ -1,4 +1,5 @@
 export const FETCH_PORTFOLIO_SUCCESS = "FETCH_PORTFOLIO_SUCCESS";
+export const CREATE_PORTFOLIO_SUCCESS = "CREATE_PORTFOLIO_SUCCESS";
 export const CREATE_TRANSACTION_SUCCESS = "CREATE_TRANSACTION_SUCCESS";
 export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
@@ -15,6 +16,7 @@ export interface Transaction {
   costBasis: number,
   gainLossAbs: number,
   gainLossPercent: number,
+  priceType: number
 }
 
 export interface PortfolioCoin {
@@ -43,17 +45,19 @@ interface getPortfolioAction {
   payload: Portfolio;
 }
 
+interface createPortfolioAction {
+  type: typeof CREATE_PORTFOLIO_SUCCESS;
+  payload: Portfolio;
+}
+
 interface createTransactionAction {
   type: typeof CREATE_TRANSACTION_SUCCESS;
-  payload: {
-    transaction: Transaction
-    coinId: number
-  };
+  payload: PortfolioCoin[];
 }
 
 interface updateTransactionAction {
   type: typeof UPDATE_TRANSACTION_SUCCESS;
-  payload: string;
+  payload: PortfolioCoin[];
 }
 
 interface deleteTransactionAction {
@@ -63,6 +67,7 @@ interface deleteTransactionAction {
 
 export type PortfolioActionTypes =
   | getPortfolioAction
+  | createPortfolioAction
   | createTransactionAction
   | updateTransactionAction
   | deleteTransactionAction;

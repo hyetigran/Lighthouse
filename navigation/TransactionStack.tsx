@@ -1,6 +1,11 @@
 // import { Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  HeaderBackButton,
+} from "@react-navigation/stack";
 import * as React from "react";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 //import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 // import Colors from "../constants/Colors";
@@ -11,10 +16,20 @@ import { TransactionParamList } from "../types";
 import HeaderTitle from "../components/HeaderTitle";
 import { RouteProp } from "@react-navigation/native";
 import TransactionDetail from "../screens/Portfolio/TransactionDetail";
+import Colors from "../constants/Colors";
 
+const { text } = Colors.light;
+
+// TODO - DUPLICATE? -- see types.tsx
 export type TransactionRouteProp = RouteProp<ParamList, "Add">;
 type ParamList = {
-  Add: { id: number; name: string; symbol: string };
+  Add: {
+    id: number;
+    name: string;
+    symbol: string;
+    action?: string;
+    txId?: string;
+  };
 };
 const Stack = createStackNavigator<TransactionParamList>();
 
@@ -34,8 +49,32 @@ export default function TransactionNavigator() {
       <Stack.Screen
         name="TransactionAdd"
         component={TransactionAdd}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
+          headerLeft: (props) => {
+            if (route.params.action === "edit") {
+              return (
+                <TouchableOpacity style={{ paddingLeft: 15 }}>
+                  <Ionicons size={24} color={text} name={"trash-outline"} />
+                </TouchableOpacity>
+              );
+            }
+            return <HeaderBackButton {...props} onPress={navigation.goBack} />;
+          },
+          headerRight: () => {
+            if (route.params.action === "edit") {
+              return (
+                <TouchableOpacity style={{ paddingRight: 15 }}>
+                  <Ionicons
+                    size={30}
+                    color={text}
+                    name={"close-outline"}
+                    onPress={navigation.goBack}
+                  />
+                </TouchableOpacity>
+              );
+            }
+          },
           // DEFAULT to "Back"
           headerBackTitle: "",
         })}

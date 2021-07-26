@@ -7,7 +7,7 @@ import { portfolioReducer } from "./reducers/portfolioReducer";
 
 const rootReducer = combineReducers({
   market: marketReducer,
-  portfolio: portfolioReducer
+  portfolio: portfolioReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

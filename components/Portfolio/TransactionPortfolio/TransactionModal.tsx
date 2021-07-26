@@ -10,12 +10,14 @@ interface ActionProps {
   //   txn: { txId: string; coinId: number };
   closeModal: () => void;
   handleDeleteAlert: () => void;
+  handleEditNavigate: () => void;
 }
 
 const TransactionModal = ({
   //   txn,
   closeModal,
   handleDeleteAlert,
+  handleEditNavigate,
 }: ActionProps) => {
   return (
     <View style={styles.container}>
@@ -23,7 +25,10 @@ const TransactionModal = ({
         <Text style={styles.headerTitle}>TRANSACTION OPTIONS</Text>
       </View>
       <View>
-        <TouchableOpacity style={styles.txnActionContainer}>
+        <TouchableOpacity
+          style={styles.txnActionContainer}
+          onPress={handleEditNavigate}
+        >
           <Ionicons size={30} color={text} name={"create-outline"} />
           <Text style={styles.text}>Edit Transaction</Text>
         </TouchableOpacity>

@@ -5,13 +5,12 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  NativeSyntheticEvent as NSE,
-  TextInputChangeEventData as TICED,
 } from "react-native";
 import { Input } from "react-native-elements";
 import moment from "moment";
 import Colors from "../../constants/Colors";
 
+const { darkGrey, secondaryText } = Colors.light;
 interface ActionProps {
   data: any;
   date: Date;
@@ -19,17 +18,13 @@ interface ActionProps {
   priceType: number;
   coinAmount: string;
   error: { coin: boolean; price: boolean; date: boolean };
+  isBuy: boolean;
   togglePriceType: () => void;
   onChangePrice: (text: string) => void;
   showDatepicker: () => void;
   handleCoinAmount: (text: string) => void;
   validateField: (text: string) => void;
 }
-const {
-  tabIconDefault: colorBorder,
-  secondaryText: darkGrey,
-  gainGreen,
-} = Colors.light;
 
 const TransactionForm = ({
   data: { symbol },
@@ -43,9 +38,11 @@ const TransactionForm = ({
   togglePriceType,
   handleCoinAmount,
   validateField,
+  isBuy,
 }: ActionProps) => {
   const rightPriceText = priceType ? "in total" : "per coin";
-
+  const priceInput = isBuy ? "Buy Price" : "Sell Price";
+  const amountInput = isBuy ? "Amount Bought" : "Amount Sold";
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <Input label="Exchange" placeholder="Global avg." disabled />
@@ -59,13 +56,14 @@ const TransactionForm = ({
         </View>
       </TouchableWithoutFeedback>
       <Input
-        label={buyPrice ? "Buy Price" : " "}
-        placeholder="Buy Price"
+        label={buyPrice ? priceInput : " "}
+        placeholder={priceInput}
         value={buyPrice}
         keyboardType="numeric"
         onChangeText={onChangePrice}
         errorMessage={error.price ? "Required field" : ""}
         onBlur={() => validateField("price")}
+        // @ts-ignore
         rightIcon={() => (
           <Text style={styles.rightTextToggle} onPress={togglePriceType}>
             {rightPriceText}
@@ -73,8 +71,8 @@ const TransactionForm = ({
         )}
       />
       <Input
-        label={coinAmount ? "Amount Bought" : " "}
-        placeholder="Amount Bought"
+        label={coinAmount ? amountInput : " "}
+        placeholder={amountInput}
         value={coinAmount}
         defaultValue={coinAmount}
         keyboardType="numeric"
@@ -94,12 +92,12 @@ const styles = StyleSheet.create({
   dateContainer: {
     marginHorizontal: 10,
     borderBottomWidth: 1,
-    borderColor: Colors.light.darkGrey,
+    borderColor: darkGrey,
     justifyContent: "center",
     marginBottom: 20,
   },
   dateLabel: {
-    color: Colors.light.darkGrey,
+    color: darkGrey,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -110,9 +108,9 @@ const styles = StyleSheet.create({
   rightTextToggle: {
     paddingHorizontal: 6,
     paddingVertical: 2,
-    backgroundColor: Colors.light.secondaryText,
+    backgroundColor: secondaryText,
     borderWidth: 1,
-    borderColor: Colors.light.darkGrey,
+    borderColor: darkGrey,
     borderRadius: 12,
     overflow: "hidden",
   },

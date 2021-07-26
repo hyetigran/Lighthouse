@@ -39,7 +39,15 @@ const TransactionRow = ({
     handleTxnOption({ txId, coinId });
   };
 
-  const actionText = isBuy ? "Buy" : "Sell";
+  let actionText;
+  let sign;
+  if (isBuy) {
+    actionText = "Buy";
+    sign = "";
+  } else {
+    actionText = "Sell";
+    sign = "-";
+  }
   const deltaColor = gainLossPercent > 0 ? gainGreen : lossRed;
 
   return (
@@ -87,7 +95,7 @@ const TransactionRow = ({
           </View>
           <View style={styles.bottomInfoItem}>
             <Text style={styles.bottomInfoItemLabel}>Amount Added</Text>
-            <Text style={styles.actionText}>{coinAmount}</Text>
+            <Text style={styles.actionText}>{`${sign}${coinAmount}`}</Text>
           </View>
         </View>
         <View style={styles.spacer}></View>

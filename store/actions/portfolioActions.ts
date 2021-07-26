@@ -7,7 +7,9 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "../index";
 import {
   FETCH_PORTFOLIO_SUCCESS,
+  CREATE_PORTFOLIO_SUCCESS,
   CREATE_TRANSACTION_SUCCESS,
+  UPDATE_TRANSACTION_SUCCESS,
   DELETE_TRANSACTION_SUCCESS,
   Portfolio,
   PortfolioCoin,
@@ -94,8 +96,10 @@ export const thunkFetchPortfolio =
                   coin_amount,
                   exchange,
                   is_buy,
+                  price_type
                 } = txn;
                 const { name, symbol, price, logo } = coinData[coin_id];
+                const sign = is_buy ? 1 : -1;
 
                 const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
                 const gainLossPercent = calcGainPercent(price, spot_price)
@@ -111,6 +115,7 @@ export const thunkFetchPortfolio =
                   costBasis: coin_amount * spot_price,
                   gainLossAbs,
                   gainLossPercent,
+                  priceType: price_type,
                   fiat,
                 };
 
@@ -121,8 +126,8 @@ export const thunkFetchPortfolio =
                     symbol: symbol,
                     spotPrice: price,
                     logo: logo,
-                    cryptoTotal: coin_amount,
-                    marketValue: coin_amount * price,
+                    cryptoTotal: coin_amount * sign,
+                    marketValue: coin_amount * sign * price,
                     costBasis: coin_amount * spot_price,
                     avgBuyPrice: 0,
                     avgSellPrice: 0,
@@ -134,7 +139,7 @@ export const thunkFetchPortfolio =
                   acc[index] = portfolioCoin;
                 } else {
                   let index = mapCoinIdToIndex[coin_id];
-                  acc[index].cryptoTotal += coin_amount;
+                  acc[index].cryptoTotal += coin_amount * sign;
                   acc[index].marketValue = acc[index].cryptoTotal * price;
                   acc[index].costBasis += transactionMapped.costBasis;
                   acc[index].transactions = [
@@ -198,7 +203,7 @@ export const thunkCreatePortfolio =
     };
 export const createPortfolio = (payload: Portfolio) => {
   return {
-    type: FETCH_PORTFOLIO_SUCCESS,
+    type: CREATE_PORTFOLIO_SUCCESS,
     payload,
   };
 };
@@ -213,6 +218,7 @@ export const thunkCreateTransaction =
     coin_id: number;
     portfolio_id: string;
     is_buy: boolean;
+    price_type: number;
   }): ThunkAction<void, RootState, unknown, Action<string>> =>
     async (dispatch, getState) => {
       try {
@@ -232,6 +238,7 @@ export const thunkCreateTransaction =
           coin_amount,
           purchase_date,
           spot_price,
+          price_type
         } = result.data.data;
 
         const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
@@ -249,11 +256,13 @@ export const thunkCreateTransaction =
           marketValue: coin_amount * price,
           costBasis: coin_amount * spot_price,
           isBuy: is_buy,
+          priceType: price_type,
           exchange,
           fiat,
           gainLossAbs,
           gainLossPercent
         };
+        const sign = transaction.isBuy ? 1 : -1;
 
         const { portfolio }: { portfolio: Portfolio } = getState()
         let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
@@ -267,8 +276,8 @@ export const thunkCreateTransaction =
             symbol: symbol,
             spotPrice: price,
             logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin_id}.png`,
-            cryptoTotal: coin_amount,
-            marketValue: coin_amount * price,
+            cryptoTotal: coin_amount * sign,
+            marketValue: coin_amount * sign * price,
             costBasis: coin_amount * spot_price,
             avgBuyPrice: transaction.isBuy ? coin_amount * spot_price : 0,
             avgSellPrice: transaction.isBuy ? 0 : coin_amount * spot_price,
@@ -280,7 +289,8 @@ export const thunkCreateTransaction =
           // ADD TRANSACTION TO EXISTING COIN
           updatedCoins = updatedCoins.map(coin => {
             if (coin.coinId === coin_id) {
-              const newCryptoTotal = coin.cryptoTotal + transaction.coinAmount
+              const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
+              // TODO - BUG -- avgerages are updated before new transaction is added
               const buyTxns = coin.transactions.filter(txn => txn.isBuy)
               const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
               const avgBuyPrice = calcAvgPrice(buyTxns)
@@ -338,7 +348,8 @@ export const thunkDeleteTransaction =
             const filteredTransactionsSell = filteredTransactions.filter(txn => !txn.isBuy)
 
             const { cryptoTotal, marketValue, costBasis } = filteredTransactions.reduce((acc, cur) => {
-              acc.cryptoTotal += cur.coinAmount
+              const sign = cur.isBuy ? 1 : -1
+              acc.cryptoTotal += cur.coinAmount * sign
               acc.costBasis += cur.costBasis
               acc.marketValue += cur.marketValue
               return acc
@@ -378,3 +389,100 @@ export const deleteTransaction = (payload: PortfolioCoin[]) => {
     payload,
   }
 }
+
+export const thunkUpdateTransaction =
+  (data: {
+    purchase_date: number;
+    coin_amount: string;
+    spot_price: number;
+    exchange: string;
+    fiat: string;
+    coin_id: number;
+    portfolio_id: string;
+    is_buy: boolean;
+    price_type: number;
+  }, txId: string): ThunkAction<void, RootState, unknown, Action<string>> =>
+    async (dispatch, getState) => {
+      try {
+        // SEND NETWORK REQUEST
+        const token = await AsyncStorage.getItem("token");
+        const result = await axiosWithAuth(token!).put(
+          `${PORTFOLIO_API_URL}/transaction/${txId}`,
+          data
+        );
+        // MAP RESULT TO 'Transaction' TYPE
+        const {
+          id,
+          is_buy,
+          coin_id,
+          exchange,
+          fiat,
+          coin_amount,
+          purchase_date,
+          spot_price,
+          price_type
+        } = result.data.data;
+
+        const { portfolio }: { portfolio: Portfolio } = getState()
+        const { spotPrice: price } = portfolio.portfolioCoins.find(coin => coin.coinId === coin_id)!
+
+        const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
+        const gainLossPercent = calcGainPercent(price, spot_price)
+
+        const transaction = {
+          txId: id,
+          purchaseDate: purchase_date,
+          purchasePrice: spot_price,
+          coinAmount: coin_amount,
+          marketValue: coin_amount * price,
+          costBasis: coin_amount * spot_price,
+          isBuy: is_buy,
+          priceType: price_type,
+          exchange,
+          fiat,
+          gainLossAbs,
+          gainLossPercent
+        };
+
+        const sign = transaction.isBuy ? 1 : -1;
+
+        let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
+        // ADD TRANSACTION TO EXISTING COIN
+        updatedCoins = updatedCoins.map(coin => {
+          if (coin.coinId === coin_id) {
+            // TODO - Potential double counting OR sign mishandle (i.e. buy -> sell)
+            const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
+            // TODO - BUG -- avgerages are updated before new transaction is added
+            const buyTxns = coin.transactions.filter(txn => txn.isBuy)
+            const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
+            const avgBuyPrice = calcAvgPrice(buyTxns)
+            const avgSellPrice = calcAvgPrice(sellTxns)
+            return {
+              ...coin,
+              cryptoTotal: newCryptoTotal,
+              marketValue: newCryptoTotal * coin.spotPrice!,
+              avgBuyPrice,
+              avgSellPrice,
+              transactions: coin.transactions.map(txn => {
+                if (txn.txId === txId) {
+                  return transaction
+                }
+                return txn
+              })
+            }
+          }
+          return coin;
+        })
+
+        // SAVE COIN TO PORTFOLIO STATE
+        dispatch(updateTransaction(updatedCoins));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+export const updateTransaction = (payload: PortfolioCoin[]) => {
+  return {
+    type: UPDATE_TRANSACTION_SUCCESS,
+    payload,
+  };
+};
