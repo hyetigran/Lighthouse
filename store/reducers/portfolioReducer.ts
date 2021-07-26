@@ -25,7 +25,10 @@ export const portfolioReducer = (
         portfolioCoins: action.payload,
       };
     case UPDATE_TRANSACTION_SUCCESS:
-      return state;
+      return {
+        ...state,
+        portfolioCoins: action.payload,
+      };
     case DELETE_TRANSACTION_SUCCESS:
       return {
         ...state,

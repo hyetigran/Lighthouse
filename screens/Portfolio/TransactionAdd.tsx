@@ -70,9 +70,14 @@ const TransactionAdd = () => {
   // EDIT MODE
   useEffect(() => {
     if (isEditMode) {
-      const { isBuy, purchaseDate, purchasePrice, priceType, coinAmount } =
-        editableTransaction!;
-      setIsBuy(isBuy);
+      const {
+        isBuy: isBuying,
+        purchaseDate,
+        purchasePrice,
+        priceType,
+        coinAmount,
+      } = editableTransaction!;
+      setIsBuy(isBuying);
       setDate(new Date(purchaseDate));
       setPriceType(priceType);
       setBuyPrice(purchasePrice.toString());
@@ -183,9 +188,8 @@ const TransactionAdd = () => {
       price_type: priceType,
     };
     if (isEditMode) {
-      data.txId = editableTransaction?.txId;
       // UPDATE TRANSACTION
-      dispatch(thunkUpdateTransaction(data));
+      dispatch(thunkUpdateTransaction(data, editableTransaction!.txId));
     } else {
       // CREATE TRANSACTION
       dispatch(thunkCreateTransaction(data));

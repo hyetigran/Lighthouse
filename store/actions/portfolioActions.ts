@@ -290,6 +290,7 @@ export const thunkCreateTransaction =
           updatedCoins = updatedCoins.map(coin => {
             if (coin.coinId === coin_id) {
               const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
+              // TODO - BUG -- avgerages are updated before new transaction is added
               const buyTxns = coin.transactions.filter(txn => txn.isBuy)
               const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
               const avgBuyPrice = calcAvgPrice(buyTxns)
@@ -405,8 +406,8 @@ export const thunkUpdateTransaction =
       try {
         // SEND NETWORK REQUEST
         const token = await AsyncStorage.getItem("token");
-        const result = await axiosWithAuth(token!).post(
-          `${PORTFOLIO_API_URL}/transaction-create`,
+        const result = await axiosWithAuth(token!).put(
+          `${PORTFOLIO_API_URL}/transaction/${txId}`,
           data
         );
         // MAP RESULT TO 'Transaction' TYPE
@@ -422,9 +423,8 @@ export const thunkUpdateTransaction =
           price_type
         } = result.data.data;
 
-        const coinResult: any = await fetchCoinDataCMC(coin_id.toString())
-
-        const { name, symbol, quote: { USD: { price } } } = coinResult.data.data[coin_id];
+        const { portfolio }: { portfolio: Portfolio } = getState()
+        const { spotPrice: price } = portfolio.portfolioCoins.find(coin => coin.coinId === coin_id)!
 
         const gainLossAbs = calcGainAbs(price, spot_price, coin_amount)
         const gainLossPercent = calcGainPercent(price, spot_price)
@@ -443,53 +443,36 @@ export const thunkUpdateTransaction =
           gainLossAbs,
           gainLossPercent
         };
+
         const sign = transaction.isBuy ? 1 : -1;
 
-        const { portfolio }: { portfolio: Portfolio } = getState()
         let updatedCoins: PortfolioCoin[] = [...portfolio.portfolioCoins]
-        // FIRST COIN TRANSACTION
-        const isFirstCoinTxn = portfolio.portfolioCoins.findIndex(coin => coin.coinId === coin_id)
-        if (isFirstCoinTxn === -1) {
-
-          const newPortfolioCoin = {
-            coinId: coin_id,
-            name: name,
-            symbol: symbol,
-            spotPrice: price,
-            logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${coin_id}.png`,
-            cryptoTotal: coin_amount * sign,
-            marketValue: coin_amount * sign * price,
-            costBasis: coin_amount * spot_price,
-            avgBuyPrice: transaction.isBuy ? coin_amount * spot_price : 0,
-            avgSellPrice: transaction.isBuy ? 0 : coin_amount * spot_price,
-            transactions: [transaction],
-            historicalPrice: [0],
-          };
-          updatedCoins.push(newPortfolioCoin);
-        } else {
-          // ADD TRANSACTION TO EXISTING COIN
-          updatedCoins = updatedCoins.map(coin => {
-            if (coin.coinId === coin_id) {
-              const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
-              const buyTxns = coin.transactions.filter(txn => txn.isBuy)
-              const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
-              const avgBuyPrice = calcAvgPrice(buyTxns)
-              const avgSellPrice = calcAvgPrice(sellTxns)
-              return {
-                ...coin,
-                cryptoTotal: newCryptoTotal,
-                marketValue: newCryptoTotal * coin.spotPrice!,
-                avgBuyPrice,
-                avgSellPrice,
-                transactions: [
-                  ...coin.transactions,
-                  transaction
-                ]
-              }
+        // ADD TRANSACTION TO EXISTING COIN
+        updatedCoins = updatedCoins.map(coin => {
+          if (coin.coinId === coin_id) {
+            // TODO - Potential double counting OR sign mishandle (i.e. buy -> sell)
+            const newCryptoTotal = coin.cryptoTotal + (transaction.coinAmount * sign)
+            // TODO - BUG -- avgerages are updated before new transaction is added
+            const buyTxns = coin.transactions.filter(txn => txn.isBuy)
+            const sellTxns = coin.transactions.filter(txn => !txn.isBuy)
+            const avgBuyPrice = calcAvgPrice(buyTxns)
+            const avgSellPrice = calcAvgPrice(sellTxns)
+            return {
+              ...coin,
+              cryptoTotal: newCryptoTotal,
+              marketValue: newCryptoTotal * coin.spotPrice!,
+              avgBuyPrice,
+              avgSellPrice,
+              transactions: coin.transactions.map(txn => {
+                if (txn.txId === txId) {
+                  return transaction
+                }
+                return txn
+              })
             }
-            return coin;
-          })
-        }
+          }
+          return coin;
+        })
 
         // SAVE COIN TO PORTFOLIO STATE
         dispatch(updateTransaction(updatedCoins));
