@@ -2,14 +2,28 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors";
 
-const BigHero = () => {
-  // const [periodUI, setPeriodUI] = useState<number>(5);
+interface ActionProps {
+  data: {
+    totalMarketValue: number;
+    totalGainValue: number;
+    totalGainPercent: number;
+  };
+}
+
+const BigHero = ({
+  data: { totalMarketValue, totalGainValue, totalGainPercent },
+}: ActionProps) => {
+  const sign = totalGainValue > 0 ? "+" : "-";
   return (
     <View style={styles.container}>
-      <Text style={styles.totalAmountText}>$ 100,000</Text>
+      <Text style={styles.totalAmountText}>{`$${totalMarketValue.toFixed(
+        2
+      )}`}</Text>
       <View style={styles.returnsContainer}>
-        <Text>+ $ 10,000</Text>
-        <Text> ^ 5%</Text>
+        <Text style={{ paddingRight: 10 }}>{`${sign} $${totalGainValue.toFixed(
+          2
+        )}`}</Text>
+        <Text>{`${totalGainPercent.toFixed(2)}%`}</Text>
       </View>
       {/* <View style={styles.timePeriodContainer}>
         {["1H", "1D", "1W", "1M", "1Y", "All"].map(

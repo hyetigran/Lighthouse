@@ -35,6 +35,21 @@ export default function MainPortfolioScreen() {
     setIsLoading(false);
   }, []);
 
+  let totalMarketValue = 0;
+  let totalGainValue = 0;
+  let totalGainPercent = 0;
+
+  totalMarketValue = portfolio.portfolioCoins.reduce(
+    (acc, cur) => (acc += cur.marketValue),
+    0
+  );
+  const totalCostBasis = portfolio.portfolioCoins.reduce(
+    (acc, cur) => (acc += cur.costBasis),
+    0
+  );
+  totalGainValue = totalMarketValue - totalCostBasis;
+  totalGainPercent = (totalGainValue / totalCostBasis) * 100;
+
   const addTransactionHandler = () => {
     navigate("Transaction");
   };
@@ -84,7 +99,7 @@ export default function MainPortfolioScreen() {
 
   return (
     <View style={styles.container}>
-      <BigHero />
+      <BigHero data={{ totalGainPercent, totalGainValue, totalMarketValue }} />
       <View
         style={styles.separator}
         lightColor="#eee"
