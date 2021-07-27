@@ -75,6 +75,7 @@ const TransactionDetail = () => {
       symbol: coin.symbol,
       action: "edit",
       txId: selectedTxn.txId,
+      isOnlyTransaction: coin.transactions.length === 1,
     });
     setIsVisible(false);
   };

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -19,6 +20,7 @@ import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import {
   thunkCreateTransaction,
   thunkUpdateTransaction,
+  thunkDeleteTransaction,
 } from "../../store/actions/portfolioActions";
 
 const { width } = Dimensions.get("window");
@@ -54,9 +56,14 @@ const TransactionAdd = () => {
 
   const editableTransaction = useSelector((state: RootState) => {
     if (isEditMode) {
-      return state.portfolio.portfolioCoins
-        .find((coin) => coin.coinId === params.id)!
-        .transactions.find((transaction) => transaction.txId === params.txId);
+      const coin = state.portfolio.portfolioCoins.find(
+        (coin) => coin.coinId === params.id
+      );
+      if (coin !== undefined) {
+        return coin.transactions.find(
+          (transaction) => transaction.txId === params.txId
+        );
+      }
     }
   });
   useEffect(() => {
@@ -69,7 +76,7 @@ const TransactionAdd = () => {
 
   // EDIT MODE
   useEffect(() => {
-    if (isEditMode) {
+    if (isEditMode && editableTransaction !== undefined) {
       const {
         isBuy: isBuying,
         purchaseDate,
