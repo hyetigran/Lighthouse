@@ -1,6 +1,10 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+
 import Colors from "../../constants/Colors";
+
+const { gainGreen, lossRed } = Colors.light;
 
 interface ActionProps {
   data: {
@@ -13,17 +17,39 @@ interface ActionProps {
 const BigHero = ({
   data: { totalMarketValue, totalGainValue, totalGainPercent },
 }: ActionProps) => {
-  const sign = totalGainValue > 0 ? "+" : "-";
+  let sign = "";
+  let deltaColor = "";
+  let caretDirection = "";
+  if (totalGainValue > 0) {
+    sign = "+";
+    deltaColor = gainGreen;
+    caretDirection = "caret-up";
+  } else {
+    sign = "-";
+    deltaColor = lossRed;
+    caretDirection = "caret-down";
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.totalAmountText}>{`$${totalMarketValue.toFixed(
         2
       )}`}</Text>
       <View style={styles.returnsContainer}>
-        <Text style={{ paddingRight: 10 }}>{`${sign} $${totalGainValue.toFixed(
-          2
-        )}`}</Text>
-        <Text>{`${totalGainPercent.toFixed(2)}%`}</Text>
+        <Text
+          style={{ color: deltaColor, paddingRight: 10 }}
+        >{`${sign} $${Math.abs(totalGainValue).toFixed(2)}`}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Ionicons
+            size={18}
+            color={deltaColor}
+            // @ts-ignore
+            name={caretDirection}
+          />
+
+          <Text style={{ color: deltaColor }}>{`${totalGainPercent.toFixed(
+            2
+          )}%`}</Text>
+        </View>
       </View>
       {/* <View style={styles.timePeriodContainer}>
         {["1H", "1D", "1W", "1M", "1Y", "All"].map(
