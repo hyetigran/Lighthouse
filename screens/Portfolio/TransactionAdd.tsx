@@ -20,7 +20,6 @@ import { TransactionRouteProp } from "../../navigation/TransactionStack";
 import {
   thunkCreateTransaction,
   thunkUpdateTransaction,
-  thunkDeleteTransaction,
 } from "../../store/actions/portfolioActions";
 
 const { width } = Dimensions.get("window");
@@ -34,7 +33,6 @@ const {
   tint,
 } = Colors.light;
 
-const initialTransaction = {};
 const initialErrorState = {
   price: false,
   coin: false,
