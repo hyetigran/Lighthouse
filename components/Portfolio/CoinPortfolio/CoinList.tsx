@@ -9,11 +9,14 @@ import CoinRow from "./CoinRow";
 interface ActionProps {
   isLoading: boolean;
 }
+// TODO - create filter/sort component
+const SORT_FILTER = "marketValue";
 
 const CoinList = ({ isLoading }: ActionProps) => {
   const mainPortfolio: Portfolio = useSelector(
     (state: RootState) => state.portfolio
   );
+  mainPortfolio.portfolioCoins.sort((a, b) => b[SORT_FILTER] - a[SORT_FILTER]);
 
   return (
     <ScrollView

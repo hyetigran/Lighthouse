@@ -12,6 +12,7 @@ const {
   tabIconDefault: colorBorder,
   secondaryText: darkGrey,
   gainGreen,
+  lossRed,
 } = Colors.light;
 
 const CoinRow = ({ data }: ActionProps) => {
