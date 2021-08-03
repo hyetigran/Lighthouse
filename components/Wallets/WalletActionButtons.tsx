@@ -1,15 +1,21 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/core";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 const { darkGrey } = Colors.light;
 
 const WalletActionButtons = () => {
+  const { navigate } = useNavigation();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
         <Text style={styles.actionText}>Receive</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={() => navigate("Send")}
+      >
         <Text style={styles.actionText}>Send</Text>
       </TouchableOpacity>
     </View>

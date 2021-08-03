@@ -17,6 +17,7 @@ export default function SendNavigator() {
         component={SendAddressScreen}
         options={{
           headerTitle: "Send",
+          headerBackTitle: "Wallet",
         }}
       />
       <Stack.Screen

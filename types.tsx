@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
+  Send: undefined;
   NotFound: undefined;
 };
 
