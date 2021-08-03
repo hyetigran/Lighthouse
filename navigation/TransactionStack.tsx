@@ -1,22 +1,20 @@
-// import { Ionicons } from "@expo/vector-icons";
+import * as React from "react";
 import {
   createStackNavigator,
   HeaderBackButton,
 } from "@react-navigation/stack";
-import * as React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Alert } from "react-native";
+import { RouteProp } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-//import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { useDispatch } from "react-redux";
 
-// import Colors from "../constants/Colors";
-// import useColorScheme from "../hooks/useColorScheme";
 import TransactionSearch from "../screens/Portfolio/TransactionSearch";
 import TransactionAdd from "../screens/Portfolio/TransactionAdd";
+import TransactionDetail from "../screens/Portfolio/TransactionDetail";
 import { TransactionParamList } from "../types";
 import HeaderTitle from "../components/HeaderTitle";
-import { RouteProp } from "@react-navigation/native";
-import TransactionDetail from "../screens/Portfolio/TransactionDetail";
 import Colors from "../constants/Colors";
+import { thunkDeleteTransaction } from "../store/actions/portfolioActions";
 
 const { text } = Colors.light;
 
@@ -29,6 +27,7 @@ type ParamList = {
     symbol: string;
     action?: string;
     txId?: string;
+    isOnlyTransaction?: boolean;
   };
 };
 const Stack = createStackNavigator<TransactionParamList>();
@@ -52,9 +51,39 @@ export default function TransactionNavigator() {
         options={({ route, navigation }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
           headerLeft: (props) => {
+            const dispatch = useDispatch();
             if (route.params.action === "edit") {
               return (
-                <TouchableOpacity style={{ paddingLeft: 15 }}>
+                <TouchableOpacity
+                  style={{ paddingLeft: 15 }}
+                  onPress={() => {
+                    Alert.alert(
+                      "Delete Transaction",
+                      "Are you sure you want to delete this transaction?",
+                      [
+                        {
+                          text: "Yes",
+                          onPress: () => {
+                            const { id: coinId, isOnlyTransaction } =
+                              route.params;
+                            const txId = route.params.txId!;
+                            dispatch(thunkDeleteTransaction({ txId, coinId }));
+                            if (isOnlyTransaction) {
+                              navigation.navigate("Portfolio");
+                            } else {
+                              navigation.navigate("TransactionDetail");
+                            }
+                          },
+                          style: "destructive",
+                        },
+                        {
+                          text: "No",
+                          style: "cancel",
+                        },
+                      ]
+                    );
+                  }}
+                >
                   <Ionicons size={24} color={text} name={"trash-outline"} />
                 </TouchableOpacity>
               );
