@@ -37,3 +37,10 @@ export type TransactionParamList = {
   };
   TransactionDetail: { id: number; name: string };
 };
+
+export type SendParamList = {
+  SendAddressScreen: undefined;
+  ChooseWalletScreen: undefined;
+  EnterAmountScreen: undefined;
+  ReviewTransactionScreen: undefined;
+};
