@@ -3,6 +3,9 @@ import { StyleSheet } from "react-native";
 import EditScreenInfo from "../../components/EditScreenInfo";
 import { Text, View } from "../../components/Themed";
 import WalletActionButtons from "../../components/Wallets/WalletActionButtons";
+import Colors from "../../constants/Colors";
+
+const { secondaryText: grey } = Colors.light;
 
 export default function MainWalletsScreen() {
   useEffect(() => {
@@ -25,6 +28,7 @@ export default function MainWalletsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: grey,
     alignItems: "center",
     justifyContent: "center",
   },

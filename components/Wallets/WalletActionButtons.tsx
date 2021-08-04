@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/core";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
-const { darkGrey } = Colors.light;
+const { darkGrey, background } = Colors.light;
 
 const WalletActionButtons = () => {
   const { navigate } = useNavigation();
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderColor: darkGrey,
     flex: 1,
+    backgroundColor: background,
   },
   actionText: {
     fontWeight: "bold",
