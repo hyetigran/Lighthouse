@@ -20,6 +20,6 @@ interface createWalletAction {
     payload: Wallet;
 }
 
-export type MarketActionTypes =
+export type WalletActionTypes =
     | getWalletsAction
     | createWalletAction
