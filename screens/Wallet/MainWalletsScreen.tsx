@@ -28,9 +28,9 @@ export default function MainWalletsScreen() {
         data={wallets}
         keyExtractor={(item) => item.symbol}
         contentContainerStyle={styles.flatList}
-        renderItem={({ item }) => {
-          return <WalletCard wallets={item} />;
-        }}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => <WalletCard wallets={item} />}
       />
     </View>
   );

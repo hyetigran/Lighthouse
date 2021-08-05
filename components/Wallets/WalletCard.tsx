@@ -27,7 +27,7 @@ const WalletCard = ({ wallets }: ActionProps) => {
       </View>
       {wallets &&
         wallets.walletsData.map((wallet: Wallet) => (
-          <WalletItem wallet={wallet} />
+          <WalletItem wallet={wallet} logo={wallets.logo} navigate={navigate} />
         ))}
     </View>
   );
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 20,
     borderRadius: 6,
-    paddingVertical: 16,
+    paddingTop: 16,
     shadowColor: darkGrey,
     shadowOpacity: 0.5,
     elevation: 4,
