@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
-import EditScreenInfo from "../../components/EditScreenInfo";
-import { Text, View } from "../../components/Themed";
-import WalletActionButtons from "../../components/Wallets/WalletActionButtons";
-import Colors from "../../constants/Colors";
+import { StyleSheet, FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
-const { secondaryText: grey } = Colors.light;
+import WalletActionButtons from "../../components/Wallets/WalletActionButtons";
+import WalletCard from "../../components/Wallets/WalletCard";
+import Colors from "../../constants/Colors";
+import { RootState } from "../../store";
+
+const { secondaryText: grey, background } = Colors.light;
 
 export default function MainWalletsScreen() {
+  const wallets = useSelector((state: RootState) => state.wallet);
   useEffect(() => {
     initialLoad();
   }, []);
@@ -21,6 +24,14 @@ export default function MainWalletsScreen() {
   return (
     <View style={styles.container}>
       <WalletActionButtons />
+      <FlatList
+        data={wallets}
+        keyExtractor={(item) => item.symbol}
+        contentContainerStyle={styles.flatList}
+        renderItem={({ item }) => {
+          return <WalletCard wallets={item} />;
+        }}
+      />
     </View>
   );
 }
@@ -32,13 +43,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  flatList: {
+    // backgroundColor: background,
+    // minWidth: "90%",
   },
 });

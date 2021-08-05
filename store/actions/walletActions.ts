@@ -21,7 +21,7 @@ export const thunkGetAllWallets = (): ThunkAction<
     }
 };
 
-const fetchAllCurrencies = (allWallets: Wallets): WalletActionTypes => {
+const fetchAllCurrencies = (allWallets: Wallets[]): WalletActionTypes => {
     return {
         type: FETCH_WALLETS_SUCCESS,
         payload: allWallets,
