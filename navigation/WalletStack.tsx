@@ -14,7 +14,7 @@ export default function AddWalletNavigator() {
         name="AddWalletScreen"
         component={AddWalletScreen}
         options={{
-          headerTitle: "Add Wallet",
+          headerTitle: "Add wallet",
           headerBackTitle: "Wallets",
         }}
       />
