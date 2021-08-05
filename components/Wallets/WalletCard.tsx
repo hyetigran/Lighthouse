@@ -21,13 +21,18 @@ const WalletCard = ({ wallets }: ActionProps) => {
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>{wallets.name}</Text>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => navigate("AddWalletNavigator")}>
           <Ionicons name="add-outline" size={24} color={darkGrey} />
         </TouchableOpacity>
       </View>
       {wallets &&
         wallets.walletsData.map((wallet: Wallet) => (
-          <WalletItem wallet={wallet} logo={wallets.logo} navigate={navigate} />
+          <WalletItem
+            key={wallet.publickKey}
+            wallet={wallet}
+            logo={wallets.logo}
+            navigate={navigate}
+          />
         ))}
     </View>
   );
