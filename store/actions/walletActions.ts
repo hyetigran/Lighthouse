@@ -65,3 +65,23 @@ const fetchAllWallets = (allWallets: Wallets[]): WalletActionTypes => {
     payload: allWallets,
   };
 };
+
+export const thunkCreateWallet =
+  (
+    coin: string,
+    name: string
+  ): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch, getState) => {
+    try {
+      // GET WALLET STATE
+      const wallets = getState().wallet;
+
+      // COIN EXISTS?
+
+      // CREATE WALLET
+      // PERSIST TO LOCAL STORAGE
+      //
+    } catch (error) {
+      console.log(error);
+    }
+  };
