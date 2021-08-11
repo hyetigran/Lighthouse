@@ -1,24 +1,27 @@
 import React, { useEffect } from "react";
 import { StyleSheet, FlatList, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import WalletActionButtons from "../../components/Wallets/WalletActionButtons";
 import WalletCard from "../../components/Wallets/WalletCard";
 import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
+import { thunkGetAllWallets } from "../../store/actions/walletActions";
 
 const { secondaryText: grey, background } = Colors.light;
 
 export default function MainWalletsScreen() {
   const wallets = useSelector((state: RootState) => state.wallet);
+  const dispatch = useDispatch();
   useEffect(() => {
-    initialLoad();
+    // dispatch(initialLoad());
   }, []);
 
   const initialLoad = () => {
     // if exists LOAD PK
     // else CREATE PrivateKey, Public Key, Address
     // PERSIST in AsyncStorage
+    thunkGetAllWallets();
   };
 
   return (
