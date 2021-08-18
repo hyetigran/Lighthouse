@@ -5,6 +5,7 @@ import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  CREATE_WALLET_SUCCESS,
   FETCH_WALLETS_SUCCESS,
   Wallet,
   WalletActionTypes,
@@ -76,12 +77,41 @@ export const thunkCreateWallet =
       // GET WALLET STATE
       const wallets = getState().wallet;
 
-      // COIN EXISTS?
+      // CHECK COIN EXISTS
+      const coinExists = wallets.find((wallet) => wallet.symbol === coin);
 
       // CREATE WALLET
+      if (coinExists === undefined) {
+        //     ENSURE PROPER LIBRARY IS USED
+        //     const privateKey = new bitcore.PrivateKey("testnet");
+        //     const privateKeyWIF = privateKey.toWIF();
+        //     const newWallet = {
+        //       walletsData: [
+        //         {
+        //           privateKeyWIF,
+        //           isBacked: false,
+        //           name: name,
+        //         },
+        //       ],
+        //       name: "Bitcoin Cash (BCH)",
+        //       logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1831.png",
+        //       symbol: coin,
+        //       coinId: 1831,
+        //     };
+      } else {
+        // ADD to walletsData of existing WALLET
+      }
       // PERSIST TO LOCAL STORAGE
-      //
+      // DISPATCH
+      dispatch(createWallet(updatedWallets));
     } catch (error) {
       console.log(error);
     }
   };
+
+const createWallet = (updatedWallets) => {
+  return {
+    type: CREATE_WALLET_SUCCESS,
+    payload: updatedWallets,
+  };
+};
