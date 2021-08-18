@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
+  Send: undefined;
   NotFound: undefined;
 };
 
@@ -24,6 +25,7 @@ export type PortfolioTabParamsList = {
 
 export type WalletsTabParamsList = {
   MainWalletsScreen: undefined;
+  AddWalletNavigator: undefined;
 };
 
 export type TransactionParamList = {
@@ -36,4 +38,16 @@ export type TransactionParamList = {
     txId?: string;
   };
   TransactionDetail: { id: number; name: string };
+};
+
+export type SendParamList = {
+  SendAddressScreen: undefined;
+  ChooseWalletScreen: undefined;
+  EnterAmountScreen: undefined;
+  ReviewTransactionScreen: undefined;
+};
+
+export type WalletParamList = {
+  AddWalletScreen: undefined;
+  CreateWalletScreen: undefined;
 };

@@ -4,10 +4,12 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import { marketReducer } from "./reducers/marketReducer";
 import { portfolioReducer } from "./reducers/portfolioReducer";
+import { walletReducer } from "./reducers/walletReducer";
 
 const rootReducer = combineReducers({
   market: marketReducer,
   portfolio: portfolioReducer,
+  wallet: walletReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
