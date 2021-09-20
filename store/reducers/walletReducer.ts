@@ -5,34 +5,7 @@ import {
   Wallets,
 } from "../types/walletTypes";
 
-const initialState: Wallets[] = [
-  // {
-  //   walletsData: [
-  //     {
-  //       privateKeyWIF: "PRIVK-1-13124121513523515",
-  //       publickKey: "PUBK-1-1039753580137501351",
-  //       isBacked: false,
-  //       name: "Personal Wallet 1",
-  //     },
-  //     {
-  //       privateKeyWIF: "PRIVK-2-13124121513523515",
-  //       publickKey: "PUBK-2-1039753580137501351",
-  //       isBacked: false,
-  //       name: "Personal Wallet 2",
-  //     },
-  //     {
-  //       privateKeyWIF: "PRIVK-3-13124121513523515",
-  //       publickKey: "PUBK-3-1039753580137501351",
-  //       isBacked: false,
-  //       name: "Personal Wallet 3",
-  //     },
-  //   ],
-  //   name: "Bitcoin Cash (BCH)",
-  //   logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1831.png",
-  //   symbol: "BCH",
-  //   coinId: 1831,
-  // },
-];
+const initialState: Wallets[] = [];
 
 export const walletReducer = (
   state = initialState,
