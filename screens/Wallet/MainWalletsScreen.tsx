@@ -14,14 +14,14 @@ export default function MainWalletsScreen() {
   const wallets = useSelector((state: RootState) => state.wallet);
   const dispatch = useDispatch();
   useEffect(() => {
-    // dispatch(initialLoad());
+    initialLoad();
   }, []);
 
   const initialLoad = () => {
     // if exists LOAD PK
     // else CREATE PrivateKey, Public Key, Address
     // PERSIST in AsyncStorage
-    thunkGetAllWallets();
+    dispatch(thunkGetAllWallets());
   };
 
   return (
