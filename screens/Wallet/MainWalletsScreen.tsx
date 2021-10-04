@@ -1,18 +1,42 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import EditScreenInfo from "../../components/EditScreenInfo";
-import { Text, View } from "../../components/Themed";
+import React, { useEffect } from "react";
+import { StyleSheet, FlatList, View } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+
+import WalletActionButtons from "../../components/Wallets/WalletActionButtons";
+import WalletCard from "../../components/Wallets/WalletCard";
+import Colors from "../../constants/Colors";
+import { RootState } from "../../store";
+import { thunkGetAllWallets } from "../../store/actions/walletActions";
+
+const { secondaryText: grey, background } = Colors.light;
 
 export default function MainWalletsScreen() {
+  const wallets = useSelector((state: RootState) => state.wallet);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    initialLoad();
+  }, []);
+
+  const initialLoad = () => {
+    // if exists LOAD PK
+    // else CREATE PrivateKey, Public Key, Address
+    // PERSIST in AsyncStorage
+    dispatch(thunkGetAllWallets());
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+      <WalletActionButtons />
+      <FlatList
+        data={wallets}
+        keyExtractor={(item) => item.symbol}
+        contentContainerStyle={styles.flatList}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item, index }) => (
+          <WalletCard key={index} wallets={item} />
+        )}
       />
-      <EditScreenInfo path="/screens/MainWalletsScreen.tsx" />
     </View>
   );
 }
@@ -20,16 +44,12 @@ export default function MainWalletsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: grey,
     alignItems: "center",
     justifyContent: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  flatList: {
+    // backgroundColor: background,
+    // minWidth: "90%",
   },
 });
