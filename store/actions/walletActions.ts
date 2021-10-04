@@ -17,7 +17,7 @@ export const thunkGetAllWallets =
   async (dispatch) => {
     try {
       const wallets = await AsyncStorage.getItem("wallets");
-      console.log("WALLETS", wallets);
+      console.log("WALLETS", JSON.parse(wallets!));
       let loadedWallets: Wallets[] = [];
       if (wallets === null) {
         // CREATE DEFAULT WALLET

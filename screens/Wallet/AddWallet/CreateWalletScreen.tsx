@@ -80,7 +80,7 @@ const CreateWalletScreen = () => {
           onValueChange={(itemValue) => setCoinValue(itemValue.toString())}
         >
           {COIN_OPTIONS.map((coin) => (
-            <Picker.Item label={coin} value={coin} />
+            <Picker.Item key={coin} label={coin} value={coin} />
           ))}
         </Picker>
       </Modal>
