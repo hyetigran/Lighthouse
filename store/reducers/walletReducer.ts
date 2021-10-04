@@ -13,13 +13,11 @@ export const walletReducer = (
 ): Wallets[] => {
   switch (action.type) {
     case FETCH_WALLETS_SUCCESS:
-      return [...state, ...action.payload];
+      return action.payload;
     case CREATE_WALLET_SUCCESS:
       // TODO
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return [...state, action.payload];
+
     default:
       return state;
   }

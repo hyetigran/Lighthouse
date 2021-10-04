@@ -80,29 +80,57 @@ export const thunkCreateWallet =
 
       // CHECK COIN EXISTS
       const coinExists = wallets.find((wallet) => wallet.symbol === coin);
+      let updatedWallets: Wallets;
+
+      // ENSURE PROPER LIBRARY IS USED
+      // BCH BY DEFAULT
+      const privateKey = new bitcore.PrivateKey("testnet");
+      const privateKeyWIF = privateKey.toWIF();
 
       // CREATE WALLET
       if (coinExists === undefined) {
-        //     ENSURE PROPER LIBRARY IS USED
-        //     const privateKey = new bitcore.PrivateKey("testnet");
-        //     const privateKeyWIF = privateKey.toWIF();
-        //     const newWallet = {
-        //       walletsData: [
-        //         {
-        //           privateKeyWIF,
-        //           isBacked: false,
-        //           name: name,
-        //         },
-        //       ],
-        //       name: "Bitcoin Cash (BCH)",
-        //       logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1831.png",
-        //       symbol: coin,
-        //       coinId: 1831,
-        //     };
+        updatedWallets = {
+          walletsData: [
+            {
+              privateKeyWIF,
+              isBacked: false,
+              name: name,
+            },
+          ],
+          name: "Bitcoin Cash (BCH)",
+          logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1831.png",
+          symbol: coin,
+          coinId: 1831,
+        };
       } else {
         // ADD to walletsData of existing WALLET
+        updatedWallets = {
+          ...coinExists,
+          walletsData: [
+            ...coinExists.walletsData,
+            {
+              privateKeyWIF,
+              isBacked: false,
+              name: name,
+            },
+          ],
+        };
       }
       // PERSIST TO LOCAL STORAGE
+      const localWallets = await AsyncStorage.getItem("wallets");
+      const updatedLocalWallets = JSON.parse(localWallets!).map(
+        (wallet: Wallets) => {
+          if (wallet.symbol === coin) {
+            wallet = updatedWallets;
+          }
+          return wallet;
+        }
+      );
+      await AsyncStorage.setItem(
+        "wallets",
+        JSON.stringify(updatedLocalWallets)
+      );
+
       // DISPATCH
       dispatch(createWallet(updatedWallets));
     } catch (error) {
@@ -110,7 +138,7 @@ export const thunkCreateWallet =
     }
   };
 
-const createWallet = (updatedWallets) => {
+const createWallet = (updatedWallets: Wallets) => {
   return {
     type: CREATE_WALLET_SUCCESS,
     payload: updatedWallets,

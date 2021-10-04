@@ -28,7 +28,7 @@ const WalletCard = ({ wallets }: ActionProps) => {
       {wallets &&
         wallets.walletsData.map((wallet: Wallet) => (
           <WalletItem
-            key={wallet.publickKey}
+            key={wallet.privateKeyWIF}
             wallet={wallet}
             logo={wallets.logo}
             navigate={navigate}

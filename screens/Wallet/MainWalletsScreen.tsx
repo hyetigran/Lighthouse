@@ -33,7 +33,9 @@ export default function MainWalletsScreen() {
         contentContainerStyle={styles.flatList}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => <WalletCard wallets={item} />}
+        renderItem={({ item, index }) => (
+          <WalletCard key={index} wallets={item} />
+        )}
       />
     </View>
   );
