@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { Input } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,6 +26,7 @@ const CreateWalletScreen = () => {
   const [show, setShow] = useState(false);
 
   const dispatch = useDispatch();
+  const { navigate } = useNavigation();
 
   const handleInputChange = (value: string) => {
     setNameInput(value);
@@ -40,6 +42,7 @@ const CreateWalletScreen = () => {
 
   const handleCreateWallet = () => {
     dispatch(thunkCreateWallet(coinValue, nameInput));
+    navigate("MainWalletsScreen");
   };
   const isDisabled = nameInput.trim() === "";
   const btnColor = isDisabled ? tabIconDefault : tint;

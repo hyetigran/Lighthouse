@@ -16,7 +16,7 @@ export const walletReducer = (
       return action.payload;
     case CREATE_WALLET_SUCCESS:
       // TODO
-      return [...state, action.payload];
+      return [action.payload];
 
     default:
       return state;
