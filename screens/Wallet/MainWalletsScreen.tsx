@@ -18,9 +18,6 @@ export default function MainWalletsScreen() {
   }, []);
 
   const initialLoad = () => {
-    // if exists LOAD PK
-    // else CREATE PrivateKey, Public Key, Address
-    // PERSIST in AsyncStorage
     dispatch(thunkGetAllWallets());
   };
 

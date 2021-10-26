@@ -9,10 +9,11 @@ const WalletActionButtons = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-        <Text style={styles.actionText} onPress={() => navigate("Receive")}>
-          Receive
-        </Text>
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={() => navigate("Receive")}
+      >
+        <Text style={styles.actionText}>Receive</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.actionButton}

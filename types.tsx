@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
   Send: undefined;
+  Receive: undefined;
   NotFound: undefined;
 };
 

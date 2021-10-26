@@ -14,7 +14,7 @@ export default function SendNavigator() {
         name="ReceiveTransactionScreen"
         component={ReceiveTransactionScreen}
         options={{
-          headerTitle: "Send",
+          headerTitle: "Receive",
           headerBackTitle: "Wallet",
         }}
       />

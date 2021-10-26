@@ -4,6 +4,8 @@ import { Action } from "redux";
 import { RootState } from "../index";
 import { ThunkAction } from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// @ts-ignore
+import { BCH_FULLSTACK_API_URL } from "@env";
 import {
   CREATE_WALLET_SUCCESS,
   FETCH_WALLETS_SUCCESS,
@@ -12,13 +14,20 @@ import {
   Wallets,
 } from "../types/walletTypes";
 
+let FULLSTACK_URL = BCH_FULLSTACK_API_URL;
+if (__DEV__) {
+  // example: https://tapi.fullstack.cash/v4/
+  FULLSTACK_URL = BCH_FULLSTACK_API_URL.replace("api", "tapi");
+}
+
 export const thunkGetAllWallets =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch) => {
     try {
-      const wallets = await AsyncStorage.getItem("wallets");
-      console.log("WALLETS", JSON.parse(wallets!));
+      let wallets = await AsyncStorage.getItem("wallets");
+      await AsyncStorage.setItem("wallets", "");
       let loadedWallets: Wallets[] = [];
+      console.log("wallets", wallets);
       if (wallets === null) {
         // CREATE DEFAULT WALLET
         const privateKey = new bitcore.PrivateKey("testnet");
@@ -29,6 +38,8 @@ export const thunkGetAllWallets =
               privateKeyWIF,
               isBacked: false,
               name: "Personal Wallet",
+              addressString: privateKey.toAddress().toString(),
+              balance: 0,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -47,8 +58,11 @@ export const thunkGetAllWallets =
           return {
             ...wallets,
             walletsData: wallets.walletsData.map((w: Wallet) => {
+              // FETCH BALANCES
+              const balance = fetchBalance(w.addressString) || 0;
               return {
                 ...w,
+                balance,
                 privateKey: bitcore.PrivateKey.fromWIF(w.privateKeyWIF),
               };
             }),
@@ -60,6 +74,22 @@ export const thunkGetAllWallets =
       console.log("err", error);
     }
   };
+
+const fetchBalance = async (addressString: string) => {
+  try {
+    // let result = await axios.get(
+    //   `${FULLSTACK_URL}electrumx/balance/${addressString}`
+    // );
+    // TODO - Multiple addresses
+    // result = axios.post(`${FULLSTACK_URL}electrumx/balance`, {
+    //   addresses: addresses,
+    // });
+    // TEMP RETURN
+    return 0;
+  } catch (error) {
+    console.log("fetchBalance err", error);
+  }
+};
 
 const fetchAllWallets = (allWallets: Wallets[]): WalletActionTypes => {
   return {
@@ -95,6 +125,8 @@ export const thunkCreateWallet =
               privateKeyWIF,
               isBacked: false,
               name: name,
+              addressString: privateKey.toAddress().toString(),
+              balance: 0,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -112,6 +144,8 @@ export const thunkCreateWallet =
               privateKeyWIF,
               isBacked: false,
               name: name,
+              addressString: privateKey.toAddress().toString(),
+              balance: 0,
             },
           ],
         };
