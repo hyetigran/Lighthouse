@@ -20,7 +20,7 @@ const { tabIconDefault: darkGrey, gainGreen } = Colors.light;
 
 const SelectWalletScreen = () => {
   const { params } = useRoute<ReceiveRouteProp>();
-  const { navigate, goBack } = useNavigation();
+  const { goBack } = useNavigation();
   const wallets = useSelector((state: RootState) => state.wallet);
   const transformedWallets = wallets.map((wallet) => {
     return {
@@ -31,13 +31,7 @@ const SelectWalletScreen = () => {
     };
   });
 
-  //   useEffect(() => {
-  //     console.log("params in uE", pk);
-  //     setWalletPK(pk);
-  //   }, [pk]);
-
   const handleSelectWallet = (walletPK: string) => {
-    console.log("im fired");
     DeviceEventEmitter.emit("event.selectWalletToReceive", { walletPK });
     goBack();
   };

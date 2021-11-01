@@ -26,8 +26,9 @@ const ReceiveTransactionScreen = () => {
     ...wallets[0],
     walletsData: wallets[0].walletsData[0],
   });
-  console.log("SW", selectWallet.walletsData.addressString);
+
   const { navigate } = useNavigation();
+
   // TODO - LIFECYCLE LISTEN FOR TXN
   useEffect(() => {
     // API REQUEST FOR ADDRESS BALANCE UPDATE
@@ -40,29 +41,24 @@ const ReceiveTransactionScreen = () => {
   }, []);
 
   const selectWalletHandler = (eventData: { walletPK: string }) => {
-    console.log("RTS handler!!");
     wallets.reduce((acc, cur) => {
       const walletIndex = cur.walletsData.findIndex(
         (w) => w.privateKeyWIF === eventData.walletPK
       );
-      console.log("wIndex", walletIndex);
-
       if (walletIndex >= 0) {
         const selectedWallet = {
           ...cur,
           walletsData: cur.walletsData[walletIndex],
         };
-        console.log("here?");
         setSelectWallet(selectedWallet);
       }
       return acc;
     }, {});
   };
 
-  DeviceEventEmitter.addListener("event.selectWalletToReceive", (eventData) => {
-    console.log("inside emit");
-    selectWalletHandler(eventData);
-  });
+  DeviceEventEmitter.addListener("event.selectWalletToReceive", (eventData) =>
+    selectWalletHandler(eventData)
+  );
   // TODO - SELECT WALLET COMPONENT
 
   const copyToClipboard = () => {
