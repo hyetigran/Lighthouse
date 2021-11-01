@@ -14,7 +14,6 @@ export interface Wallet {
   publickKey?: string;
   // TODO - import Address types
   // TODO - implement HD Wallets
-  // addresses: any[];
   addressString: string;
   name: string;
   isBacked: boolean;

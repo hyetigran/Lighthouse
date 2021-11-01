@@ -51,6 +51,9 @@ export type SendParamList = {
 export type ReceiveParamList = {
   ReceiveTransactionScreen: undefined;
   EnterAmountScreen: undefined;
+  SelectWalletScreen: {
+    pk: string;
+  };
 };
 export type WalletParamList = {
   AddWalletScreen: undefined;

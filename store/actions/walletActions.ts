@@ -25,9 +25,8 @@ export const thunkGetAllWallets =
   async (dispatch) => {
     try {
       let wallets = await AsyncStorage.getItem("wallets");
-      await AsyncStorage.setItem("wallets", "");
       let loadedWallets: Wallets[] = [];
-      console.log("wallets", wallets);
+
       if (wallets === null) {
         // CREATE DEFAULT WALLET
         const privateKey = new bitcore.PrivateKey("testnet");
@@ -59,10 +58,11 @@ export const thunkGetAllWallets =
             ...wallets,
             walletsData: wallets.walletsData.map((w: Wallet) => {
               // FETCH BALANCES
-              const balance = fetchBalance(w.addressString) || 0;
+              //  const balance = fetchBalance(w.addressString) || 0;
               return {
                 ...w,
-                balance,
+                // TODO - temporary
+                balance: 0,
                 privateKey: bitcore.PrivateKey.fromWIF(w.privateKeyWIF),
               };
             }),
@@ -152,6 +152,7 @@ export const thunkCreateWallet =
       }
       // PERSIST TO LOCAL STORAGE
       const localWallets = await AsyncStorage.getItem("wallets");
+
       const updatedLocalWallets = JSON.parse(localWallets!).map(
         (wallet: Wallets) => {
           if (wallet.symbol === coin) {
