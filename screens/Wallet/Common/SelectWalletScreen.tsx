@@ -16,7 +16,7 @@ import { ReceiveRouteProp } from "../../../navigation/ReceiveStack";
 import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
 
-const { tabIconDefault: darkGrey, gainGreen } = Colors.light;
+const { gainGreen, secondaryText, background } = Colors.light;
 
 const SelectWalletScreen = () => {
   const { params } = useRoute<ReceiveRouteProp>();
@@ -38,7 +38,6 @@ const SelectWalletScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>SelectWalletScreen</Text>
       <SectionList
         // NAME UNIQUE ENFORCED?
         keyExtractor={(item) => item.name}
@@ -57,22 +56,28 @@ const SelectWalletScreen = () => {
                   }}
                 />
               </View>
-              <View>
-                <Text style={styles.selectWalletName}>{item.name}</Text>
-                <Text>{`${item.balance} ${section.symbol}`}</Text>
+              <View style={styles.infoContainer}>
+                <View>
+                  <Text style={styles.selectWalletName}>{item.name}</Text>
+                  <Text>{`${item.balance} ${section.symbol}`}</Text>
+                </View>
+                <View style={styles.fillerSpace}></View>
+                {params.pk === item.privateKeyWIF && (
+                  <Ionicons
+                    name="checkmark-outline"
+                    size={24}
+                    color={gainGreen}
+                  />
+                )}
               </View>
-              <View style={styles.fillerSpace}></View>
-              {params.pk === item.privateKeyWIF && (
-                <Ionicons
-                  name="checkmark-outline"
-                  size={24}
-                  color={gainGreen}
-                />
-              )}
             </TouchableOpacity>
           );
         }}
-        renderSectionHeader={({ section: { name } }) => <Text>{name}</Text>}
+        renderSectionHeader={({ section: { name } }) => (
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerTitle}>{name}</Text>
+          </View>
+        )}
         sections={transformedWallets}
       />
     </View>
@@ -97,10 +102,29 @@ const SelectWalletScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 30,
+    backgroundColor: background,
+  },
+  headerContainer: {
+    borderBottomWidth: 2,
+    borderColor: secondaryText,
+    paddingBottom: 12,
+  },
+  headerTitle: {
+    fontWeight: "600",
+    fontSize: 16,
   },
   selectWalletContainer: {
     flexDirection: "row",
-    paddingVertical: 18,
+    paddingTop: 18,
+    paddingBottom: 12,
+  },
+  infoContainer: {
+    borderBottomWidth: 2,
+    borderColor: secondaryText,
+    paddingBottom: 18,
+    flexDirection: "row",
+    flex: 1,
   },
   imgLogo: { height: 40, width: 40, marginRight: 12 },
   selectWalletName: { fontWeight: "bold" },

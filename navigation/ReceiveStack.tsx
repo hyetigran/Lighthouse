@@ -47,6 +47,7 @@ export default function ReceiveNavigator() {
         component={SelectWalletScreen}
         options={{
           headerTitle: "Select Wallet",
+          headerBackTitle: " ",
         }}
       />
     </Stack.Navigator>
