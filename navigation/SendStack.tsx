@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import SendAddressScreen from "../screens/Wallet/Send/SendAddressScreen";
 import ChooseWalletScreen from "../screens/Wallet/Send/ChooseWalletScreen";
-import EnterAmountScreen from "../screens/Wallet/Send/EnterAmountScreen";
+import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import ReviewTransactionScreen from "../screens/Wallet/Send/ReviewTransactionScreen";
 import { SendParamList } from "../types";
 

@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
   Send: undefined;
+  Receive: undefined;
   NotFound: undefined;
 };
 
@@ -47,6 +48,13 @@ export type SendParamList = {
   ReviewTransactionScreen: undefined;
 };
 
+export type ReceiveParamList = {
+  ReceiveTransactionScreen: undefined;
+  EnterAmountScreen: undefined;
+  SelectWalletScreen: {
+    pk: string;
+  };
+};
 export type WalletParamList = {
   AddWalletScreen: undefined;
   CreateWalletScreen: undefined;
