@@ -14,11 +14,11 @@ import {
   Wallets,
 } from "../types/walletTypes";
 
-let FULLSTACK_URL = BCH_FULLSTACK_API_URL;
-if (__DEV__) {
-  // example: https://tapi.fullstack.cash/v4/
-  FULLSTACK_URL = BCH_FULLSTACK_API_URL.replace("api", "tapi");
-}
+const FULLSTACK_URL = BCH_FULLSTACK_API_URL;
+// if (__DEV__) {
+//   // example: https://tapi.fullstack.cash/v4/
+//   FULLSTACK_URL = BCH_FULLSTACK_API_URL.replace("api", "tapi");
+// }
 
 export const thunkGetAllWallets =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
@@ -26,10 +26,9 @@ export const thunkGetAllWallets =
     try {
       let wallets = await AsyncStorage.getItem("wallets");
       let loadedWallets: Wallets[] = [];
-
       if (wallets === null) {
         // CREATE DEFAULT WALLET
-        const privateKey = new bitcore.PrivateKey("testnet");
+        const privateKey = new bitcore.PrivateKey();
         const privateKeyWIF = privateKey.toWIF();
         const newWallet = {
           walletsData: [
@@ -53,21 +52,22 @@ export const thunkGetAllWallets =
         loadedWallets[0].walletsData[0].privateKey = privateKey;
       } else {
         // ADD PRIVATE KEY OBJECT TO WALLETS
-        loadedWallets = JSON.parse(wallets).map((wallets: Wallets) => {
-          return {
-            ...wallets,
-            walletsData: wallets.walletsData.map((w: Wallet) => {
-              // FETCH BALANCES
-              //  const balance = fetchBalance(w.addressString) || 0;
-              return {
-                ...w,
-                // TODO - temporary
-                balance: 0,
-                privateKey: bitcore.PrivateKey.fromWIF(w.privateKeyWIF),
-              };
-            }),
+
+        const parsedWallets: Wallets = JSON.parse(wallets);
+        for (let wIndex in parsedWallets) {
+          let walletsData: Wallet[] = parsedWallets[wIndex].walletsData;
+          for (let wdIndex in walletsData) {
+            let balance = await fetchBalance(
+              walletsData[wdIndex].addressString
+            );
+            walletsData[wdIndex].balance = balance;
+          }
+          let loadedWalletGroup = {
+            ...parsedWallets[wIndex],
+            walletsData,
           };
-        });
+          loadedWallets.push(loadedWalletGroup);
+        }
       }
       dispatch(fetchAllWallets(loadedWallets));
     } catch (error) {
@@ -77,15 +77,12 @@ export const thunkGetAllWallets =
 
 const fetchBalance = async (addressString: string) => {
   try {
-    // let result = await axios.get(
-    //   `${FULLSTACK_URL}electrumx/balance/${addressString}`
-    // );
-    // TODO - Multiple addresses
-    // result = axios.post(`${FULLSTACK_URL}electrumx/balance`, {
-    //   addresses: addresses,
-    // });
-    // TEMP RETURN
-    return 0;
+    const {
+      data: { balance },
+    } = await axios.get(`${FULLSTACK_URL}electrumx/balance/${addressString}`);
+
+    const totalBalance = balance.confirmed + balance.unconfirmed;
+    return totalBalance;
   } catch (error) {
     console.log("fetchBalance err", error);
   }

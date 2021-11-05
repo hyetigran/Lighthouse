@@ -7,6 +7,7 @@ import WalletCard from "../../components/Wallets/WalletCard";
 import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
 import { thunkGetAllWallets } from "../../store/actions/walletActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { secondaryText: grey, background } = Colors.light;
 
@@ -17,6 +18,10 @@ export default function MainWalletsScreen() {
     initialLoad();
   }, []);
 
+  // TODO - REMOVE for DEV ONLY
+  // const clearWallets = async () => {
+  //   await AsyncStorage.setItem("wallets", "");
+  // };
   const initialLoad = () => {
     dispatch(thunkGetAllWallets());
   };

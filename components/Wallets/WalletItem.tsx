@@ -26,7 +26,7 @@ const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
       <View style={styles.infoContainer}>
         <View style={styles.subInfoContainer}>
           <Text style={styles.walletName}>{wallet.name}</Text>
-          <Text style={styles.amountText}>0 USD</Text>
+          <Text style={styles.amountText}>{`${wallet.balance} sats`}</Text>
         </View>
         <TouchableOpacity onPress={() => {}}>
           <Ionicons name="chevron-forward-outline" size={24} color={darkGrey} />
