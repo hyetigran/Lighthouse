@@ -21,4 +21,7 @@ target 'lighthouse' do
   #  post_install do |installer|
   #    flipper_post_install(installer)
   #  end
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 end

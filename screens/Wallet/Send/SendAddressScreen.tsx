@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Input } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
+
 import Colors from "../../../constants/Colors";
+import { useNavigation } from "@react-navigation/core";
 
 const ADDRESS_INPUT_LABEL = "Enter bitcoin address";
 
@@ -10,13 +12,15 @@ const { background, darkGrey, gainGreenLite, text } = Colors.light;
 
 const SendAddressScreen = () => {
   const [sendAddress, setSendAddress] = useState("");
+  const { navigate } = useNavigation();
   // FROM WALLET OPTION
-
   const changeAddressHandler = (value: string) => {};
 
   const pasteClipboardHandler = () => {};
 
-  const qrScannerHandler = () => {};
+  const qrScannerHandler = () => {
+    navigate("ScanAddressScreen");
+  };
 
   return (
     <View style={styles.container}>

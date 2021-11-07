@@ -2,6 +2,7 @@ import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import SendAddressScreen from "../screens/Wallet/Send/SendAddressScreen";
+import ScanAddressScreen from "../screens/Wallet/Send/ScanAddressScreen";
 import ChooseWalletScreen from "../screens/Wallet/Send/ChooseWalletScreen";
 import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import ReviewTransactionScreen from "../screens/Wallet/Send/ReviewTransactionScreen";
@@ -18,6 +19,14 @@ export default function SendNavigator() {
         options={{
           headerTitle: "Send",
           headerBackTitle: "Wallet",
+        }}
+      />
+      <Stack.Screen
+        name="ScanAddressScreen"
+        component={ScanAddressScreen}
+        options={{
+          headerTitle: "Scan",
+          headerBackTitle: "Send",
         }}
       />
       <Stack.Screen

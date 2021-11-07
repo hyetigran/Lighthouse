@@ -43,6 +43,7 @@ export type TransactionParamList = {
 
 export type SendParamList = {
   SendAddressScreen: undefined;
+  ScanAddressScreen: undefined;
   ChooseWalletScreen: undefined;
   EnterAmountScreen: undefined;
   ReviewTransactionScreen: undefined;
