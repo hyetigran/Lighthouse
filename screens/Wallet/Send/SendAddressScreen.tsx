@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Input } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
+import Clipboard from "@react-native-clipboard/clipboard";
+import { useNavigation } from "@react-navigation/core";
+import bitcore from "bitcore-lib-cash";
 
 import Colors from "../../../constants/Colors";
-import { useNavigation } from "@react-navigation/core";
 
 const ADDRESS_INPUT_LABEL = "Enter bitcoin address";
 
@@ -13,10 +15,27 @@ const { background, darkGrey, gainGreenLite, text } = Colors.light;
 const SendAddressScreen = () => {
   const [sendAddress, setSendAddress] = useState("");
   const { navigate } = useNavigation();
-  // FROM WALLET OPTION
-  const changeAddressHandler = (value: string) => {};
 
-  const pasteClipboardHandler = () => {};
+  // Validate Address
+  useEffect(() => {
+    validateAddress(sendAddress);
+  }, [sendAddress]);
+
+  // FROM WALLET OPTION
+  const changeAddressHandler = (value: string) => {
+    setSendAddress(value);
+  };
+
+  const validateAddress = (address: string) => {
+    //@ts-ignore
+    if (bitcore.Address.isValid(address)) {
+      navigate("EnterAmountScreen");
+    }
+  };
+  const pasteClipboardHandler = async () => {
+    const copiedAddress = await Clipboard.getString();
+    setSendAddress(copiedAddress);
+  };
 
   const qrScannerHandler = () => {
     navigate("ScanAddressScreen");

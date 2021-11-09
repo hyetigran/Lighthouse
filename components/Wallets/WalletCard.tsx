@@ -17,7 +17,7 @@ const {
 } = Colors.light;
 const WalletCard = ({ wallets }: ActionProps) => {
   const { navigate } = useNavigation();
-  console.log("WC", wallets);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
