@@ -12,6 +12,20 @@ const ADDRESS_INPUT_LABEL = "Enter bitcoin address";
 
 const { background, darkGrey, gainGreenLite, text } = Colors.light;
 
+const SEND_TRANSACTION = {
+  utxo: {
+    txId: "",
+    outputIndex: null,
+    address: "",
+    script: "",
+    satoshis: 0,
+  },
+  to: {
+    address: "",
+    satoshis: 0,
+  },
+  privateKey: {},
+};
 const SendAddressScreen = () => {
   const [sendAddress, setSendAddress] = useState("");
   const { navigate } = useNavigation();
@@ -38,7 +52,7 @@ const SendAddressScreen = () => {
   };
 
   const qrScannerHandler = () => {
-    navigate("ScanAddressScreen");
+    navigate("ScanAddressScreen", { setSendAddress });
   };
 
   return (

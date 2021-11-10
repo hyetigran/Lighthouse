@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
 import SendAddressScreen from "../screens/Wallet/Send/SendAddressScreen";
 import ScanAddressScreen from "../screens/Wallet/Send/ScanAddressScreen";
@@ -10,6 +11,13 @@ import { SendParamList } from "../types";
 
 const Stack = createStackNavigator<SendParamList>();
 
+// TODO - DUPLICATE? -- see types.tsx
+export type SendRouteProp = RouteProp<ParamList, "Scan">;
+type ParamList = {
+  Scan: {
+    setSendAddress: (text: string) => void;
+  };
+};
 export default function SendNavigator() {
   return (
     <Stack.Navigator initialRouteName="SendAddressScreen">
