@@ -1,16 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import QRCodeScanner from "react-native-qrcode-scanner";
-import { RNCamera } from "react-native-camera";
-import { useNavigation, useRoute } from "@react-navigation/core";
-import { SendRouteProp } from "../../../navigation/SendStack";
+import { useNavigation } from "@react-navigation/core";
+import { useDispatch } from "react-redux";
+
+import { updateToAddress } from "../../../store/actions/sendActions";
 
 const ScanAddressScreen = () => {
   const { goBack } = useNavigation();
-  const { params } = useRoute<SendRouteProp>();
+
+  const dispatch = useDispatch();
 
   const onSuccessHandler = (e: any) => {
-    params.setSendAddress(e.data);
+    dispatch(updateToAddress(e.data));
     goBack();
   };
 

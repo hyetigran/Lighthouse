@@ -30,7 +30,16 @@ export const sendReducer = (
 ): Send => {
   switch (action.type) {
     case ADD_TO_ADDRESS_SUCCESS:
-      return state;
+      return {
+        ...state,
+        sendData: {
+          ...state.sendData,
+          to: {
+            ...state.sendData.to,
+            address: action.payload,
+          },
+        },
+      };
     default:
       return state;
   }

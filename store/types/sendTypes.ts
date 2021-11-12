@@ -7,7 +7,6 @@ export interface Send {
   symbol: string;
 }
 export interface SendData {
-  [key: string]: any;
   utxo: {
     txId: string;
     outputIndex?: number | null;

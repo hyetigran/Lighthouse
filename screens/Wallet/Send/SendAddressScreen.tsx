@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Input } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,37 +8,30 @@ import { useNavigation } from "@react-navigation/core";
 import bitcore from "bitcore-lib-cash";
 
 import Colors from "../../../constants/Colors";
+import { RootState } from "../../../store";
+import { updateToAddress } from "../../../store/actions/sendActions";
 
 const ADDRESS_INPUT_LABEL = "Enter bitcoin address";
 
 const { background, darkGrey, gainGreenLite, text } = Colors.light;
 
-const SEND_TRANSACTION = {
-  utxo: {
-    txId: "",
-    outputIndex: null,
-    address: "",
-    script: "",
-    satoshis: 0,
-  },
-  to: {
-    address: "",
-    satoshis: 0,
-  },
-  privateKey: {},
-};
 const SendAddressScreen = () => {
-  const [sendAddress, setSendAddress] = useState("");
+  const {
+    sendData: {
+      to: { address },
+    },
+  } = useSelector((state: RootState) => state.send);
   const { navigate } = useNavigation();
+  const dispatch = useDispatch();
 
   // Validate Address
   useEffect(() => {
-    validateAddress(sendAddress);
-  }, [sendAddress]);
+    validateAddress(address);
+  }, [address]);
 
   // FROM WALLET OPTION
   const changeAddressHandler = (value: string) => {
-    setSendAddress(value);
+    dispatch(updateToAddress(value));
   };
 
   const validateAddress = (address: string) => {
@@ -48,11 +42,11 @@ const SendAddressScreen = () => {
   };
   const pasteClipboardHandler = async () => {
     const copiedAddress = await Clipboard.getString();
-    setSendAddress(copiedAddress);
+    dispatch(updateToAddress(copiedAddress));
   };
 
   const qrScannerHandler = () => {
-    navigate("ScanAddressScreen", { setSendAddress });
+    navigate("ScanAddressScreen");
   };
 
   return (
@@ -65,7 +59,7 @@ const SendAddressScreen = () => {
           containerStyle={styles.addressInputContainer}
           inputContainerStyle={styles.addressInput}
           placeholder={ADDRESS_INPUT_LABEL}
-          value={sendAddress}
+          value={address}
           onChangeText={changeAddressHandler}
         />
       </View>
