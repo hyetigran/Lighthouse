@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useRoute, useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -7,35 +6,31 @@ import {
   SectionList,
   TouchableOpacity,
   Image,
-  DeviceEventEmitter,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
-import { ReceiveRouteProp } from "../../../navigation/ReceiveStack";
-import { RootState } from "../../../store";
+import { Wallet } from "../../../store/types/walletTypes";
 import Colors from "../../../constants/Colors";
 
 const { gainGreen, secondaryText, background } = Colors.light;
 
-const SelectWalletScreen = () => {
-  const { params } = useRoute<ReceiveRouteProp>();
-  const { goBack } = useNavigation();
-  const wallets = useSelector((state: RootState) => state.wallet);
-  const transformedWallets = wallets.map((wallet) => {
-    return {
-      name: wallet.name,
-      logo: wallet.logo,
-      symbol: wallet.symbol,
-      data: wallet.walletsData,
-    };
-  });
-
-  const handleSelectWallet = (walletPK: string) => {
-    DeviceEventEmitter.emit("event.selectWalletToReceive", { walletPK });
-    goBack();
-  };
-
+type transformedWallet = {
+  name: string;
+  logo: string;
+  symbol: string;
+  data: Wallet[];
+};
+interface ReceiveProps {
+  pk: string | null;
+  handleSelectWallet: (val: string) => void;
+  transformedWallets: transformedWallet[];
+}
+const SelectWalletScreen = ({
+  pk,
+  handleSelectWallet,
+  transformedWallets,
+}: ReceiveProps) => {
   return (
     <View style={styles.container}>
       <SectionList
@@ -62,7 +57,7 @@ const SelectWalletScreen = () => {
                   <Text>{`${item.balance} ${section.symbol}`}</Text>
                 </View>
                 <View style={styles.fillerSpace}></View>
-                {params.pk === item.privateKeyWIF && (
+                {pk && pk === item.privateKeyWIF && (
                   <Ionicons
                     name="checkmark-outline"
                     size={24}

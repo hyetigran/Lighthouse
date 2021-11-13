@@ -4,7 +4,7 @@ import { RouteProp } from "@react-navigation/native";
 
 import SendAddressScreen from "../screens/Wallet/Send/SendAddressScreen";
 import ScanAddressScreen from "../screens/Wallet/Send/ScanAddressScreen";
-import ChooseWalletScreen from "../screens/Wallet/Send/ChooseWalletScreen";
+import SelectWalletScreen from "../screens/Wallet/Common/SelectWalletScreen";
 import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import ReviewTransactionScreen from "../screens/Wallet/Send/ReviewTransactionScreen";
 import { SendParamList } from "../types";
@@ -38,8 +38,8 @@ export default function SendNavigator() {
         }}
       />
       <Stack.Screen
-        name="ChooseWalletScreen"
-        component={ChooseWalletScreen}
+        name="SelectWalletScreen"
+        component={SelectWalletScreen}
         options={{
           headerTitle: "Send",
         }}

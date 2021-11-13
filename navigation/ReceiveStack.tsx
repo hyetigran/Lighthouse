@@ -6,8 +6,8 @@ import {
 
 import ReceiveTransactionScreen from "../screens/Wallet/Receive/ReceiveTransactionScreen";
 import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
+import SelectReceiveScreen from "../screens/Wallet/Receive/SelectReceiveScreen";
 import { ReceiveParamList } from "../types";
-import SelectWalletScreen from "../screens/Wallet/Common/SelectWalletScreen";
 import { RouteProp } from "@react-navigation/native";
 
 export type ReceiveRouteProp = RouteProp<ParamList, "Receive">;
@@ -43,8 +43,8 @@ export default function ReceiveNavigator() {
         }}
       />
       <Stack.Screen
-        name="SelectWalletScreen"
-        component={SelectWalletScreen}
+        name="SelectReceiveScreen"
+        component={SelectReceiveScreen}
         options={{
           headerTitle: "Select Wallet",
           headerBackTitle: " ",

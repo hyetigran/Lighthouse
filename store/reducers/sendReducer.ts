@@ -1,8 +1,8 @@
 import {
   Send,
-  SendData,
   SendActionTypes,
   ADD_TO_ADDRESS_SUCCESS,
+  ADD_PRIVATE_KEY_SUCCESS,
 } from "../types/sendTypes";
 
 const initialState: Send = {
@@ -40,6 +40,8 @@ export const sendReducer = (
           },
         },
       };
+    case ADD_PRIVATE_KEY_SUCCESS:
+      return action.payload;
     default:
       return state;
   }

@@ -1,4 +1,5 @@
 export const ADD_TO_ADDRESS_SUCCESS = "ADD_TO_ADDRESS_SUCCESS";
+export const ADD_PRIVATE_KEY_SUCCESS = "ADD_PRIVATE_KEY_SUCCESS";
 
 export interface Send {
   [key: string]: any;
@@ -25,4 +26,9 @@ interface addToAddressAction {
   payload: string;
 }
 
-export type SendActionTypes = addToAddressAction;
+interface addPrivateKeyAction {
+  type: typeof ADD_PRIVATE_KEY_SUCCESS;
+  payload: Send;
+}
+
+export type SendActionTypes = addToAddressAction | addPrivateKeyAction;

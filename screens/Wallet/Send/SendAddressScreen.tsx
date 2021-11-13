@@ -17,6 +17,7 @@ const { background, darkGrey, gainGreenLite, text } = Colors.light;
 
 const SendAddressScreen = () => {
   const {
+    name,
     sendData: {
       to: { address },
     },
@@ -35,9 +36,16 @@ const SendAddressScreen = () => {
   };
 
   const validateAddress = (address: string) => {
+    // TODO - Additional Validation
+    // Ensure to address entered is NOT from address selected
+
     //@ts-ignore
     if (bitcore.Address.isValid(address)) {
-      navigate("EnterAmountScreen");
+      if (name) {
+        navigate("EnterAmountScreen");
+      } else {
+        navigate("SelectWalletScreen");
+      }
     }
   };
   const pasteClipboardHandler = async () => {
