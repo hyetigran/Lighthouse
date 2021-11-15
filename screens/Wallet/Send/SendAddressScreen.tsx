@@ -44,7 +44,7 @@ const SendAddressScreen = () => {
       if (name) {
         navigate("EnterAmountScreen");
       } else {
-        navigate("SelectWalletScreen");
+        navigate("SelectSendScreen");
       }
     }
   };

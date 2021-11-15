@@ -34,6 +34,7 @@ export const thunkAttachPrivateKey =
             symbol: wall.symbol,
             address: filteredWall[0].addressString,
             privateKey: filteredWall[0].privateKey,
+            balance: filteredWall[0].balance,
           };
         }
       }
@@ -42,6 +43,7 @@ export const thunkAttachPrivateKey =
         ...send,
         name: selectedWallet.name,
         symbol: selectedWallet.symbol,
+        balance: selectedWallet.balance,
         sendData: {
           ...send.sendData,
           utxo: {

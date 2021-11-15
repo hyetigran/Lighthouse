@@ -13,7 +13,6 @@ const MIN_DUST_LIMIT = 1000;
 const SelectSendScreen = () => {
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
-
   const wallets = useSelector((state: RootState) => state.wallet);
   const transformedWallets = wallets.map((wallet) => {
     return {
@@ -21,11 +20,12 @@ const SelectSendScreen = () => {
       logo: wallet.logo,
       symbol: wallet.symbol,
       data: wallet.walletsData.filter(
-        (wallet) => wallet.balance <= MIN_DUST_LIMIT
+        (wallet) => wallet.balance >= MIN_DUST_LIMIT
       ),
     };
   });
 
+  console.log("here in select send screen", transformedWallets);
   const handleSelectWallet = (pk: string) => {
     dispatch(thunkAttachPrivateKey(pk));
     navigate("EnterAmountScreen");

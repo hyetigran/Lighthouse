@@ -8,6 +8,7 @@ import {
 const initialState: Send = {
   name: "",
   symbol: "",
+  balance: 0,
   sendData: {
     utxo: {
       txId: "",

@@ -6,6 +6,7 @@ export interface Send {
   sendData: SendData;
   name: string;
   symbol: string;
+  balance: number;
 }
 export interface SendData {
   utxo: {

@@ -46,7 +46,7 @@ export type SendParamList = {
   ScanAddressScreen: {
     setSendAddress: () => void;
   };
-  SelectWalletScreen: undefined;
+  SelectSendScreen: undefined;
   EnterAmountScreen: undefined;
   ReviewTransactionScreen: undefined;
 };
