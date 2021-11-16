@@ -8,6 +8,7 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import CryptoListScreen from "../screens/Markets/CryptoListScreen";
 import MainPortfolioScreen from "../screens/Portfolio/MainPortfolioScreen";
+import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import MainWalletsScreen from "../screens/Wallet/MainWalletsScreen";
 import {
   BottomTabParamList,
@@ -116,7 +117,7 @@ const WalletsTabStack = createStackNavigator<WalletsTabParamsList>();
 
 function TabWalletsNavigator() {
   return (
-    <WalletsTabStack.Navigator initialRouteName="MainWalletsScreen">
+    <WalletsTabStack.Navigator initialRouteName="EnterAmoountScreen">
       <WalletsTabStack.Screen
         name="MainWalletsScreen"
         component={MainWalletsScreen}
@@ -126,6 +127,11 @@ function TabWalletsNavigator() {
         name="AddWalletNavigator"
         component={AddWalletNavigator}
         options={{ headerShown: false }}
+      />
+      <WalletsTabStack.Screen
+        name="EnterAmoountScreen"
+        component={EnterAmountScreen}
+        options={{ headerTitle: "Enter Amount" }}
       />
     </WalletsTabStack.Navigator>
   );
