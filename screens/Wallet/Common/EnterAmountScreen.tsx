@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
+import { roundNumber } from "../../../helpers/utilities";
 import Colors from "../../../constants/Colors";
 
 const { text, background, secondaryText, gainGreenLite, darkGrey } =
@@ -33,6 +34,9 @@ const EnterAmountScreen = () => {
     cryptoAmount: "0",
     fiatAmount: "0",
   });
+  console.log("fiat", fieldAmount.fiatAmount);
+  console.log("crypto", fieldAmount.cryptoAmount);
+
   // const [cryptoAmount, setCryptoAmount] = useState("0");
   // const [fiatAmount, setFiatAmount] = useState("0");
   const currentRateUSD = 699.25;
@@ -50,14 +54,17 @@ const EnterAmountScreen = () => {
   const inputChangeHandler = (val: string) => {
     const { cryptoAmount, fiatAmount } = fieldAmount;
     let updatedVal = isCryptoFocus ? cryptoAmount : fiatAmount;
+    const [left, right] = updatedVal.split(".");
     const isFraction = updatedVal.includes(".");
+
     if (val === "<") {
       if (updatedVal.length === 1) {
         updatedVal = "0";
       } else {
         updatedVal = updatedVal.substring(0, updatedVal.length - 1);
       }
-    } else if (updatedVal.length >= 7) {
+    } else if (left.length >= 7) {
+      console.log("here?");
       return;
     } else {
       if (val === ".") {
@@ -69,8 +76,13 @@ const EnterAmountScreen = () => {
         if (updatedVal === "0") {
           updatedVal = val;
         } else {
-          if (isFraction && updatedVal.split(".")[1].length > 1) {
-            return;
+          if (isFraction) {
+            if (
+              (!isCryptoFocus && right.length > 1) ||
+              (isCryptoFocus && right.length > 7)
+            ) {
+              return;
+            }
           }
           updatedVal += val;
         }
@@ -79,22 +91,22 @@ const EnterAmountScreen = () => {
 
     let updatedSecondaryVal;
     if (isCryptoFocus) {
-      updatedSecondaryVal = (+updatedVal / currentRateUSD).toFixed(8);
+      updatedSecondaryVal = +updatedVal * currentRateUSD;
       setFieldAmount({
         cryptoAmount: updatedVal,
-        fiatAmount: updatedSecondaryVal,
+        fiatAmount: roundNumber(updatedSecondaryVal.toString(), 2),
       });
     } else {
-      updatedSecondaryVal = (+updatedVal / currentRateUSD).toFixed(2);
+      updatedSecondaryVal = +updatedVal / currentRateUSD;
       setFieldAmount({
-        cryptoAmount: updatedSecondaryVal,
+        cryptoAmount: roundNumber(updatedSecondaryVal.toString(), 8),
         fiatAmount: updatedVal,
       });
     }
   };
 
-  const cryptoOutput = fieldAmount.cryptoAmount + " USD";
-  const fiatOutput = fieldAmount.fiatAmount + " BCH";
+  const cryptoOutput = fieldAmount.cryptoAmount + " BCH";
+  const fiatOutput = fieldAmount.fiatAmount + " USD";
 
   return (
     <View style={styles.container}>
@@ -102,10 +114,10 @@ const EnterAmountScreen = () => {
         <View style={styles.bannerContainer}>
           <View style={styles.bannerSubContainer}>
             <Text style={styles.mainBannerAmount}>
-              {!isCryptoFocus ? cryptoOutput : fiatOutput}
+              {isCryptoFocus ? cryptoOutput : fiatOutput}
             </Text>
             <Text style={styles.secondaryBannerAmount}>
-              {isCryptoFocus ? cryptoOutput : fiatOutput}
+              {!isCryptoFocus ? cryptoOutput : fiatOutput}
             </Text>
           </View>
           <TouchableOpacity

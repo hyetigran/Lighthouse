@@ -13,3 +13,15 @@ export const marketCapFormatter = (mCap: number) => {
   }
   return `$${result} ${suffix}`;
 };
+
+export const roundNumber = (value: string, digits = 0) => {
+  const [, right] = String(value).split(".");
+  if (right && right.length <= digits) {
+    return value;
+  }
+
+  const decimals = Math.pow(10, digits);
+  return (
+    Math.round((Number(value) + Number.EPSILON) * decimals) / decimals
+  ).toString();
+};

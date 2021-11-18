@@ -27,6 +27,7 @@ export type PortfolioTabParamsList = {
 export type WalletsTabParamsList = {
   MainWalletsScreen: undefined;
   AddWalletNavigator: undefined;
+  EnterAmoountScreen: undefined;
 };
 
 export type TransactionParamList = {
