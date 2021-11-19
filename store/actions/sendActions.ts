@@ -1,13 +1,20 @@
 import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
+import bitcore from "bitcore-lib-cash";
+//@ts-ignore
+import { BCH_FULLSTACK_API_URL } from "@env";
 
 import { RootState } from "../index";
 import {
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_TO_ADDRESS_SUCCESS,
+  ADD_UTXO_SUCESS,
   Send,
   SendActionTypes,
+  utxoData,
 } from "../types/sendTypes";
+import axios from "axios";
+import { BCH_DUST_LIMIT } from "../../constants/Variables";
 
 export const updateToAddress = (value: string): SendActionTypes => {
   return {
@@ -46,10 +53,7 @@ export const thunkAttachPrivateKey =
         balance: selectedWallet.balance,
         sendData: {
           ...send.sendData,
-          utxo: {
-            ...send.sendData.utxo,
-            address: selectedWallet.address,
-          },
+          from: { address: selectedWallet.address },
           privateKey: selectedWallet.privateKey,
         },
       };
@@ -64,4 +68,85 @@ const attachPrivateKey = (sendState: Send): SendActionTypes => {
     type: ADD_PRIVATE_KEY_SUCCESS,
     payload: sendState,
   };
+};
+
+export const thunkGetUTXO =
+  (address: string): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch) => {
+    try {
+      const utxos = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/electrumx/unconfirmed/${address}`
+      );
+      dispatch(getUTXO(utxos));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const getUTXO = (utxos: utxoData) => {
+  return {
+    type: ADD_UTXO_SUCESS,
+    payload: utxos,
+  };
+};
+
+export const thunkBroadcastTransaction =
+  (): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch, getState) => {
+    try {
+      const {
+        send: {
+          sendData: { utxos, to, privateKey, from },
+        },
+      } = getState();
+      const balance = utxos.reduce((acc, cur) => (acc += cur.satoshis), 0);
+      const fee1 = estimateTransactionBytes(utxos.length, 1); // 1 * sat / bytes
+      const fee2 = estimateTransactionBytes(utxos.length, 2); // 1 * sat / bytes
+
+      if (to.satoshis < BCH_DUST_LIMIT) {
+        throw new Error("Output amount below dust limit.");
+      }
+
+      if (balance - to.satoshis - fee1 < BCH_DUST_LIMIT) {
+        throw new Error("Insufficient balance.");
+      }
+
+      let transaction = new bitcore.Transaction();
+      transaction = transaction.from(utxos);
+
+      if (balance - to.satoshis - fee2 < BCH_DUST_LIMIT) {
+        transaction = transaction.to(to.address, to.satoshis);
+      } else {
+        if (to.address === from.address) {
+          transaction = transaction.to(to.address, balance - fee1);
+        } else {
+          transaction = transaction.to(to.address, to.satoshis);
+          transaction = transaction.to(
+            from.address,
+            balance - to.satoshis - fee1
+          );
+        }
+      }
+      transaction = transaction.sign(privateKey);
+
+      // opts allows to skip certain tests
+      const rawTransaction = transaction.checkedSerialize({});
+
+      const result: string = await axios.post(
+        `${BCH_FULLSTACK_API_URL}/electrumx/tx/broadcast`,
+        { txHex: rawTransaction }
+      );
+      if (result.match(/^"[0-9a-fA-F]{64"$/) === null) {
+        throw new Error(
+          "Broadcasting transaction failed with error: " + result
+        );
+      }
+      dispatch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const estimateTransactionBytes = (inputCount: number, outputCount: number) => {
+  return inputCount * 149 + outputCount * 34 + 10;
 };

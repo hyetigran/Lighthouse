@@ -25,7 +25,6 @@ const SelectSendScreen = () => {
     };
   });
 
-  console.log("here in select send screen", transformedWallets);
   const handleSelectWallet = (pk: string) => {
     dispatch(thunkAttachPrivateKey(pk));
     navigate("EnterAmountScreen");

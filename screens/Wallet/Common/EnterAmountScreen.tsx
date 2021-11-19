@@ -7,8 +7,14 @@ import { RootState } from "../../../store";
 import { roundNumber } from "../../../helpers/utilities";
 import Colors from "../../../constants/Colors";
 
-const { text, background, secondaryText, gainGreenLite, darkGrey } =
-  Colors.light;
+const {
+  text,
+  background,
+  secondaryText,
+  gainGreenLite,
+  darkGrey,
+  lossRedLite,
+} = Colors.light;
 
 const NUMBER_PAD_KEYS = [
   { key: "7" },
@@ -33,6 +39,7 @@ const EnterAmountScreen = () => {
   const [fieldAmount, setFieldAmount] = useState({
     cryptoAmount: "0",
     fiatAmount: "0",
+    error: "blah",
   });
   console.log("fiat", fieldAmount.fiatAmount);
   console.log("crypto", fieldAmount.cryptoAmount);
@@ -64,7 +71,6 @@ const EnterAmountScreen = () => {
         updatedVal = updatedVal.substring(0, updatedVal.length - 1);
       }
     } else if (left.length >= 7) {
-      console.log("here?");
       return;
     } else {
       if (val === ".") {
@@ -95,12 +101,14 @@ const EnterAmountScreen = () => {
       setFieldAmount({
         cryptoAmount: updatedVal,
         fiatAmount: roundNumber(updatedSecondaryVal.toString(), 2),
+        error: "",
       });
     } else {
       updatedSecondaryVal = +updatedVal / currentRateUSD;
       setFieldAmount({
         cryptoAmount: roundNumber(updatedSecondaryVal.toString(), 8),
         fiatAmount: updatedVal,
+        error: "",
       });
     }
   };
@@ -119,6 +127,11 @@ const EnterAmountScreen = () => {
             <Text style={styles.secondaryBannerAmount}>
               {!isCryptoFocus ? cryptoOutput : fiatOutput}
             </Text>
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>
+                {!fieldAmount.error ? fieldAmount.error : ""}
+              </Text>
+            </View>
           </View>
           <TouchableOpacity
             style={styles.amountSwap}
@@ -175,7 +188,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "90%",
     marginVertical: 10,
-    paddingVertical: 30,
+    paddingTop: 46,
+    paddingBottom: 30,
     shadowColor: darkGrey,
     shadowOpacity: 0.5,
     elevation: 4,
@@ -201,6 +215,10 @@ const styles = StyleSheet.create({
   amountSwap: {
     justifyContent: "center",
     flex: 1,
+  },
+  errorContainer: {},
+  errorText: {
+    color: lossRedLite,
   },
   actionContainer: {
     // flex: 1,

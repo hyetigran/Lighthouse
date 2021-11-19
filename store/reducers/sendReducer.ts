@@ -3,6 +3,7 @@ import {
   SendActionTypes,
   ADD_TO_ADDRESS_SUCCESS,
   ADD_PRIVATE_KEY_SUCCESS,
+  ADD_UTXO_SUCESS,
 } from "../types/sendTypes";
 
 const initialState: Send = {
@@ -10,16 +11,13 @@ const initialState: Send = {
   symbol: "",
   balance: 0,
   sendData: {
-    utxo: {
-      txId: "",
-      outputIndex: null,
-      address: "",
-      script: "",
-      satoshis: 0,
-    },
+    utxos: [],
     to: {
       address: "",
       satoshis: 0,
+    },
+    from: {
+      address: "",
     },
     privateKey: null,
   },
@@ -43,6 +41,14 @@ export const sendReducer = (
       };
     case ADD_PRIVATE_KEY_SUCCESS:
       return action.payload;
+    case ADD_UTXO_SUCESS:
+      return {
+        ...state,
+        sendData: {
+          ...state.sendData,
+          utxos: action.payload,
+        },
+      };
     default:
       return state;
   }
