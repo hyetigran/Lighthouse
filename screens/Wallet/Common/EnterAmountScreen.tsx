@@ -4,8 +4,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
-import { roundNumber } from "../../../helpers/utilities";
+import {
+  estimateTransactionBytes,
+  roundNumber,
+} from "../../../helpers/utilities";
 import Colors from "../../../constants/Colors";
+import { BCH_DUST_LIMIT } from "../../../constants/Variables";
 
 const {
   text,
@@ -44,19 +48,17 @@ const EnterAmountScreen = () => {
   console.log("fiat", fieldAmount.fiatAmount);
   console.log("crypto", fieldAmount.cryptoAmount);
 
-  // const [cryptoAmount, setCryptoAmount] = useState("0");
-  // const [fiatAmount, setFiatAmount] = useState("0");
-  const currentRateUSD = 699.25;
+  // const currentRateUSD = 699.25;
   // SEND STATE & CURRENT USD RATE
-  // const { send, currentRateUSD } = useSelector((state: RootState) => {
-  //   let currentRate = state.market[0].find(
-  //     (coin) => coin.name === state.send.name
-  //   )?.price;
-  //   return {
-  //     send: state.send,
-  //     currentRateUSD: currentRate,
-  //   };
-  // });
+  const { send, currentRateUSD } = useSelector((state: RootState) => {
+    let currentRate = state.market[0].find(
+      (coin) => coin.name === state.send.name
+    )?.price;
+    return {
+      send: state.send,
+      currentRateUSD: currentRate,
+    };
+  });
 
   const inputChangeHandler = (val: string) => {
     const { cryptoAmount, fiatAmount } = fieldAmount;
@@ -96,21 +98,39 @@ const EnterAmountScreen = () => {
     }
 
     let updatedSecondaryVal;
+    let errorMessage;
     if (isCryptoFocus) {
       updatedSecondaryVal = +updatedVal * currentRateUSD;
+      errorMessage = validateCryptoAmount(+updatedVal);
       setFieldAmount({
         cryptoAmount: updatedVal,
         fiatAmount: roundNumber(updatedSecondaryVal.toString(), 2),
-        error: "",
+        error: errorMessage,
       });
     } else {
-      updatedSecondaryVal = +updatedVal / currentRateUSD;
+      updatedSecondaryVal = roundNumber(
+        (+updatedVal / currentRateUSD).toString(),
+        8
+      );
+      errorMessage = validateCryptoAmount(+updatedSecondaryVal);
+
       setFieldAmount({
-        cryptoAmount: roundNumber(updatedSecondaryVal.toString(), 8),
+        cryptoAmount: updatedSecondaryVal,
         fiatAmount: updatedVal,
-        error: "",
+        error: errorMessage,
       });
     }
+  };
+
+  const validateCryptoAmount = (value: number) => {
+    const fee1 = estimateTransactionBytes(send.sendData.utxos.length, 1);
+    if (value < BCH_DUST_LIMIT) {
+      return "Amount below the minimum dust limit.";
+    }
+    if (send.balance - value - fee1 < BCH_DUST_LIMIT) {
+      return "Insufficient balance.";
+    }
+    return "";
   };
 
   const cryptoOutput = fieldAmount.cryptoAmount + " BCH";
@@ -129,7 +149,7 @@ const EnterAmountScreen = () => {
             </Text>
             <View style={styles.errorContainer}>
               <Text style={styles.errorText}>
-                {!fieldAmount.error ? fieldAmount.error : ""}
+                {fieldAmount.error ? fieldAmount.error : ""}
               </Text>
             </View>
           </View>

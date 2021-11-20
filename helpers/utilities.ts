@@ -25,3 +25,10 @@ export const roundNumber = (value: string, digits = 0) => {
     Math.round((Number(value) + Number.EPSILON) * decimals) / decimals
   ).toString();
 };
+
+export const estimateTransactionBytes = (
+  inputCount: number,
+  outputCount: number
+) => {
+  return inputCount * 149 + outputCount * 34 + 10;
+};

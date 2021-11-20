@@ -9,12 +9,14 @@ import {
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_TO_ADDRESS_SUCCESS,
   ADD_UTXO_SUCESS,
+  BROADCAST_TRANSACTION_SUCCESS,
   Send,
   SendActionTypes,
   utxoData,
 } from "../types/sendTypes";
 import axios from "axios";
 import { BCH_DUST_LIMIT } from "../../constants/Variables";
+import { estimateTransactionBytes } from "../../helpers/utilities";
 
 export const updateToAddress = (value: string): SendActionTypes => {
   return {
@@ -74,7 +76,7 @@ export const thunkGetUTXO =
   (address: string): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch) => {
     try {
-      const utxos = await axios.get(
+      const utxos: utxoData = await axios.get(
         `${BCH_FULLSTACK_API_URL}/electrumx/unconfirmed/${address}`
       );
       dispatch(getUTXO(utxos));
@@ -141,12 +143,15 @@ export const thunkBroadcastTransaction =
           "Broadcasting transaction failed with error: " + result
         );
       }
-      dispatch();
+      dispatch(broadcastTransaction());
     } catch (error) {
       console.log(error);
     }
   };
 
-const estimateTransactionBytes = (inputCount: number, outputCount: number) => {
-  return inputCount * 149 + outputCount * 34 + 10;
+const broadcastTransaction = () => {
+  return {
+    type: BROADCAST_TRANSACTION_SUCCESS,
+    payload: "",
+  };
 };

@@ -4,6 +4,7 @@ import {
   ADD_TO_ADDRESS_SUCCESS,
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_UTXO_SUCESS,
+  BROADCAST_TRANSACTION_SUCCESS,
 } from "../types/sendTypes";
 
 const initialState: Send = {
@@ -49,6 +50,8 @@ export const sendReducer = (
           utxos: action.payload,
         },
       };
+    case BROADCAST_TRANSACTION_SUCCESS:
+      return initialState;
     default:
       return state;
   }

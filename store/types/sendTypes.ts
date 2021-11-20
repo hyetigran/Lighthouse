@@ -1,6 +1,7 @@
 export const ADD_TO_ADDRESS_SUCCESS = "ADD_TO_ADDRESS_SUCCESS";
 export const ADD_PRIVATE_KEY_SUCCESS = "ADD_PRIVATE_KEY_SUCCESS";
 export const ADD_UTXO_SUCESS = "ADD_UTXO_SUCESS";
+export const BROADCAST_TRANSACTION_SUCCESS = "BROADCAST_TRANSACTION_SUCCESS";
 
 export interface Send {
   [key: string]: any;
@@ -15,6 +16,8 @@ export interface utxoData {
   address: string;
   script: string;
   satoshis: number;
+  inspect: string;
+  toObject: string;
 }
 export interface SendData {
   utxos: utxoData[];
@@ -38,12 +41,18 @@ interface addPrivateKeyAction {
   payload: Send;
 }
 
-interface addUTXO {
+interface addUTXOAction {
   type: typeof ADD_UTXO_SUCESS;
   payload: utxoData[];
+}
+
+interface broadcastTransactionAction {
+  type: typeof BROADCAST_TRANSACTION_SUCCESS;
+  payload: string;
 }
 
 export type SendActionTypes =
   | addToAddressAction
   | addPrivateKeyAction
-  | addUTXO;
+  | addUTXOAction
+  | broadcastTransactionAction;
