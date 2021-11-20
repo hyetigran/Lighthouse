@@ -1,6 +1,6 @@
 export const ADD_TO_ADDRESS_SUCCESS = "ADD_TO_ADDRESS_SUCCESS";
 export const ADD_PRIVATE_KEY_SUCCESS = "ADD_PRIVATE_KEY_SUCCESS";
-export const ADD_UTXO_SUCESS = "ADD_UTXO_SUCESS";
+export const ADD_UTXO_SUCCESS = "ADD_UTXO_SUCCESS";
 export const BROADCAST_TRANSACTION_SUCCESS = "BROADCAST_TRANSACTION_SUCCESS";
 
 export interface Send {
@@ -42,7 +42,7 @@ interface addPrivateKeyAction {
 }
 
 interface addUTXOAction {
-  type: typeof ADD_UTXO_SUCESS;
+  type: typeof ADD_UTXO_SUCCESS;
   payload: utxoData[];
 }
 

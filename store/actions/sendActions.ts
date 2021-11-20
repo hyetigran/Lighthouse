@@ -8,7 +8,7 @@ import { RootState } from "../index";
 import {
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_TO_ADDRESS_SUCCESS,
-  ADD_UTXO_SUCESS,
+  ADD_UTXO_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
   Send,
   SendActionTypes,
@@ -77,8 +77,10 @@ export const thunkGetUTXO =
   (address: string): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch) => {
     try {
-      const utxos: utxoData = await axios.get(
-        `${BCH_FULLSTACK_API_URL}/electrumx/unconfirmed/${address}`
+      const {
+        data: { utxos },
+      } = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/electrumx/utxos/${address}`
       );
       dispatch(getUTXO(utxos));
     } catch (error) {
@@ -88,7 +90,7 @@ export const thunkGetUTXO =
 
 const getUTXO = (utxos: utxoData) => {
   return {
-    type: ADD_UTXO_SUCESS,
+    type: ADD_UTXO_SUCCESS,
     payload: utxos,
   };
 };

@@ -38,6 +38,7 @@ export const thunkGetAllWallets =
               name: "Personal Wallet",
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -46,13 +47,10 @@ export const thunkGetAllWallets =
           coinId: 1831,
         };
         loadedWallets.push(newWallet);
-        // SAVE WALLETS w/ PrivateKey WIF only
+        // PERSIST WALLETS LOCALLY
         await AsyncStorage.setItem("wallets", JSON.stringify(loadedWallets));
-        // ADD PRIVATE KEY TO STATE
-        loadedWallets[0].walletsData[0].privateKey = privateKey;
       } else {
         // ADD PRIVATE KEY OBJECT TO WALLETS
-
         const parsedWallets: Wallets = JSON.parse(wallets);
         for (let wIndex in parsedWallets) {
           let walletsData: Wallet[] = parsedWallets[wIndex].walletsData;
@@ -60,7 +58,6 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
-            walletsData[wdIndex].balance = balance;
           }
           let loadedWalletGroup = {
             ...parsedWallets[wIndex],
@@ -124,6 +121,7 @@ export const thunkCreateWallet =
               name: name,
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -143,6 +141,7 @@ export const thunkCreateWallet =
               name: name,
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
         };

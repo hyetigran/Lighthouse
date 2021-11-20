@@ -3,7 +3,7 @@ import {
   SendActionTypes,
   ADD_TO_ADDRESS_SUCCESS,
   ADD_PRIVATE_KEY_SUCCESS,
-  ADD_UTXO_SUCESS,
+  ADD_UTXO_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
 } from "../types/sendTypes";
 
@@ -42,7 +42,7 @@ export const sendReducer = (
       };
     case ADD_PRIVATE_KEY_SUCCESS:
       return action.payload;
-    case ADD_UTXO_SUCESS:
+    case ADD_UTXO_SUCCESS:
       return {
         ...state,
         sendData: {
