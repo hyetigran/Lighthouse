@@ -60,6 +60,7 @@ export const thunkAttachPrivateKey =
         },
       };
       dispatch(attachPrivateKey(updateSendState));
+      dispatch(thunkGetUTXO(updateSendState.sendData.from.address));
     } catch (error) {
       console.log("Err", error);
     }
@@ -114,6 +115,7 @@ export const thunkBroadcastTransaction =
       }
 
       let transaction = new bitcore.Transaction();
+      //@ts-ignore
       transaction = transaction.from(utxos);
 
       if (balance - to.satoshis - fee2 < BCH_DUST_LIMIT) {

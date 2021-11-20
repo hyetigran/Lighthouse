@@ -43,12 +43,9 @@ const EnterAmountScreen = () => {
   const [fieldAmount, setFieldAmount] = useState({
     cryptoAmount: "0",
     fiatAmount: "0",
-    error: "blah",
+    error: "",
   });
-  console.log("fiat", fieldAmount.fiatAmount);
-  console.log("crypto", fieldAmount.cryptoAmount);
 
-  // const currentRateUSD = 699.25;
   // SEND STATE & CURRENT USD RATE
   const { send, currentRateUSD } = useSelector((state: RootState) => {
     let currentRate = state.market[0].find(
@@ -100,7 +97,7 @@ const EnterAmountScreen = () => {
     let updatedSecondaryVal;
     let errorMessage;
     if (isCryptoFocus) {
-      updatedSecondaryVal = +updatedVal * currentRateUSD;
+      updatedSecondaryVal = +updatedVal * currentRateUSD!;
       errorMessage = validateCryptoAmount(+updatedVal);
       setFieldAmount({
         cryptoAmount: updatedVal,
@@ -109,7 +106,7 @@ const EnterAmountScreen = () => {
       });
     } else {
       updatedSecondaryVal = roundNumber(
-        (+updatedVal / currentRateUSD).toString(),
+        (+updatedVal / currentRateUSD!).toString(),
         8
       );
       errorMessage = validateCryptoAmount(+updatedSecondaryVal);

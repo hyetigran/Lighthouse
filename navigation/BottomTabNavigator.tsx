@@ -25,7 +25,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Portfolio"
+      initialRouteName="Markets"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
       <BottomTab.Screen
@@ -117,7 +117,7 @@ const WalletsTabStack = createStackNavigator<WalletsTabParamsList>();
 
 function TabWalletsNavigator() {
   return (
-    <WalletsTabStack.Navigator initialRouteName="EnterAmoountScreen">
+    <WalletsTabStack.Navigator initialRouteName="MainWalletsScreen">
       <WalletsTabStack.Screen
         name="MainWalletsScreen"
         component={MainWalletsScreen}
@@ -127,11 +127,6 @@ function TabWalletsNavigator() {
         name="AddWalletNavigator"
         component={AddWalletNavigator}
         options={{ headerShown: false }}
-      />
-      <WalletsTabStack.Screen
-        name="EnterAmoountScreen"
-        component={EnterAmountScreen}
-        options={{ headerTitle: "Enter Amount" }}
       />
     </WalletsTabStack.Navigator>
   );

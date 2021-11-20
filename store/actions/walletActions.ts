@@ -79,7 +79,7 @@ const fetchBalance = async (addressString: string) => {
   try {
     const {
       data: { balance },
-    } = await axios.get(`${FULLSTACK_URL}electrumx/balance/${addressString}`);
+    } = await axios.get(`${FULLSTACK_URL}/electrumx/balance/${addressString}`);
 
     const totalBalance = balance.confirmed + balance.unconfirmed;
     return totalBalance;
@@ -111,7 +111,7 @@ export const thunkCreateWallet =
 
       // ENSURE PROPER LIBRARY IS USED
       // BCH BY DEFAULT
-      const privateKey = new bitcore.PrivateKey("testnet");
+      const privateKey = new bitcore.PrivateKey();
       const privateKeyWIF = privateKey.toWIF();
 
       // CREATE WALLET
