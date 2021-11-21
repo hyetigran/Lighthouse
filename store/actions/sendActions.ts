@@ -10,6 +10,7 @@ import {
   ADD_TO_ADDRESS_SUCCESS,
   ADD_UTXO_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
+  ADD_TO_COIN_SUCCESS,
   Send,
   SendActionTypes,
   utxoData,
@@ -157,5 +158,12 @@ const broadcastTransaction = () => {
   return {
     type: BROADCAST_TRANSACTION_SUCCESS,
     payload: "",
+  };
+};
+
+export const addSendCrypto = (coin: number): SendActionTypes => {
+  return {
+    type: ADD_TO_COIN_SUCCESS,
+    payload: coin,
   };
 };

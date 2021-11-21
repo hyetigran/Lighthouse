@@ -2,9 +2,10 @@ import React, { useState, useMemo, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "../../../store";
+import { addSendCrypto } from "../../../store/actions/sendActions";
 import {
   estimateTransactionBytes,
   roundNumber,
@@ -15,18 +16,18 @@ import { BCH_DUST_LIMIT } from "../../../constants/Variables";
 const { text, background, gainGreenLite, darkGrey, lossRed } = Colors.light;
 
 const NUMBER_PAD_KEYS = [
-  { key: "7" },
-  { key: "8" },
-  { key: "9" },
-  { key: "4" },
-  { key: "5" },
-  { key: "6" },
-  { key: "1" },
-  { key: "2" },
-  { key: "3" },
-  { key: "." },
-  { key: "0" },
-  { key: "<" },
+  "7",
+  "8",
+  "9",
+  "4",
+  "5",
+  "6",
+  "1",
+  "2",
+  "3",
+  ".",
+  "0",
+  "<",
 ];
 // IONICONS backspace-outline
 
@@ -51,6 +52,7 @@ const EnterAmountScreen = () => {
   });
 
   const { navigate } = useNavigation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (+fieldAmount.cryptoAmount !== 0 && fieldAmount.error === "") {
@@ -159,6 +161,11 @@ const EnterAmountScreen = () => {
     return "";
   };
 
+  const reviewTransactionHandler = () => {
+    dispatch(addSendCrypto(+fieldAmount.cryptoAmount));
+    navigate("ReviewTransactionScreen");
+  };
+
   const cryptoOutput = fieldAmount.cryptoAmount + " BCH";
   const fiatOutput = fieldAmount.fiatAmount + " USD";
 
@@ -202,18 +209,18 @@ const EnterAmountScreen = () => {
           {NUMBER_PAD_KEYS.map((val) => {
             return (
               <TouchableOpacity
-                key={val.key}
+                key={val}
                 style={styles.numKey}
-                onPress={() => inputChangeHandler(val.key)}
+                onPress={() => inputChangeHandler(val)}
               >
-                <Text style={styles.keyText}>{val.key}</Text>
+                <Text style={styles.keyText}>{val}</Text>
               </TouchableOpacity>
             );
           })}
         </View>
         <View>
           <TouchableOpacity
-            onPress={() => navigate("ReviewTransactionScreen")}
+            onPress={reviewTransactionHandler}
             style={isActive ? styles.active : styles.inactive}
             disabled={!isActive}
           >

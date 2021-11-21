@@ -4,6 +4,7 @@ import {
   ADD_TO_ADDRESS_SUCCESS,
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_UTXO_SUCCESS,
+  ADD_TO_COIN_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
 } from "../types/sendTypes";
 
@@ -48,6 +49,17 @@ export const sendReducer = (
         sendData: {
           ...state.sendData,
           utxos: action.payload,
+        },
+      };
+    case ADD_TO_COIN_SUCCESS:
+      return {
+        ...state,
+        sendData: {
+          ...state.sendData,
+          to: {
+            ...state.sendData.to,
+            satoshis: action.payload,
+          },
         },
       };
     case BROADCAST_TRANSACTION_SUCCESS:
