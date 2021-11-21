@@ -32,9 +32,11 @@ export default function CryptoListScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Initial coin fetch
-    dispatch(thunkGetAllCurrencies());
-  }, []);
+    if (coinData[0].length < 2) {
+      // Initial coin fetch
+      dispatch(thunkGetAllCurrencies());
+    }
+  }, [coinData[0]]);
 
   const reconcileFavoriteHandler = async () => {
     // Get list of fav coins

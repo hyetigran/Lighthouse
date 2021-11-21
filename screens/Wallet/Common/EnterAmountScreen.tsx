@@ -55,6 +55,12 @@ const EnterAmountScreen = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (send.name === "") {
+      navigate("Wallets");
+    }
+  }, [send.name]);
+
+  useEffect(() => {
     if (+fieldAmount.cryptoAmount !== 0 && fieldAmount.error === "") {
       setIsActive(true);
     } else {
