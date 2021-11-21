@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
 
+import { RootState } from "../../../store";
 import {
   estimateTransactionBytes,
   roundNumber,
@@ -11,14 +12,7 @@ import {
 import Colors from "../../../constants/Colors";
 import { BCH_DUST_LIMIT } from "../../../constants/Variables";
 
-const {
-  text,
-  background,
-  secondaryText,
-  gainGreenLite,
-  darkGrey,
-  lossRedLite,
-} = Colors.light;
+const { text, background, gainGreenLite, darkGrey, lossRed } = Colors.light;
 
 const NUMBER_PAD_KEYS = [
   { key: "7" },
@@ -34,7 +28,6 @@ const NUMBER_PAD_KEYS = [
   { key: "0" },
   { key: "<" },
 ];
-
 // IONICONS backspace-outline
 
 const EnterAmountScreen = () => {
@@ -49,13 +42,37 @@ const EnterAmountScreen = () => {
   // SEND STATE & CURRENT USD RATE
   const { send, currentRateUSD } = useSelector((state: RootState) => {
     let currentRate = state.market[0].find(
-      (coin) => coin.name === state.send.name
+      (coin) => coin.symbol === state.send.symbol
     )?.price;
     return {
       send: state.send,
       currentRateUSD: currentRate,
     };
   });
+
+  const { navigate } = useNavigation();
+
+  useEffect(() => {
+    if (+fieldAmount.cryptoAmount !== 0 && fieldAmount.error === "") {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [fieldAmount.cryptoAmount, fieldAmount.error]);
+
+  const fee1 = useMemo(
+    () => estimateTransactionBytes(send.sendData.utxos.length, 1),
+    [send.sendData.utxos]
+  );
+  const allAvailableCrypto = useMemo(
+    () => (send.balance - fee1) / 100000000,
+    [send.balance]
+  );
+
+  const allAvailableFiat = useMemo(
+    () => (allAvailableCrypto * currentRateUSD!).toFixed(2),
+    [currentRateUSD]
+  );
 
   const inputChangeHandler = (val: string) => {
     const { cryptoAmount, fiatAmount } = fieldAmount;
@@ -119,12 +136,24 @@ const EnterAmountScreen = () => {
     }
   };
 
+  const maxBalanceHandler = () => {
+    let updatedSecondaryVal;
+    let errorMessage;
+    updatedSecondaryVal = +allAvailableCrypto * currentRateUSD!;
+    errorMessage = validateCryptoAmount(+allAvailableCrypto);
+    setFieldAmount({
+      cryptoAmount: allAvailableCrypto.toString(),
+      fiatAmount: roundNumber(updatedSecondaryVal.toString(), 2),
+      error: errorMessage,
+    });
+  };
+
   const validateCryptoAmount = (value: number) => {
-    const fee1 = estimateTransactionBytes(send.sendData.utxos.length, 1);
-    if (value < BCH_DUST_LIMIT) {
+    const toSatoshi = value * 100000000;
+    if (toSatoshi < BCH_DUST_LIMIT) {
       return "Amount below the minimum dust limit.";
     }
-    if (send.balance - value - fee1 < BCH_DUST_LIMIT) {
+    if (send.balance - toSatoshi < fee1) {
       return "Insufficient balance.";
     }
     return "";
@@ -146,7 +175,7 @@ const EnterAmountScreen = () => {
             </Text>
             <View style={styles.errorContainer}>
               <Text style={styles.errorText}>
-                {fieldAmount.error ? fieldAmount.error : ""}
+                {fieldAmount.error.length ? fieldAmount.error : ""}
               </Text>
             </View>
           </View>
@@ -159,10 +188,15 @@ const EnterAmountScreen = () => {
         </View>
       </View>
       <View style={styles.actionContainer}>
-        <TouchableOpacity style={styles.sendMaxAction} onPress={() => {}}>
-          <Text
-            style={{ color: background }}
-          >{`Use All Available Funds (${1} USD)`}</Text>
+        <TouchableOpacity
+          style={styles.sendMaxAction}
+          onPress={() => maxBalanceHandler()}
+        >
+          <Text style={{ color: background }}>{`Use All Available Funds (${
+            isCryptoFocus
+              ? allAvailableCrypto + " BCH"
+              : allAvailableFiat + " USD"
+          })`}</Text>
         </TouchableOpacity>
         <View style={styles.numKeyContainer}>
           {NUMBER_PAD_KEYS.map((val) => {
@@ -179,8 +213,9 @@ const EnterAmountScreen = () => {
         </View>
         <View>
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => navigate("ReviewTransactionScreen")}
             style={isActive ? styles.active : styles.inactive}
+            disabled={!isActive}
           >
             <Text style={styles.submitNext}>Next</Text>
           </TouchableOpacity>
@@ -206,7 +241,7 @@ const styles = StyleSheet.create({
     width: "90%",
     marginVertical: 10,
     paddingTop: 46,
-    paddingBottom: 30,
+    paddingBottom: 20,
     shadowColor: darkGrey,
     shadowOpacity: 0.5,
     elevation: 4,
@@ -232,15 +267,14 @@ const styles = StyleSheet.create({
   amountSwap: {
     justifyContent: "center",
     flex: 1,
+    paddingBottom: 20,
   },
   errorContainer: {},
   errorText: {
-    color: lossRedLite,
+    color: lossRed,
+    paddingTop: 10,
   },
-  actionContainer: {
-    // flex: 1,
-    // flexGrow: 1,
-  },
+  actionContainer: {},
   sendMaxAction: {
     backgroundColor: text,
     paddingVertical: 14,
@@ -248,9 +282,7 @@ const styles = StyleSheet.create({
   },
   numKeyContainer: {
     flexDirection: "row",
-    // width: "100%",
     flexWrap: "wrap",
-    // flex: 1,
     flexGrow: 1,
   },
   numKey: {

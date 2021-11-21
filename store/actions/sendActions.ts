@@ -112,7 +112,7 @@ export const thunkBroadcastTransaction =
         throw new Error("Output amount below dust limit.");
       }
 
-      if (balance - to.satoshis - fee1 < BCH_DUST_LIMIT) {
+      if (balance - to.satoshis < fee1) {
         throw new Error("Insufficient balance.");
       }
 
