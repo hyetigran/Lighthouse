@@ -1,5 +1,13 @@
 import React from "react";
-import { View, ScrollView, Text, StyleSheet, Image, Alert } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+  Dimensions,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRoute } from "@react-navigation/core";
 import Slider from "react-native-slide-to-unlock";
@@ -8,10 +16,11 @@ import Colors from "../../../constants/Colors";
 import { RootState } from "../../../store";
 import ReviewCard from "../../../components/Wallets/ReviewCard";
 
-const { gainGreenLite, background } = Colors.light;
+const { gainGreenLite, background, darkGrey, text, gainGreen } = Colors.light;
+const width = Dimensions.get("window").width;
 
 const ReviewTransactionScreen = () => {
-  const { name, sendData, balance } = useSelector(
+  const { name, sendData, balance, logo } = useSelector(
     (state: RootState) => state.send
   );
   const {
@@ -37,37 +46,18 @@ const ReviewTransactionScreen = () => {
         <Text>Fee: Less than 1 cent</Text>
         <Text>BCH</Text>
       </View>
-      <View style={styles.slideContainer}>
+      <View style={styles.slideMainContainer}>
         <Slider
-          childrenContainer={{ backgroundColor: "red" }}
+          // childrenContainer={styles.slideChildren}
           onEndReached={() => {
             Alert.alert("Attention", "onEndReached!");
           }}
-          containerStyle={{
-            margin: 8,
-            backgroundColor: "white",
-            borderRadius: 10,
-            overflow: "hidden",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "95%",
-          }}
+          containerStyle={styles.slideSubContainer}
           sliderElement={
-            <Image
-              style={{
-                width: 50,
-                margin: 4,
-                borderRadius: 5,
-                height: 50,
-                backgroundColor: "red",
-              }}
-              source={{
-                uri: "https://facebook.github.io/react-native/docs/assets/favicon.png",
-              }}
-            />
+            <Image style={styles.slideElement} source={{ uri: logo }} />
           }
         >
-          <Text>{"SLIDE TO UNLOCK"}</Text>
+          <Text style={styles.slideChildren}>Slide to send</Text>
         </Slider>
       </View>
     </View>
@@ -77,6 +67,7 @@ const ReviewTransactionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: background,
   },
   reviewContainer: {},
   mainDetailContainer: {
@@ -97,7 +88,26 @@ const styles = StyleSheet.create({
   feeContainer: {
     flexDirection: "row",
   },
-  slideContainer: {},
+  slideMainContainer: {
+    alignSelf: "center",
+    width: "70%",
+    backgroundColor: darkGrey,
+    marginBottom: 40,
+    borderRadius: 40,
+  },
+  slideSubContainer: {
+    justifyContent: "center",
+  },
+  slideChildren: {
+    color: background,
+    backgroundColor: darkGrey,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  slideElement: {
+    width: 80,
+    height: 80,
+  },
 });
 
 export default ReviewTransactionScreen;

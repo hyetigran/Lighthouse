@@ -10,6 +10,7 @@ export interface Send {
   name: string;
   symbol: string;
   balance: number;
+  logo: string;
 }
 export interface utxoData {
   txId: string;

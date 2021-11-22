@@ -12,6 +12,7 @@ const initialState: Send = {
   name: "",
   symbol: "",
   balance: 0,
+  logo: "",
   sendData: {
     utxos: [],
     to: {
