@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
@@ -68,19 +68,11 @@ const EnterAmountScreen = () => {
     }
   }, [fieldAmount.cryptoAmount, fieldAmount.error]);
 
-  const fee1 = useMemo(
-    () => estimateTransactionBytes(send.sendData.utxos.length, 1),
-    [send.sendData.utxos]
-  );
-  const allAvailableCrypto = useMemo(
-    () => (send.balance - fee1) / 100000000,
-    [send.balance]
-  );
+  const fee1 = estimateTransactionBytes(send.sendData.utxos.length, 1);
 
-  const allAvailableFiat = useMemo(
-    () => (allAvailableCrypto * currentRateUSD!).toFixed(2),
-    [currentRateUSD]
-  );
+  const allAvailableCrypto = (send.balance - fee1) / 100000000;
+
+  const allAvailableFiat = (allAvailableCrypto * currentRateUSD!).toFixed(2);
 
   const inputChangeHandler = (val: string) => {
     const { cryptoAmount, fiatAmount } = fieldAmount;
@@ -169,7 +161,7 @@ const EnterAmountScreen = () => {
 
   const reviewTransactionHandler = () => {
     dispatch(addSendCrypto(+fieldAmount.cryptoAmount));
-    navigate("ReviewTransactionScreen");
+    navigate("ReviewTransactionScreen", { rateUSD: currentRateUSD });
   };
 
   const cryptoOutput = fieldAmount.cryptoAmount + " BCH";

@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Text, View } from "../../components/Themed";
-import TopHeader from "../../components/Markets/TopHeader";
 import CoinRowCard from "../../components/Markets/CoinRowCard";
 import { MarketState, Currency } from "../../store/types/marketTypes";
 import Colors from "../../constants/Colors";
@@ -28,7 +27,6 @@ export default function CryptoListScreen() {
   });
   const [currentTab, setCurrentTab] = useState<number>(0);
 
-  // console.log("coinD", coinData[currentTab].length);
   const dispatch = useDispatch();
 
   useEffect(() => {

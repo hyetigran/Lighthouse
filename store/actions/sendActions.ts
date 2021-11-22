@@ -122,15 +122,18 @@ export const thunkBroadcastTransaction =
       transaction = transaction.from(utxos);
 
       if (balance - to.satoshis - fee2 < BCH_DUST_LIMIT) {
+        // SENDING MAX AMOUNT
         transaction = transaction.to(to.address, to.satoshis);
       } else {
         if (to.address === from.address) {
+          // SENDING TO OURSELVES
           transaction = transaction.to(to.address, balance - fee1);
         } else {
+          // SENDING TO CHANGE BACK
           transaction = transaction.to(to.address, to.satoshis);
           transaction = transaction.to(
             from.address,
-            balance - to.satoshis - fee1
+            balance - to.satoshis - fee2
           );
         }
       }

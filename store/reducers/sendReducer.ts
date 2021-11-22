@@ -22,6 +22,7 @@ const initialState: Send = {
       address: "",
     },
     privateKey: null,
+    fee: 0,
   },
 };
 

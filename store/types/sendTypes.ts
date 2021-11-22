@@ -30,6 +30,7 @@ export interface SendData {
     address: string;
   };
   privateKey: any;
+  fee: number;
 }
 
 interface addToAddressAction {
