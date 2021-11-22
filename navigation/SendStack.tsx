@@ -20,7 +20,10 @@ type ParamList = {
 };
 export default function SendNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SendAddressScreen">
+    <Stack.Navigator
+      initialRouteName="SendAddressScreen"
+      screenOptions={{ gestureEnabled: false }}
+    >
       <Stack.Screen
         name="SendAddressScreen"
         component={SendAddressScreen}

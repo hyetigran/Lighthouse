@@ -1,7 +1,8 @@
 import React from "react";
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import { View, ScrollView, Text, StyleSheet, Image, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRoute } from "@react-navigation/core";
+import Slider from "react-native-slide-to-unlock";
 
 import Colors from "../../../constants/Colors";
 import { RootState } from "../../../store";
@@ -36,7 +37,39 @@ const ReviewTransactionScreen = () => {
         <Text>Fee: Less than 1 cent</Text>
         <Text>BCH</Text>
       </View>
-      <View style={styles.slideContainer}></View>
+      <View style={styles.slideContainer}>
+        <Slider
+          childrenContainer={{ backgroundColor: "red" }}
+          onEndReached={() => {
+            Alert.alert("Attention", "onEndReached!");
+          }}
+          containerStyle={{
+            margin: 8,
+            backgroundColor: "white",
+            borderRadius: 10,
+            overflow: "hidden",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "95%",
+          }}
+          sliderElement={
+            <Image
+              style={{
+                width: 50,
+                margin: 4,
+                borderRadius: 5,
+                height: 50,
+                backgroundColor: "red",
+              }}
+              source={{
+                uri: "https://facebook.github.io/react-native/docs/assets/favicon.png",
+              }}
+            />
+          }
+        >
+          <Text>{"SLIDE TO UNLOCK"}</Text>
+        </Slider>
+      </View>
     </View>
   );
 };
@@ -48,7 +81,6 @@ const styles = StyleSheet.create({
   reviewContainer: {},
   mainDetailContainer: {
     backgroundColor: gainGreenLite,
-    // justifyContent: "center",
     alignItems: "center",
     paddingTop: 40,
     paddingBottom: 80,
