@@ -11,6 +11,7 @@ import {
   ADD_UTXO_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
   ADD_TO_COIN_SUCCESS,
+  ADD_RAW_SEND_SUCCESS,
   Send,
   SendActionTypes,
   utxoData,
@@ -98,51 +99,75 @@ const getUTXO = (utxos: utxoData) => {
   };
 };
 
+export const createSend =
+  (): ThunkAction<void, RootState, unknown, Action<string>> =>
+  (dispatch, getState) => {
+    const {
+      send: { sendData },
+    } = getState();
+    const { utxos, to, privateKey, from } = sendData;
+
+    const balance = utxos.reduce((acc, cur) => (acc += cur.satoshis), 0);
+    const fee1 = estimateTransactionBytes(utxos.length, 1); // 1 * sat / bytes
+    const fee2 = estimateTransactionBytes(utxos.length, 2); // 1 * sat / bytes
+
+    if (to.satoshis < BCH_DUST_LIMIT) {
+      throw new Error("Output amount below dust limit.");
+    }
+
+    if (balance - to.satoshis < fee1) {
+      throw new Error("Insufficient balance.");
+    }
+
+    let transaction = new bitcore.Transaction();
+    //@ts-ignore
+    transaction = transaction.from(utxos);
+    let fee;
+    if (balance - to.satoshis - fee2 < BCH_DUST_LIMIT) {
+      // SENDING MAX AMOUNT
+      transaction = transaction.to(to.address, to.satoshis);
+      // AMOUNT LEFT
+      fee = balance - to.satoshis;
+    } else {
+      if (to.address === from.address) {
+        // SENDING AMOUNT BACK TO SAME ADDRESS
+        transaction = transaction.to(to.address, balance - fee1);
+        fee = fee1;
+      } else {
+        // SENDING TO CHANGE BACK
+        transaction = transaction.to(to.address, to.satoshis);
+        transaction = transaction.to(
+          from.address,
+          balance - to.satoshis - fee2
+        );
+        fee = fee2;
+      }
+    }
+    transaction = transaction.sign(privateKey);
+
+    // opts allows to skip certain tests
+    const rawTransaction = transaction.checkedSerialize({});
+    const payload = {
+      ...sendData,
+      rawTransaction,
+      fee,
+    };
+
+    return {
+      type: ADD_RAW_SEND_SUCCESS,
+      payload,
+    };
+  };
+
 export const thunkBroadcastTransaction =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch, getState) => {
     try {
       const {
         send: {
-          sendData: { utxos, to, privateKey, from },
+          sendData: { rawTransaction },
         },
       } = getState();
-      const balance = utxos.reduce((acc, cur) => (acc += cur.satoshis), 0);
-      const fee1 = estimateTransactionBytes(utxos.length, 1); // 1 * sat / bytes
-      const fee2 = estimateTransactionBytes(utxos.length, 2); // 1 * sat / bytes
-
-      if (to.satoshis < BCH_DUST_LIMIT) {
-        throw new Error("Output amount below dust limit.");
-      }
-
-      if (balance - to.satoshis < fee1) {
-        throw new Error("Insufficient balance.");
-      }
-
-      let transaction = new bitcore.Transaction();
-      //@ts-ignore
-      transaction = transaction.from(utxos);
-
-      if (balance - to.satoshis - fee2 < BCH_DUST_LIMIT) {
-        // SENDING MAX AMOUNT
-        transaction = transaction.to(to.address, to.satoshis);
-      } else {
-        if (to.address === from.address) {
-          // SENDING TO OURSELVES
-          transaction = transaction.to(to.address, balance - fee1);
-        } else {
-          // SENDING TO CHANGE BACK
-          transaction = transaction.to(to.address, to.satoshis);
-          transaction = transaction.to(
-            from.address,
-            balance - to.satoshis - fee2
-          );
-        }
-      }
-      transaction = transaction.sign(privateKey);
-
-      // opts allows to skip certain tests
-      const rawTransaction = transaction.checkedSerialize({});
 
       const result: string = await axios.post(
         `${BCH_FULLSTACK_API_URL}/electrumx/tx/broadcast`,
@@ -153,6 +178,7 @@ export const thunkBroadcastTransaction =
           "Broadcasting transaction failed with error: " + result
         );
       }
+      // TODO - RESULT TXID URL TO BLOCKCHAIN
       dispatch(broadcastTransaction());
     } catch (error) {
       console.log(error);

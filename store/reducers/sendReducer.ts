@@ -24,6 +24,7 @@ const initialState: Send = {
     },
     privateKey: null,
     fee: 0,
+    rawTransaction: "",
   },
 };
 
