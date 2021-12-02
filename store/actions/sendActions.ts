@@ -130,7 +130,7 @@ export const thunkCreateSend =
       }
 
       let transaction = new bitcore.Transaction();
-      console.log("utxos", utxos);
+
       transaction = transaction.from(utxos);
       let fee;
       if (balance - coin - fee2 < BCH_DUST_LIMIT) {

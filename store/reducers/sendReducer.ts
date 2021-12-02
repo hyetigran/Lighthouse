@@ -55,7 +55,6 @@ export const sendReducer = (
         },
       };
     case ADD_RAW_SEND_SUCCESS:
-      console.log("reducer", action.payload);
       return {
         ...state,
         sendData: action.payload,

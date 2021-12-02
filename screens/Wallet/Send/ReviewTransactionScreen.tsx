@@ -17,6 +17,7 @@ import { RootState } from "../../../store";
 import ReviewCard from "../../../components/Wallets/ReviewCard";
 import { thunkBroadcastTransaction } from "../../../store/actions/sendActions";
 import { roundNumber } from "../../../helpers/utilities";
+import { BCH_TO_SATOSHI } from "../../../constants/Variables";
 
 const { gainGreenLite, background, darkGrey, text, gainGreen } = Colors.light;
 const width = Dimensions.get("window").width;
@@ -36,7 +37,7 @@ const ReviewTransactionScreen = () => {
   };
   let feeMessage = "";
   const feeFiat = roundNumber(
-    (sendData.fee * 100000000 * rateUSD).toString(),
+    (sendData.fee * BCH_TO_SATOSHI * rateUSD).toString(),
     2
   );
   if (+feeFiat <= 0.01) {
@@ -44,15 +45,25 @@ const ReviewTransactionScreen = () => {
   } else {
     feeMessage = feeFiat;
   }
+
+  // TODO - redirect to main wallet page when missing data i.e.  name, sendData
+
+  const cryptoOutput =
+    (sendData.to.satoshis / BCH_TO_SATOSHI).toString() + " BCH";
+  const fiatOutput =
+    roundNumber(
+      ((sendData.to.satoshis / BCH_TO_SATOSHI) * rateUSD).toString(),
+      2
+    ) + " USD";
   return (
     <View style={styles.container}>
       <ScrollView style={styles.reviewContainer}>
         <View style={styles.mainDetailContainer}>
           <Text style={styles.mainText}>You are sending</Text>
           <Text style={[styles.mainText, { fontSize: 30, fontWeight: "bold" }]}>
-            0.09 USD
+            {fiatOutput}
           </Text>
-          <Text style={styles.mainText}>0.000 160 00 BCH</Text>
+          <Text style={styles.mainText}>{cryptoOutput}</Text>
         </View>
         <View style={styles.addressContainer}>
           <ReviewCard header={"From:"} name={name} amount={balance} />
