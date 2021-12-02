@@ -4,8 +4,8 @@ import {
   ADD_TO_ADDRESS_SUCCESS,
   ADD_PRIVATE_KEY_SUCCESS,
   ADD_UTXO_SUCCESS,
-  ADD_TO_COIN_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
+  ADD_RAW_SEND_SUCCESS,
 } from "../types/sendTypes";
 
 const initialState: Send = {
@@ -54,16 +54,11 @@ export const sendReducer = (
           utxos: action.payload,
         },
       };
-    case ADD_TO_COIN_SUCCESS:
+    case ADD_RAW_SEND_SUCCESS:
+      console.log("reducer", action.payload);
       return {
         ...state,
-        sendData: {
-          ...state.sendData,
-          to: {
-            ...state.sendData.to,
-            satoshis: action.payload,
-          },
-        },
+        sendData: action.payload,
       };
     case BROADCAST_TRANSACTION_SUCCESS:
       return initialState;

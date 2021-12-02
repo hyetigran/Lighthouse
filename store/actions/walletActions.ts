@@ -74,12 +74,15 @@ export const thunkGetAllWallets =
 
 const fetchBalance = async (addressString: string) => {
   try {
-    const {
-      data: { balance },
-    } = await axios.get(`${FULLSTACK_URL}/electrumx/balance/${addressString}`);
-
-    const totalBalance = balance.confirmed + balance.unconfirmed;
-    return totalBalance;
+    // const {
+    //   data: { balance },
+    // } = await axios.get(`${FULLSTACK_URL}/electrumx/balance/${addressString}`);
+    const result = await axios.get(
+      `${FULLSTACK_URL}/address/details/${addressString}`
+    );
+    console.log("RESULT", result);
+    // const totalBalance = balance.confirmed + balance.unconfirmed;
+    return 0;
   } catch (error) {
     console.log("fetchBalance err", error);
   }

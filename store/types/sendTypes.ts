@@ -2,7 +2,6 @@ export const ADD_TO_ADDRESS_SUCCESS = "ADD_TO_ADDRESS_SUCCESS";
 export const ADD_PRIVATE_KEY_SUCCESS = "ADD_PRIVATE_KEY_SUCCESS";
 export const ADD_UTXO_SUCCESS = "ADD_UTXO_SUCCESS";
 export const BROADCAST_TRANSACTION_SUCCESS = "BROADCAST_TRANSACTION_SUCCESS";
-export const ADD_TO_COIN_SUCCESS = "ADD_TO_COIN_SUCCESS";
 export const ADD_RAW_SEND_SUCCESS = "ADD_RAW_SEND_SUCCESS";
 
 export interface Send {
@@ -13,17 +12,17 @@ export interface Send {
   balance: number;
   logo: string;
 }
-export interface utxoData {
-  txId: string;
-  outputIndex?: number | null;
-  address: string;
-  script: string;
-  satoshis: number;
-  inspect: string;
-  toObject: string;
-}
+// export interface utxoData {
+//   txId: string;
+//   outputIndex?: number | null;
+//   address: string;
+//   script: string;
+//   satoshis: number;
+//   inspect: string;
+//   toObject: string;
+// }
 export interface SendData {
-  utxos: utxoData[];
+  utxos: any[];
   to: {
     address: string;
     satoshis: number;
@@ -48,7 +47,7 @@ interface addPrivateKeyAction {
 
 interface addUTXOAction {
   type: typeof ADD_UTXO_SUCCESS;
-  payload: utxoData[];
+  payload: any[];
 }
 
 interface broadcastTransactionAction {
@@ -56,10 +55,6 @@ interface broadcastTransactionAction {
   payload: string;
 }
 
-interface addToCoinAction {
-  type: typeof ADD_TO_COIN_SUCCESS;
-  payload: number;
-}
 interface addRawTransactionAction {
   type: typeof ADD_RAW_SEND_SUCCESS;
   payload: SendData;
@@ -69,5 +64,4 @@ export type SendActionTypes =
   | addPrivateKeyAction
   | addUTXOAction
   | broadcastTransactionAction
-  | addToCoinAction
   | addRawTransactionAction;

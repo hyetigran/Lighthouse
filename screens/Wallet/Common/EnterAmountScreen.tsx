@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "../../../store";
-import { addSendCrypto } from "../../../store/actions/sendActions";
+import { thunkCreateSend } from "../../../store/actions/sendActions";
 import {
   estimateTransactionBytes,
   roundNumber,
@@ -160,7 +160,8 @@ const EnterAmountScreen = () => {
   };
 
   const reviewTransactionHandler = () => {
-    dispatch(addSendCrypto(+fieldAmount.cryptoAmount));
+    const satToBCH = +fieldAmount.cryptoAmount * 100000000;
+    dispatch(thunkCreateSend(satToBCH));
     navigate("ReviewTransactionScreen", { rateUSD: currentRateUSD });
   };
 

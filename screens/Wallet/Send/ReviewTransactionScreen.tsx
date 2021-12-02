@@ -15,6 +15,8 @@ import Slider from "react-native-slide-to-unlock";
 import Colors from "../../../constants/Colors";
 import { RootState } from "../../../store";
 import ReviewCard from "../../../components/Wallets/ReviewCard";
+import { thunkBroadcastTransaction } from "../../../store/actions/sendActions";
+import { roundNumber } from "../../../helpers/utilities";
 
 const { gainGreenLite, background, darkGrey, text, gainGreen } = Colors.light;
 const width = Dimensions.get("window").width;
@@ -27,6 +29,21 @@ const ReviewTransactionScreen = () => {
     params: { rateUSD },
   } = useRoute();
 
+  const dispatch = useDispatch();
+
+  const slideToSendHandler = () => {
+    dispatch(thunkBroadcastTransaction());
+  };
+  let feeMessage = "";
+  const feeFiat = roundNumber(
+    (sendData.fee * 100000000 * rateUSD).toString(),
+    2
+  );
+  if (+feeFiat <= 0.01) {
+    feeMessage = "Less than 1 cent";
+  } else {
+    feeMessage = feeFiat;
+  }
   return (
     <View style={styles.container}>
       <ScrollView style={styles.reviewContainer}>
@@ -43,8 +60,8 @@ const ReviewTransactionScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.feeContainer}>
-        <Text>Fee: Less than 1 cent</Text>
-        <Text>BCH</Text>
+        <Text>{`Fee: ${feeMessage}`}</Text>
+        <Text>{`${sendData.fee}`}</Text>
       </View>
       <View style={styles.slideMainContainer}>
         <Slider
