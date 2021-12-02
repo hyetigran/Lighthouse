@@ -80,38 +80,17 @@ export const thunkGetUTXO =
   (address: string): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch) => {
     try {
-      const {
-        data: { utxos },
-      } = await axios.get(`${BCH_FULLSTACK_API_URL}/address/utxo/${address}`);
-      console.log("utxo", utxos);
-      // const modifiedUTXOs = utxos.map((utxo: any) => {
-      //   return {
-      //     ...utxo,
-      //     txId: utxo.tx_hash,
-      //     vout: utxo.tx_pos,
-      //     satoshis: utxo.value,
-      //   };
-      // });
-      // var options = {
-      //   method: "GET",
-      //   hostname: "rest.cryptoapis.io",
-      //   path: `/v2/blockchain-data/bitcoin/testnet/addresses/${address}/unspent`,
-      //   qs: { limit: 50, offset: 10 },
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "X-API-Key": "06decf7fbaaf8af8b10823ec83f34eb73f38f5a0",
-      //   },
-      // };
-      // const results = await axios.get(
-      //   `https://rest.cryptoapis.io/v2/blockchain-data/bitcoin-cash/mainnet/addresses/${address}/unspent`,
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       "X-API-Key": "06decf7fbaaf8af8b10823ec83f34eb73f38f5a0",
-      //     },
-      //   }
-      // );
-      // console.log("RESULTS", results);
+      const { data } = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/address/utxo/${address}`
+      );
+
+      const modifiedUTXOs = data.utxos.map((utxo: any) => {
+        return {
+          ...utxo,
+          txId: utxo.txid,
+          scriptPubKey: data.scriptPubKey,
+        };
+      });
 
       dispatch(getUTXO(modifiedUTXOs));
     } catch (error) {
