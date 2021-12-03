@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
+import { BCH_TO_SATOSHI } from "../../constants/Variables";
 
 interface ActionProps {
   header: string;
@@ -31,7 +32,11 @@ const ReviewCard = ({ header, name, amount }: ActionProps) => {
         </View>
         <View style={styles.subInfoContainer}>
           <Text style={styles.name}>{name}</Text>
-          {amount && <Text style={styles.amount}>{amount}</Text>}
+          {amount && (
+            <Text style={styles.amount}>{`${
+              amount / BCH_TO_SATOSHI
+            } BCH`}</Text>
+          )}
         </View>
       </View>
     </View>

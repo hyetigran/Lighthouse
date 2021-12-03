@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRoute } from "@react-navigation/core";
@@ -17,12 +18,13 @@ import { RootState } from "../../../store";
 import ReviewCard from "../../../components/Wallets/ReviewCard";
 import { thunkBroadcastTransaction } from "../../../store/actions/sendActions";
 import { roundNumber } from "../../../helpers/utilities";
-import { BCH_TO_SATOSHI } from "../../../constants/Variables";
+import { BCH_TO_SATOSHI, ONE_CENT } from "../../../constants/Variables";
 
 const { gainGreenLite, background, darkGrey, text, gainGreen } = Colors.light;
 const width = Dimensions.get("window").width;
 
 const ReviewTransactionScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { name, sendData, balance, logo } = useSelector(
     (state: RootState) => state.send
   );
@@ -33,14 +35,15 @@ const ReviewTransactionScreen = () => {
   const dispatch = useDispatch();
 
   const slideToSendHandler = () => {
-    dispatch(thunkBroadcastTransaction());
+    setIsLoading(true);
+    // dispatch(thunkBroadcastTransaction());
   };
   let feeMessage = "";
   const feeFiat = roundNumber(
-    (sendData.fee * BCH_TO_SATOSHI * rateUSD).toString(),
+    ((sendData.fee / BCH_TO_SATOSHI) * rateUSD).toString(),
     2
   );
-  if (+feeFiat <= 0.01) {
+  if (+feeFiat <= ONE_CENT) {
     feeMessage = "Less than 1 cent";
   } else {
     feeMessage = feeFiat;
@@ -55,6 +58,7 @@ const ReviewTransactionScreen = () => {
       ((sendData.to.satoshis / BCH_TO_SATOSHI) * rateUSD).toString(),
       2
     ) + " USD";
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.reviewContainer}>
@@ -69,23 +73,25 @@ const ReviewTransactionScreen = () => {
           <ReviewCard header={"From:"} name={name} amount={balance} />
           <ReviewCard header={"To:"} name={sendData.to.address} />
         </View>
+        {isLoading && <ActivityIndicator size="large" color={gainGreen} />}
       </ScrollView>
       <View style={styles.feeContainer}>
         <Text>{`Fee: ${feeMessage}`}</Text>
-        <Text>{`${sendData.fee}`}</Text>
+        <Text>{`${sendData.fee} satoshi`}</Text>
       </View>
       <View style={styles.slideMainContainer}>
         <Slider
+          disableSliding={isLoading}
           // childrenContainer={styles.slideChildren}
-          onEndReached={() => {
-            Alert.alert("Attention", "onEndReached!");
-          }}
+          onEndReached={slideToSendHandler}
           containerStyle={styles.slideSubContainer}
           sliderElement={
             <Image style={styles.slideElement} source={{ uri: logo }} />
           }
         >
-          <Text style={styles.slideChildren}>Slide to send</Text>
+          <Text style={styles.slideChildren}>
+            {isLoading ? "Sending" : "Slide to send"}
+          </Text>
         </Slider>
       </View>
     </View>
@@ -115,6 +121,9 @@ const styles = StyleSheet.create({
   },
   feeContainer: {
     flexDirection: "row",
+    marginHorizontal: 40,
+    paddingBottom: 20,
+    justifyContent: "space-between",
   },
   slideMainContainer: {
     alignSelf: "center",
