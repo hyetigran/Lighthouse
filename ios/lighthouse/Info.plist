@@ -66,5 +66,7 @@
     <true/>
     <key>CFBundleDisplayName</key>
     <string>lighthouse</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Your message to user when the camera is accessed for the first time</string>
   </dict>
 </plist>

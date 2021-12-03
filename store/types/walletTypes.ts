@@ -11,7 +11,7 @@ export interface Wallets {
 }
 export interface Wallet {
   [key: string]: any;
-  privateKey?: any;
+  privateKey: any;
   privateKeyWIF: string;
   publickKey?: string;
   // TODO - import Address types

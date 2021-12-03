@@ -86,7 +86,7 @@ const ReceiveTransactionScreen = () => {
           <TouchableOpacity
             style={styles.selectWalletContainer}
             onPress={() => {
-              navigate("SelectWalletScreen", {
+              navigate("SelectReceiveScreen", {
                 pk: selectWallet.walletsData.privateKeyWIF,
               });
             }}

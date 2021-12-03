@@ -14,9 +14,12 @@ const { secondaryText: grey, background } = Colors.light;
 export default function MainWalletsScreen() {
   const wallets = useSelector((state: RootState) => state.wallet);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    initialLoad();
-  }, []);
+    if (wallets.length < 1) {
+      initialLoad();
+    }
+  }, [wallets]);
 
   // TODO - REMOVE for DEV ONLY
   // const clearWallets = async () => {

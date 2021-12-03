@@ -38,6 +38,7 @@ export const thunkGetAllWallets =
               name: "Personal Wallet",
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -46,13 +47,10 @@ export const thunkGetAllWallets =
           coinId: 1831,
         };
         loadedWallets.push(newWallet);
-        // SAVE WALLETS w/ PrivateKey WIF only
+        // PERSIST WALLETS LOCALLY
         await AsyncStorage.setItem("wallets", JSON.stringify(loadedWallets));
-        // ADD PRIVATE KEY TO STATE
-        loadedWallets[0].walletsData[0].privateKey = privateKey;
       } else {
         // ADD PRIVATE KEY OBJECT TO WALLETS
-
         const parsedWallets: Wallets = JSON.parse(wallets);
         for (let wIndex in parsedWallets) {
           let walletsData: Wallet[] = parsedWallets[wIndex].walletsData;
@@ -78,10 +76,10 @@ export const thunkGetAllWallets =
 const fetchBalance = async (addressString: string) => {
   try {
     const {
-      data: { balance },
-    } = await axios.get(`${FULLSTACK_URL}electrumx/balance/${addressString}`);
+      data: { balanceSat, unconfirmedBalanceSat },
+    } = await axios.get(`${FULLSTACK_URL}/address/details/${addressString}`);
 
-    const totalBalance = balance.confirmed + balance.unconfirmed;
+    const totalBalance = balanceSat + unconfirmedBalanceSat;
     return totalBalance;
   } catch (error) {
     console.log("fetchBalance err", error);
@@ -111,7 +109,7 @@ export const thunkCreateWallet =
 
       // ENSURE PROPER LIBRARY IS USED
       // BCH BY DEFAULT
-      const privateKey = new bitcore.PrivateKey("testnet");
+      const privateKey = new bitcore.PrivateKey();
       const privateKeyWIF = privateKey.toWIF();
 
       // CREATE WALLET
@@ -124,6 +122,7 @@ export const thunkCreateWallet =
               name: name,
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
           name: "Bitcoin Cash (BCH)",
@@ -143,6 +142,7 @@ export const thunkCreateWallet =
               name: name,
               addressString: privateKey.toAddress().toString(),
               balance: 0,
+              privateKey,
             },
           ],
         };

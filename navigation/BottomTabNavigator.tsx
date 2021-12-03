@@ -8,6 +8,7 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import CryptoListScreen from "../screens/Markets/CryptoListScreen";
 import MainPortfolioScreen from "../screens/Portfolio/MainPortfolioScreen";
+import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import MainWalletsScreen from "../screens/Wallet/MainWalletsScreen";
 import {
   BottomTabParamList,
@@ -24,7 +25,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Portfolio"
+      initialRouteName="Markets"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
       <BottomTab.Screen
