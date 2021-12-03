@@ -58,6 +58,7 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
+            walletsData[wdIndex].balance = balance;
           }
           let loadedWalletGroup = {
             ...parsedWallets[wIndex],

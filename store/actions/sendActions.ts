@@ -187,14 +187,15 @@ export const thunkBroadcastTransaction =
         },
       } = getState();
 
-      // const result: string = await axios.get(
-      //   `${BCH_FULLSTACK_API_URL}/rawtransactions/sendRawTransaction/${rawTransaction}`
-      // );
-      // if (result.match(/^"[0-9a-fA-F]{64"$/) === null) {
-      //   throw new Error(
-      //     "Broadcasting transaction failed with error: " + result
-      //   );
-      // }
+      const { data, status }: any = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/rawtransactions/sendRawTransaction/${rawTransaction}`
+      );
+
+      if (data.match(/^"[0-9a-fA-F]{64"$/) === null) {
+        throw new Error(
+          "Broadcasting transaction failed with error: " + status
+        );
+      }
       // TODO - RESULT TXID URL TO BLOCKCHAIN
       dispatch(broadcastTransaction());
       navigate("SuccessTransactionScreen");
