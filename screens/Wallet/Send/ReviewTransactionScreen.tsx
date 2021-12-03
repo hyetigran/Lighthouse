@@ -5,23 +5,22 @@ import {
   Text,
   StyleSheet,
   Image,
-  Alert,
-  Dimensions,
   ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useRoute } from "@react-navigation/core";
+import { useRoute, useNavigation } from "@react-navigation/core";
 import Slider from "react-native-slide-to-unlock";
 
+import { ReviewRouteProp } from "../../../navigation/SendStack";
 import Colors from "../../../constants/Colors";
 import { RootState } from "../../../store";
 import ReviewCard from "../../../components/Wallets/ReviewCard";
 import { thunkBroadcastTransaction } from "../../../store/actions/sendActions";
 import { roundNumber } from "../../../helpers/utilities";
 import { BCH_TO_SATOSHI, ONE_CENT } from "../../../constants/Variables";
+import DEFAULT_LOGO from "../../../assets/images/icon.png";
 
-const { gainGreenLite, background, darkGrey, text, gainGreen } = Colors.light;
-const width = Dimensions.get("window").width;
+const { gainGreenLite, background, darkGrey, gainGreen } = Colors.light;
 
 const ReviewTransactionScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,13 +29,15 @@ const ReviewTransactionScreen = () => {
   );
   const {
     params: { rateUSD },
-  } = useRoute();
+  } = useRoute<ReviewRouteProp>();
+
+  const { navigate } = useNavigation();
 
   const dispatch = useDispatch();
 
   const slideToSendHandler = () => {
     setIsLoading(true);
-    // dispatch(thunkBroadcastTransaction());
+    dispatch(thunkBroadcastTransaction(navigate));
   };
   let feeMessage = "";
   const feeFiat = roundNumber(
@@ -47,6 +48,13 @@ const ReviewTransactionScreen = () => {
     feeMessage = "Less than 1 cent";
   } else {
     feeMessage = feeFiat;
+  }
+
+  let imgSource;
+  if (!logo) {
+    imgSource = DEFAULT_LOGO;
+  } else {
+    imgSource = { uri: logo };
   }
 
   // TODO - redirect to main wallet page when missing data i.e.  name, sendData
@@ -86,7 +94,7 @@ const ReviewTransactionScreen = () => {
           onEndReached={slideToSendHandler}
           containerStyle={styles.slideSubContainer}
           sliderElement={
-            <Image style={styles.slideElement} source={{ uri: logo }} />
+            <Image style={styles.slideElement} source={imgSource} />
           }
         >
           <Text style={styles.slideChildren}>

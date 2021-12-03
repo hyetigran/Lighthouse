@@ -6,6 +6,7 @@ import {
   ADD_UTXO_SUCCESS,
   BROADCAST_TRANSACTION_SUCCESS,
   ADD_RAW_SEND_SUCCESS,
+  RESET_TRANSACTION_SUCCESS,
 } from "../types/sendTypes";
 
 const initialState: Send = {
@@ -60,6 +61,8 @@ export const sendReducer = (
         sendData: action.payload,
       };
     case BROADCAST_TRANSACTION_SUCCESS:
+      return state;
+    case RESET_TRANSACTION_SUCCESS:
       return initialState;
     default:
       return state;

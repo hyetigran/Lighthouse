@@ -8,14 +8,19 @@ import SelectSendScreen from "../screens/Wallet/Send/SelectSendScreen";
 import EnterAmountScreen from "../screens/Wallet/Common/EnterAmountScreen";
 import ReviewTransactionScreen from "../screens/Wallet/Send/ReviewTransactionScreen";
 import { SendParamList } from "../types";
+import SuccessTransactionScreen from "../screens/Wallet/Send/SuccessTransactionScreen";
 
 const Stack = createStackNavigator<SendParamList>();
 
 // TODO - DUPLICATE? -- see types.tsx
 export type SendRouteProp = RouteProp<ParamList, "Scan">;
+export type ReviewRouteProp = RouteProp<ParamList, "Review">;
 type ParamList = {
   Scan: {
     setSendAddress: (text: string) => void;
+  };
+  Review: {
+    rateUSD: number;
   };
 };
 export default function SendNavigator() {
@@ -59,6 +64,13 @@ export default function SendNavigator() {
         component={ReviewTransactionScreen}
         options={{
           headerTitle: "Review Transaction",
+        }}
+      />
+      <Stack.Screen
+        name="SuccessTransactionScreen"
+        component={SuccessTransactionScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

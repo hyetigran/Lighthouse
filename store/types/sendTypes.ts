@@ -3,6 +3,7 @@ export const ADD_PRIVATE_KEY_SUCCESS = "ADD_PRIVATE_KEY_SUCCESS";
 export const ADD_UTXO_SUCCESS = "ADD_UTXO_SUCCESS";
 export const BROADCAST_TRANSACTION_SUCCESS = "BROADCAST_TRANSACTION_SUCCESS";
 export const ADD_RAW_SEND_SUCCESS = "ADD_RAW_SEND_SUCCESS";
+export const RESET_TRANSACTION_SUCCESS = "RESET_TRANSACTION_SUCCESS";
 
 export interface Send {
   [key: string]: any;
@@ -59,9 +60,15 @@ interface addRawTransactionAction {
   type: typeof ADD_RAW_SEND_SUCCESS;
   payload: SendData;
 }
+
+interface resetTransactionAction {
+  type: typeof RESET_TRANSACTION_SUCCESS;
+  payload: string;
+}
 export type SendActionTypes =
   | addToAddressAction
   | addPrivateKeyAction
   | addUTXOAction
   | broadcastTransactionAction
-  | addRawTransactionAction;
+  | addRawTransactionAction
+  | resetTransactionAction;

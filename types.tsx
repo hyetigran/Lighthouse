@@ -50,6 +50,7 @@ export type SendParamList = {
   SelectSendScreen: undefined;
   EnterAmountScreen: undefined;
   ReviewTransactionScreen: undefined;
+  SuccessTransactionScreen: undefined;
 };
 
 export type ReceiveParamList = {

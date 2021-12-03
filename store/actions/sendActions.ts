@@ -15,6 +15,7 @@ import {
   Send,
   SendActionTypes,
   SendData,
+  RESET_TRANSACTION_SUCCESS,
 } from "../types/sendTypes";
 import { BCH_DUST_LIMIT } from "../../constants/Variables";
 import { estimateTransactionBytes } from "../../helpers/utilities";
@@ -177,7 +178,7 @@ const createSend = (payload: SendData): SendActionTypes => {
 };
 
 export const thunkBroadcastTransaction =
-  (): ThunkAction<void, RootState, unknown, Action<string>> =>
+  (navigate: any): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch, getState) => {
     try {
       const {
@@ -186,16 +187,17 @@ export const thunkBroadcastTransaction =
         },
       } = getState();
 
-      const result: string = await axios.get(
-        `${BCH_FULLSTACK_API_URL}/rawtransactions/sendRawTransaction/${rawTransaction}`
-      );
-      if (result.match(/^"[0-9a-fA-F]{64"$/) === null) {
-        throw new Error(
-          "Broadcasting transaction failed with error: " + result
-        );
-      }
+      // const result: string = await axios.get(
+      //   `${BCH_FULLSTACK_API_URL}/rawtransactions/sendRawTransaction/${rawTransaction}`
+      // );
+      // if (result.match(/^"[0-9a-fA-F]{64"$/) === null) {
+      //   throw new Error(
+      //     "Broadcasting transaction failed with error: " + result
+      //   );
+      // }
       // TODO - RESULT TXID URL TO BLOCKCHAIN
       dispatch(broadcastTransaction());
+      navigate("SuccessTransactionScreen");
     } catch (error) {
       console.log(error);
     }
@@ -215,3 +217,10 @@ const broadcastTransaction = () => {
 //     payload: coin,
 //   };
 // };
+
+export const resetTransaction = () => {
+  return {
+    type: RESET_TRANSACTION_SUCCESS,
+    payload: "",
+  };
+};

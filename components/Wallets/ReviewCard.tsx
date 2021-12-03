@@ -17,6 +17,9 @@ const {
 } = Colors.light;
 
 const ReviewCard = ({ header, name, amount }: ActionProps) => {
+  if (!name) {
+    return null;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
