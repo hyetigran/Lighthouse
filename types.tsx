@@ -27,7 +27,7 @@ export type PortfolioTabParamsList = {
 export type WalletsTabParamsList = {
   MainWalletsScreen: undefined;
   AddWalletNavigator: undefined;
-  EnterAmoountScreen: undefined;
+  DetailWalletNavigator: undefined;
 };
 
 export type TransactionParamList = {
@@ -63,4 +63,13 @@ export type ReceiveParamList = {
 export type WalletParamList = {
   AddWalletScreen: undefined;
   CreateWalletScreen: undefined;
+};
+
+export type DetailWalletParamList = {
+  WalletDetailScreen: {
+    pId: string;
+  };
+  WalletTransactionDetailScreen: {
+    tId: string;
+  };
 };

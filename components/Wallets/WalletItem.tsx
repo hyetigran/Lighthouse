@@ -14,7 +14,15 @@ const { tabIconDefault: darkGrey, secondaryText: lightGrey } = Colors.light;
 
 const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigate("DetailWalletNavigator", {
+          screen: "WalletDetailScreen",
+          params: { pId: wallet.privateKeyWIF },
+        })
+      }
+    >
       <View style={styles.imgContainer}>
         <Image
           style={styles.imgLogo}
@@ -32,7 +40,7 @@ const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
           <Ionicons name="chevron-forward-outline" size={24} color={darkGrey} />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
