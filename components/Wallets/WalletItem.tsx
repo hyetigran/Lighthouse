@@ -17,9 +17,10 @@ const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
     <TouchableOpacity
       style={styles.container}
       onPress={() =>
+        // TODO - make coinID dynamic
         navigate("DetailWalletNavigator", {
           screen: "WalletDetailScreen",
-          params: { pId: wallet.privateKeyWIF },
+          params: { pId: wallet.privateKeyWIF, id: 1831, name: wallet.name },
         })
       }
     >

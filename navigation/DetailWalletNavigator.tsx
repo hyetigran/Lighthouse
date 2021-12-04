@@ -5,6 +5,7 @@ import { RouteProp } from "@react-navigation/native";
 import { DetailWalletParamList } from "../types";
 import WalletDetailScreen from "../screens/Wallet/Detail/WalletDetailScreen";
 import WalletTransactionDetailScreen from "../screens/Wallet/Detail/WalletTransactionDetailScreen";
+import HeaderTitle from "../components/HeaderTitle";
 
 const Stack = createStackNavigator<DetailWalletParamList>();
 
@@ -13,6 +14,8 @@ export type TransactionRouteProp = RouteProp<ParamList, "Transaction">;
 type ParamList = {
   Detail: {
     pId: string;
+    id: number;
+    name: string;
   };
   Transaction: {
     tId: string;
@@ -24,10 +27,12 @@ export default function DetailWalletNavigator() {
       <Stack.Screen
         name="WalletDetailScreen"
         component={WalletDetailScreen}
-        options={{
-          headerTitle: "Name of wallet here",
-          headerBackTitle: "Wallets",
-        }}
+        // options={({ route, navigation }) => ({
+        //   headerTitle: () => <HeaderTitle {...route.params} />,
+        options={({ route }) => ({
+          headerTitle: () => <HeaderTitle {...route.params} />,
+          headerBackTitle: " ",
+        })}
       />
       <Stack.Screen
         name="WalletTransactionDetailScreen"

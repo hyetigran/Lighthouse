@@ -68,6 +68,8 @@ export type WalletParamList = {
 export type DetailWalletParamList = {
   WalletDetailScreen: {
     pId: string;
+    id: number;
+    name: string;
   };
   WalletTransactionDetailScreen: {
     tId: string;
