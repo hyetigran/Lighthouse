@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -15,17 +15,35 @@ import Colors from "../../../constants/Colors";
 import { DetailRouteProp } from "../../../navigation/DetailWalletNavigator";
 import TransactionItem from "../../../components/Wallets/TransactionItem";
 import TransactionItemHeader from "../../../components/Wallets/TransactionItemHeader";
-import { useEffect } from "hoist-non-react-statics/node_modules/@types/react";
 import { thunkGetWalletDetails } from "../../../store/actions/walletActions";
+import { Wallets } from "../../../store/types/walletTypes";
 
 const { gainGreenLite, background, gainGreen } = Colors.light;
 
 const WalletDetailScreen = () => {
-  const { sendData } = useSelector((state: RootState) => state.send);
-
   const {
     params: { pId, coinId, walletName, address },
   } = useRoute<DetailRouteProp>();
+
+  const walletDetails = useSelector((state: RootState) => {
+    const walletState = state.wallet;
+    let selectedWallet: Wallets[];
+    for (let i = 0; i < walletState.length; i++) {
+      let wallets = walletState[i];
+      if (wallets.coinId === coinId) {
+        let walletData = wallets.walletsData;
+        selectedWallet = [wallets];
+        for (let j = 0; j < walletData.length; j++) {
+          let wallet = walletData[j];
+          if (wallet.privateKeyWIF === pId) {
+            selectedWallet[0].walletsData = [wallet];
+          }
+        }
+      }
+    }
+
+    return selectedWallet!;
+  });
   const dispatch = useDispatch();
   const { navigate } = useNavigation();
 
@@ -33,7 +51,8 @@ const WalletDetailScreen = () => {
     dispatch(thunkGetWalletDetails(address, walletName, pId, coinId));
   }, []);
 
-  let transformedTransactions = sendData;
+  let transformedTransactions = walletDetails[0];
+  console.log("WALLET D", walletDetails);
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -64,7 +83,7 @@ const WalletDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <SectionList
+      {/* <SectionList
         // NAME UNIQUE ENFORCED?
         keyExtractor={(item) => item.name}
         renderItem={({ item, section }) => {
@@ -74,7 +93,7 @@ const WalletDetailScreen = () => {
           <TransactionItemHeader month={"December"} />
         )}
         sections={transformedTransactions}
-      />
+      /> */}
     </View>
   );
 };

@@ -15,6 +15,7 @@ import {
   WalletActionTypes,
   Wallets,
 } from "../types/walletTypes";
+import { delay } from "../../helpers/utilities";
 
 const FULLSTACK_URL = BCH_FULLSTACK_API_URL;
 // if (__DEV__) {
@@ -193,44 +194,44 @@ export const thunkGetWalletDetails =
       } = await axios.get(
         `${BCH_FULLSTACK_API_URL}/address/details/${address}`
       );
+      // FREE BCH API ENFORCES 3 SECOND RATE LIMIT
+      await delay(3000);
 
-      const txnDetails = await axios.post(
+      const { data } = await axios.post(
         `${BCH_FULLSTACK_API_URL}/transaction/details`,
         { txids: transactions }
       );
-      console.log("TXN D", txnDetails);
-      const formattedTransactions: Transaction[] = txnDetails.data.map(
-        (txn: any) => {
-          // DETERMINE SENT or RECEIVED
-          // inputs w/o selected 'address' are determined to be received
-          // TODO - needs reworked when HD wallets
-          const sent: boolean = !!txn.vin.filter((input: any) => {
-            input.cashAddress === address;
-          }).length;
 
-          // DETERMINE VALUE OF TRANSACTION
-          const value: number = txn.vout.reduce((acc: number, output: any) => {
-            if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
-              // Sending transactions - EXCLUDE output with own address
-              acc += output.value;
-            } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
-              // Receiving transactions - INCLUDE output with own address
-              acc += output.value;
-            }
-            return acc;
-          }, 0);
+      const formattedTransactions: Transaction[] = data.map((txn: any) => {
+        // DETERMINE SENT or RECEIVED
+        // inputs w/o selected 'address' are determined to be received
+        // TODO - needs reworked when HD wallets
+        const sent: boolean = !!txn.vin.filter((input: any) => {
+          input.cashAddress === address;
+        }).length;
 
-          return {
-            id: txn.txid,
-            fee: txn.fees,
-            confirmations: txn.confirmations,
-            date: txn.time,
-            value,
-            address,
-            sent,
-          };
-        }
-      );
+        // DETERMINE VALUE OF TRANSACTION
+        const value: number = txn.vout.reduce((acc: number, output: any) => {
+          if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
+            // Sending transactions - EXCLUDE output with own address
+            acc += output.value;
+          } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
+            // Receiving transactions - INCLUDE output with own address
+            acc += output.value;
+          }
+          return acc;
+        }, 0);
+
+        return {
+          id: txn.txid,
+          fee: txn.fees,
+          confirmations: txn.confirmations,
+          date: txn.time,
+          value,
+          address,
+          sent,
+        };
+      });
       const walletGroup = getState().wallet;
       const updatedWallets = walletGroup.map((wallets) => {
         if (wallets.coinId === coinId) {
