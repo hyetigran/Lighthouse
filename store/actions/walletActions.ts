@@ -9,6 +9,8 @@ import { BCH_FULLSTACK_API_URL } from "@env";
 import {
   CREATE_WALLET_SUCCESS,
   FETCH_WALLETS_SUCCESS,
+  FETCH_WALLET_DETAILS_SUCCESS,
+  Transaction,
   Wallet,
   WalletActionTypes,
   Wallets,
@@ -174,5 +176,82 @@ const createWallet = (updatedWallets: Wallets) => {
   return {
     type: CREATE_WALLET_SUCCESS,
     payload: updatedWallets,
+  };
+};
+
+export const thunkGetWalletDetails =
+  (
+    address: string,
+    walletName: string,
+    pId: string,
+    coinId: number
+  ): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch, getState) => {
+    try {
+      const {
+        data: { transactions },
+      } = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/address/details/${address}`
+      );
+
+      const txnDetails = await axios.post(
+        `${BCH_FULLSTACK_API_URL}/transaction/details`,
+        { txids: transactions }
+      );
+      console.log("TXN D", txnDetails);
+      const formattedTransactions: Transaction[] = txnDetails.data.map(
+        (txn: any) => {
+          // DETERMINE SENT or RECEIVED
+          // inputs w/o selected 'address' are determined to be received
+          // TODO - needs reworked when HD wallets
+          const sent: boolean = !!txn.vin.filter((input: any) => {
+            input.cashAddress === address;
+          }).length;
+
+          // DETERMINE VALUE OF TRANSACTION
+          const value: number = txn.vout.reduce((acc: number, output: any) => {
+            if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
+              // Sending transactions - EXCLUDE output with own address
+              acc += output.value;
+            } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
+              // Receiving transactions - INCLUDE output with own address
+              acc += output.value;
+            }
+            return acc;
+          }, 0);
+
+          return {
+            id: txn.txid,
+            fee: txn.fees,
+            confirmations: txn.confirmations,
+            date: txn.time,
+            value,
+            address,
+            sent,
+          };
+        }
+      );
+      const walletGroup = getState().wallet;
+      const updatedWallets = walletGroup.map((wallets) => {
+        if (wallets.coinId === coinId) {
+          wallets.walletsData.map((wallet) => {
+            if (wallet.name === walletName && wallet.privateKeyWIF === pId) {
+              wallet.transactions = formattedTransactions;
+            }
+            return wallet;
+          });
+        }
+        return wallets;
+      });
+      dispatch(getWalletDetails(updatedWallets));
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+const getWalletDetails = (payload: Wallets[]) => {
+  return {
+    type: FETCH_WALLET_DETAILS_SUCCESS,
+    payload,
   };
 };

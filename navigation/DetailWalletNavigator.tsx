@@ -14,8 +14,9 @@ export type TransactionRouteProp = RouteProp<ParamList, "Transaction">;
 type ParamList = {
   Detail: {
     pId: string;
-    id: number;
-    name: string;
+    coinId: number;
+    walletName: string;
+    address: string;
   };
   Transaction: {
     tId: string;
@@ -27,8 +28,6 @@ export default function DetailWalletNavigator() {
       <Stack.Screen
         name="WalletDetailScreen"
         component={WalletDetailScreen}
-        // options={({ route, navigation }) => ({
-        //   headerTitle: () => <HeaderTitle {...route.params} />,
         options={({ route }) => ({
           headerTitle: () => <HeaderTitle {...route.params} />,
           headerBackTitle: " ",

@@ -32,7 +32,7 @@ export default function ReceiveNavigator() {
         component={ReceiveTransactionScreen}
         options={{
           headerTitle: "Receive",
-          headerBackTitle: "Wallet",
+          headerBackTitle: " ",
         }}
       />
       <Stack.Screen

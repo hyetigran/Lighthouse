@@ -70,6 +70,7 @@ export type DetailWalletParamList = {
     pId: string;
     id: number;
     name: string;
+    address: string;
   };
   WalletTransactionDetailScreen: {
     tId: string;

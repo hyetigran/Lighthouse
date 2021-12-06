@@ -1,50 +1,43 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Wallet } from "../../store/types/walletTypes";
+import { useNavigation } from "@react-navigation/core";
+
 import Colors from "../../constants/Colors";
 
-interface ActionProps {
-  wallet: Wallet;
-  logo: string;
-  navigate: Function;
-}
+// interface ActionProps {
+//   wallet: Wallet;
+//   logo: string;
+//   navigate: Function;
+// }
 
-const { tabIconDefault: darkGrey, secondaryText: lightGrey } = Colors.light;
+const {
+  tabIconDefault: darkGrey,
+  secondaryText: lightGrey,
+  gainGreenLite,
+} = Colors.light;
 
-const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
+const TransactionItem = () => {
+  const { navigate } = useNavigation();
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() =>
         // TODO - make coinID dynamic
         navigate("DetailWalletNavigator", {
-          screen: "WalletDetailScreen",
-          params: {
-            pId: wallet.privateKeyWIF,
-            coinId: 1831,
-            walletName: wallet.name,
-            address: wallet.addressString,
-          },
+          screen: "WalletTransactionDetail",
+          //   params: { pId: wallet.privateKeyWIF, id: 1831, name: wallet.name },
         })
       }
     >
       <View style={styles.imgContainer}>
-        <Image
-          style={styles.imgLogo}
-          source={{
-            uri: logo,
-          }}
-        />
+        <Ionicons color={gainGreenLite} />
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.subInfoContainer}>
-          <Text style={styles.walletName}>{wallet.name}</Text>
-          <Text style={styles.amountText}>{`${wallet.balance} sats`}</Text>
+          <Text style={styles.walletName}>text 1</Text>
+          <Text style={styles.amountText}>text 2</Text>
         </View>
-        <TouchableOpacity onPress={() => {}}>
-          <Ionicons name="chevron-forward-outline" size={24} color={darkGrey} />
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -82,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WalletItem;
+export default TransactionItem;
