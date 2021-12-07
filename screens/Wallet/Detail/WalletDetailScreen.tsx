@@ -52,7 +52,7 @@ const WalletDetailScreen = () => {
   }, []);
 
   let transformedTransactions = walletDetails[0];
-  console.log("WALLET D", walletDetails);
+  // console.log("WALLET D", walletDetails);
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>

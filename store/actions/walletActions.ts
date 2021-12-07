@@ -194,21 +194,20 @@ export const thunkGetWalletDetails =
       } = await axios.get(
         `${BCH_FULLSTACK_API_URL}/address/details/${address}`
       );
-      // FREE BCH API ENFORCES 3 SECOND RATE LIMIT
+      // FREE BCH API, actorforth.org, ENFORCES 3 SECOND RATE LIMIT
       await delay(3000);
 
       const { data } = await axios.post(
         `${BCH_FULLSTACK_API_URL}/transaction/details`,
         { txids: transactions }
       );
-
       const formattedTransactions: Transaction[] = data.map((txn: any) => {
         // DETERMINE SENT or RECEIVED
         // inputs w/o selected 'address' are determined to be received
         // TODO - needs reworked when HD wallets
-        const sent: boolean = !!txn.vin.filter((input: any) => {
-          input.cashAddress === address;
-        }).length;
+        const sent: boolean = !!txn.vin.filter(
+          (input: any) => input.cashAddress === address
+        ).length;
 
         // DETERMINE VALUE OF TRANSACTION
         const value: number = txn.vout.reduce((acc: number, output: any) => {
