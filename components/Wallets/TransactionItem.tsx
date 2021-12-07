@@ -4,12 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 
 import Colors from "../../constants/Colors";
-
-// interface ActionProps {
-//   wallet: Wallet;
-//   logo: string;
-//   navigate: Function;
-// }
+import { Transaction } from "../../store/types/walletTypes";
 
 const {
   tabIconDefault: darkGrey,
@@ -17,7 +12,10 @@ const {
   gainGreenLite,
 } = Colors.light;
 
-const TransactionItem = () => {
+interface ActionProps {
+  transaction: Transaction;
+}
+const TransactionItem = ({ transaction }: ActionProps) => {
   const { navigate } = useNavigation();
   return (
     <TouchableOpacity

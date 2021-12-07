@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import { Ionicons } from "@expo/vector-icons";
 
 import { RootState } from "../../../store";
@@ -16,10 +17,14 @@ import { DetailRouteProp } from "../../../navigation/DetailWalletNavigator";
 import TransactionItem from "../../../components/Wallets/TransactionItem";
 import TransactionItemHeader from "../../../components/Wallets/TransactionItemHeader";
 import { thunkGetWalletDetails } from "../../../store/actions/walletActions";
-import { Wallets } from "../../../store/types/walletTypes";
+import { Transaction, Wallets } from "../../../store/types/walletTypes";
 
 const { gainGreenLite, background, gainGreen } = Colors.light;
 
+interface TransformedTransactions {
+  month: string;
+  data: Transaction[];
+}
 const WalletDetailScreen = () => {
   const {
     params: { pId, coinId, walletName, address },
@@ -42,7 +47,7 @@ const WalletDetailScreen = () => {
       }
     }
 
-    return selectedWallet!;
+    return selectedWallet![0];
   });
   const dispatch = useDispatch();
   const { navigate } = useNavigation();
@@ -51,8 +56,38 @@ const WalletDetailScreen = () => {
     dispatch(thunkGetWalletDetails(address, walletName, pId, coinId));
   }, []);
 
-  let transformedTransactions = walletDetails[0];
-  // console.log("WALLET D", walletDetails);
+  let transformedTransactions: TransformedTransactions[] =
+    walletDetails.walletsData[0].transactions!.reduce(
+      (acc: any, trxn: Transaction) => {
+        // CREATE SECTIONS sorted by MONTH
+        let month = moment.unix(trxn.date).format("MMMM");
+
+        let monthExists = false;
+        let updatedAcc = acc.map((obj: TransformedTransactions) => {
+          if (obj.month === month) {
+            monthExists = true;
+            return {
+              ...obj,
+              data: [trxn, ...obj.data],
+            };
+          }
+          return obj;
+        });
+
+        // Month Entry does NOT exist
+        if (!monthExists) {
+          let sectionObject = {
+            month,
+            data: [trxn],
+          };
+          return [sectionObject, ...acc];
+        }
+        // Month Entry does exist
+        return updatedAcc;
+      },
+      []
+    );
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -83,17 +118,17 @@ const WalletDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <SectionList
+      <SectionList
         // NAME UNIQUE ENFORCED?
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.date.toString()}
         renderItem={({ item, section }) => {
-          return <TransactionItem data={{}} />;
+          return <TransactionItem transaction={item} />;
         }}
-        renderSectionHeader={({ section: { name } }) => (
-          <TransactionItemHeader month={"December"} />
+        renderSectionHeader={({ section: { month } }) => (
+          <TransactionItemHeader month={month} />
         )}
         sections={transformedTransactions}
-      /> */}
+      />
     </View>
   );
 };
