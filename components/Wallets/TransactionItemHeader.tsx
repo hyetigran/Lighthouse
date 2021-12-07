@@ -7,11 +7,7 @@ interface ActionProps {
   month: string;
 }
 
-const {
-  tabIconDefault: darkGrey,
-  secondaryText: lightGrey,
-  gainGreenLite,
-} = Colors.light;
+const { darkGrey } = Colors.light;
 
 const TransactionItemHeader = ({ month }: ActionProps) => {
   return (
@@ -26,8 +22,10 @@ export default TransactionItemHeader;
 const styles = StyleSheet.create({
   monthHeaderContainer: {
     flex: 1,
+    padding: 20,
   },
   monthHeaderTitle: {
     color: darkGrey,
+    fontSize: 18,
   },
 });
