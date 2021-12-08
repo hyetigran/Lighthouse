@@ -21,6 +21,7 @@ import { thunkGetWalletDetails } from "../../../store/actions/walletActions";
 import { Transaction, Wallets } from "../../../store/types/walletTypes";
 import Spinner from "../../../components/UI/Spinner";
 import emptyImage from "../../../assets/images/empty.png";
+import { thunkAttachPrivateKey } from "../../../store/actions/sendActions";
 
 const { gainGreenLite, background, gainGreen, darkGrey } = Colors.light;
 
@@ -106,6 +107,16 @@ const WalletDetailScreen = () => {
     setIsLoading(false);
   };
 
+  const sendHandler = () => {
+    dispatch(thunkAttachPrivateKey(pId));
+
+    // pId param currently not used
+    navigate("Send", {
+      screen: "SendAddressScreen",
+      params: { pId },
+    });
+  };
+
   const totalCoinBalance = walletDetails.walletsData[0].balance;
   const totalFiatBalance = totalCoinBalance * price;
   return (
@@ -125,22 +136,14 @@ const WalletDetailScreen = () => {
           >
             <Text style={styles.actionText}>Receive</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() =>
-              navigate("Send", {
-                screen: "SendAddressScreen",
-                params: { pId },
-              })
-            }
-          >
+          <TouchableOpacity style={styles.actionButton} onPress={sendHandler}>
             <Text style={styles.actionText}>Send</Text>
           </TouchableOpacity>
         </View>
       </View>
       {isLoading && <Spinner />}
       {!isLoading ? (
-        transformedTransactions ? (
+        transformedTransactions?.length ? (
           <SectionList
             // NAME UNIQUE ENFORCED?
             keyExtractor={(item) => item.date.toString()}
