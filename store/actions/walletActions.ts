@@ -258,7 +258,6 @@ export const thunkGetWalletDetails =
   };
 
 const getWalletDetails = (payload: Wallets[]) => {
-  console.log("DISPATCHING");
   return {
     type: FETCH_WALLET_DETAILS_SUCCESS,
     payload,
