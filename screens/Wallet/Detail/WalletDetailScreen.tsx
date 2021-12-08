@@ -38,25 +38,12 @@ const WalletDetailScreen = () => {
     params: { pId, coinId, walletName, address, price },
   } = useRoute<DetailRouteProp>();
 
-  const walletDetails = useSelector((state: RootState) => {
-    const walletState = state.wallet;
-    let selectedWallet: Wallets[];
-    for (let i = 0; i < walletState.length; i++) {
-      let wallets = walletState[i];
-      if (wallets.coinId === coinId) {
-        let walletData = wallets.walletsData;
-        selectedWallet = [wallets];
-        for (let j = 0; j < walletData.length; j++) {
-          let wallet = walletData[j];
-          if (wallet.privateKeyWIF === pId) {
-            selectedWallet[0].walletsData = [wallet];
-          }
-        }
-      }
-    }
+  const wallet = useSelector((state: RootState) => state.wallet);
+  const groupIndex = wallet.findIndex((g) => g.coinId === coinId);
+  const walletIndex = wallet[groupIndex].walletsData.findIndex(
+    (w) => w.privateKeyWIF === pId
+  );
 
-    return selectedWallet![0];
-  });
   const dispatch = useDispatch();
   const { navigate } = useNavigation();
 
@@ -70,39 +57,37 @@ const WalletDetailScreen = () => {
   };
 
   const transformTransactions = () => {
-    const formatTransactions =
-      walletDetails.walletsData[0].transactions!.reduce(
-        (acc: any, trxn: Transaction) => {
-          // CREATE SECTIONS sorted by MONTH
-          let dateUnix = moment.unix(trxn.date);
-          let month = dateUnix.format("MMMM");
-          let dateDisplay = dateUnix.format("MMM DD, YYYY");
-          trxn.dateDisplay = dateDisplay;
-          let monthExists = false;
-          let updatedAcc = acc.map((obj: TransformedTransactions) => {
-            if (obj.month === month) {
-              monthExists = true;
-              return {
-                ...obj,
-                data: [trxn, ...obj.data],
-              };
-            }
-            return obj;
-          });
+    const formatTransactions = wallet[groupIndex].walletsData[
+      walletIndex
+    ].transactions!.reduce((acc: any, trxn: Transaction) => {
+      // CREATE SECTIONS sorted by MONTH
+      let dateUnix = moment.unix(trxn.date);
+      let month = dateUnix.format("MMMM");
+      let dateDisplay = dateUnix.format("MMM DD, YYYY");
+      trxn.dateDisplay = dateDisplay;
+      let monthExists = false;
+      let updatedAcc = acc.map((obj: TransformedTransactions) => {
+        if (obj.month === month) {
+          monthExists = true;
+          return {
+            ...obj,
+            data: [trxn, ...obj.data],
+          };
+        }
+        return obj;
+      });
 
-          // Month Entry does NOT exist
-          if (!monthExists) {
-            let sectionObject = {
-              month,
-              data: [trxn],
-            };
-            return [sectionObject, ...acc];
-          }
-          // Month Entry does exist
-          return updatedAcc;
-        },
-        []
-      );
+      // Month Entry does NOT exist
+      if (!monthExists) {
+        let sectionObject = {
+          month,
+          data: [trxn],
+        };
+        return [sectionObject, ...acc];
+      }
+      // Month Entry does exist
+      return updatedAcc;
+    }, []);
     setTransformedTransactions(formatTransactions);
     setIsLoading(false);
   };
@@ -117,7 +102,7 @@ const WalletDetailScreen = () => {
     });
   };
 
-  const totalCoinBalance = walletDetails.walletsData[0].balance;
+  const totalCoinBalance = wallet[groupIndex].walletsData[walletIndex].balance;
   const totalFiatBalance = totalCoinBalance * price;
   return (
     <View style={styles.container}>

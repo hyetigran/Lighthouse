@@ -61,6 +61,8 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
+            await delay(2000);
+
             walletsData[wdIndex].balance = balance;
           }
           let loadedWalletGroup = {
@@ -238,17 +240,17 @@ export const thunkGetWalletDetails =
         };
       });
       const walletGroup = getState().wallet;
-      const updatedWallets = walletGroup.map((wallets) => {
+
+      let updatedWallets = walletGroup;
+      for (let wallets of walletGroup) {
         if (wallets.coinId === coinId) {
-          wallets.walletsData.map((wallet) => {
+          for (let wallet of wallets.walletsData) {
             if (wallet.name === walletName && wallet.privateKeyWIF === pId) {
               wallet.transactions = formattedTransactions;
             }
-            return wallet;
-          });
+          }
         }
-        return wallets;
-      });
+      }
       dispatch(getWalletDetails(updatedWallets));
     } catch (error) {
       console.log("Error", error);
@@ -256,6 +258,7 @@ export const thunkGetWalletDetails =
   };
 
 const getWalletDetails = (payload: Wallets[]) => {
+  console.log("DISPATCHING");
   return {
     type: FETCH_WALLET_DETAILS_SUCCESS,
     payload,

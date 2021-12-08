@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, FlatList, View } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -8,16 +8,20 @@ import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
 import { thunkGetAllWallets } from "../../store/actions/walletActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Spinner from "../../components/UI/Spinner";
 
 const { secondaryText: grey, background } = Colors.light;
 
 export default function MainWalletsScreen() {
+  const [isLoading, setIsLoading] = useState(false);
   const wallets = useSelector((state: RootState) => state.wallet);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (wallets.length < 1) {
       initialLoad();
+    } else {
+      setIsLoading(false);
     }
   }, [wallets]);
 
@@ -27,21 +31,26 @@ export default function MainWalletsScreen() {
   // };
   const initialLoad = () => {
     dispatch(thunkGetAllWallets());
+    setIsLoading(true);
   };
 
   return (
     <View style={styles.container}>
       <WalletActionButtons />
-      <FlatList
-        data={wallets}
-        keyExtractor={(item) => item.symbol}
-        contentContainerStyle={styles.flatList}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item, index }) => (
-          <WalletCard key={index} wallets={item} />
-        )}
-      />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <FlatList
+          data={wallets}
+          keyExtractor={(item) => item.symbol}
+          contentContainerStyle={styles.flatList}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => (
+            <WalletCard key={index} wallets={item} />
+          )}
+        />
+      )}
     </View>
   );
 }
