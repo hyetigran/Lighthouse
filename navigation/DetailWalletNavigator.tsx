@@ -29,10 +29,17 @@ export default function DetailWalletNavigator() {
       <Stack.Screen
         name="WalletDetailScreen"
         component={WalletDetailScreen}
-        options={({ route }) => ({
-          headerTitle: () => <HeaderTitle {...route.params} />,
-          headerBackTitle: " ",
-        })}
+        options={({ route }) => {
+          const params = {
+            ...route.params,
+            id: route.params.coinId,
+            name: route.params.walletName,
+          };
+          return {
+            headerTitle: () => <HeaderTitle {...params} />,
+            headerBackTitle: "Back",
+          };
+        }}
       />
       <Stack.Screen
         name="WalletTransactionDetailScreen"
