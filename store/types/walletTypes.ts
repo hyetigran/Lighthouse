@@ -32,6 +32,7 @@ export interface Transaction {
   fee: number;
   confirmations: number;
   sent: boolean;
+  dateDisplay?: string;
 }
 interface getWalletsAction {
   type: typeof FETCH_WALLETS_SUCCESS;

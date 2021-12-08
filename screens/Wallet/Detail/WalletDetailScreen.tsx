@@ -19,6 +19,7 @@ import TransactionItem from "../../../components/Wallets/TransactionItem";
 import TransactionItemHeader from "../../../components/Wallets/TransactionItemHeader";
 import { thunkGetWalletDetails } from "../../../store/actions/walletActions";
 import { Transaction, Wallets } from "../../../store/types/walletTypes";
+import Spinner from "../../../components/UI/Spinner";
 import emptyImage from "../../../assets/images/empty.png";
 
 const { gainGreenLite, background, gainGreen, darkGrey } = Colors.light;
@@ -29,6 +30,7 @@ interface TransformedTransactions {
 }
 
 const WalletDetailScreen = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [transformedTransactions, setTransformedTransactions] =
     useState<TransformedTransactions[]>();
   const {
@@ -58,22 +60,23 @@ const WalletDetailScreen = () => {
   const { navigate } = useNavigation();
 
   useEffect(() => {
-    dispatch(thunkGetWalletDetails(address, walletName, pId, coinId));
+    initialLoad();
   }, []);
 
-  useEffect(() => {
-    if (walletDetails.walletsData[0].transactions) {
-      transformTransactions();
-    }
-  }, [walletDetails.walletsData[0].transactions]);
+  const initialLoad = async () => {
+    await dispatch(thunkGetWalletDetails(address, walletName, pId, coinId));
+    transformTransactions();
+  };
 
   const transformTransactions = () => {
     const formatTransactions =
       walletDetails.walletsData[0].transactions!.reduce(
         (acc: any, trxn: Transaction) => {
           // CREATE SECTIONS sorted by MONTH
-          let month = moment.unix(trxn.date).format("MMMM");
-
+          let dateUnix = moment.unix(trxn.date);
+          let month = dateUnix.format("MMMM");
+          let dateDisplay = dateUnix.format("MMM DD, YYYY");
+          trxn.dateDisplay = dateDisplay;
           let monthExists = false;
           let updatedAcc = acc.map((obj: TransformedTransactions) => {
             if (obj.month === month) {
@@ -100,6 +103,7 @@ const WalletDetailScreen = () => {
         []
       );
     setTransformedTransactions(formatTransactions);
+    setIsLoading(false);
   };
 
   return (
@@ -132,23 +136,28 @@ const WalletDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {transformedTransactions ? (
-        <SectionList
-          // NAME UNIQUE ENFORCED?
-          keyExtractor={(item) => item.date.toString()}
-          renderItem={({ item, section }) => {
-            return <TransactionItem transaction={item} />;
-          }}
-          renderSectionHeader={({ section: { month } }) => (
-            <TransactionItemHeader month={month} />
-          )}
-          sections={transformedTransactions}
-        />
+      {isLoading && <Spinner />}
+      {!isLoading ? (
+        transformedTransactions ? (
+          <SectionList
+            // NAME UNIQUE ENFORCED?
+            keyExtractor={(item) => item.date.toString()}
+            renderItem={({ item, section }) => {
+              return <TransactionItem transaction={item} />;
+            }}
+            renderSectionHeader={({ section: { month } }) => (
+              <TransactionItemHeader month={month} />
+            )}
+            sections={transformedTransactions}
+          />
+        ) : (
+          <View style={styles.imgContainer}>
+            <Image style={styles.emptyImg} source={emptyImage} />
+            <Text style={styles.imgCaption}>No transaction history</Text>
+          </View>
+        )
       ) : (
-        <View style={styles.imgContainer}>
-          <Image style={styles.emptyImg} source={emptyImage} />
-          <Text style={styles.imgCaption}>No transaction history</Text>
-        </View>
+        <View></View>
       )}
     </View>
   );

@@ -10,6 +10,7 @@ const {
   tabIconDefault: darkGrey,
   secondaryText: lightGrey,
   gainGreenLite,
+  background,
 } = Colors.light;
 
 interface ActionProps {
@@ -17,6 +18,7 @@ interface ActionProps {
 }
 const TransactionItem = ({ transaction }: ActionProps) => {
   const { navigate } = useNavigation();
+  const { sent, dateDisplay } = transaction;
   return (
     <TouchableOpacity
       style={styles.container}
@@ -28,14 +30,24 @@ const TransactionItem = ({ transaction }: ActionProps) => {
         })
       }
     >
-      <View style={styles.imgContainer}>
-        <Ionicons color={gainGreenLite} />
+      <View>
+        {transaction.sent ? (
+          <Ionicons size={40} name="arrow-up-circle-outline" color={darkGrey} />
+        ) : (
+          <Ionicons
+            size={40}
+            name="arrow-down-circle-outline"
+            color={gainGreenLite}
+          />
+        )}
       </View>
-      <View style={styles.infoContainer}>
-        <View style={styles.subInfoContainer}>
-          <Text style={styles.walletName}>text 1</Text>
-          <Text style={styles.amountText}>text 2</Text>
-        </View>
+      <View style={styles.subInfoContainer}>
+        <Text style={styles.walletName}>{sent ? "Sent" : "Received"}</Text>
+        <Text style={styles.amountText}>{dateDisplay}</Text>
+      </View>
+      <View style={styles.subInfoContainer}>
+        <Text style={styles.walletName}>0.000123 BCH</Text>
+        <Text style={styles.amountText}>50 USD</Text>
       </View>
     </TouchableOpacity>
   );
@@ -46,11 +58,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-  },
-  imgContainer: {},
-  imgLogo: {
-    height: 40,
-    width: 40,
+    backgroundColor: background,
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: lightGrey,
   },
   infoContainer: {
     flexDirection: "row",
