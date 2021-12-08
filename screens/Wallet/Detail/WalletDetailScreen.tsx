@@ -136,7 +136,11 @@ const WalletDetailScreen = () => {
           >
             <Text style={styles.actionText}>Receive</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={sendHandler}>
+          <TouchableOpacity
+            disabled={totalCoinBalance <= 0}
+            style={styles.actionButton}
+            onPress={sendHandler}
+          >
             <Text style={styles.actionText}>Send</Text>
           </TouchableOpacity>
         </View>
