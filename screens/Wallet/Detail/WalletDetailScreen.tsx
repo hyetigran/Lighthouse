@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
   Text,
   TouchableOpacity,
   SectionList,
+  Image,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,14 +19,18 @@ import TransactionItem from "../../../components/Wallets/TransactionItem";
 import TransactionItemHeader from "../../../components/Wallets/TransactionItemHeader";
 import { thunkGetWalletDetails } from "../../../store/actions/walletActions";
 import { Transaction, Wallets } from "../../../store/types/walletTypes";
+import emptyImage from "../../../assets/images/empty.png";
 
-const { gainGreenLite, background, gainGreen } = Colors.light;
+const { gainGreenLite, background, gainGreen, darkGrey } = Colors.light;
 
 interface TransformedTransactions {
   month: string;
   data: Transaction[];
 }
+
 const WalletDetailScreen = () => {
+  const [transformedTransactions, setTransformedTransactions] =
+    useState<TransformedTransactions[]>();
   const {
     params: { pId, coinId, walletName, address },
   } = useRoute<DetailRouteProp>();
@@ -56,37 +61,46 @@ const WalletDetailScreen = () => {
     dispatch(thunkGetWalletDetails(address, walletName, pId, coinId));
   }, []);
 
-  let transformedTransactions: TransformedTransactions[] =
-    walletDetails.walletsData[0].transactions!.reduce(
-      (acc: any, trxn: Transaction) => {
-        // CREATE SECTIONS sorted by MONTH
-        let month = moment.unix(trxn.date).format("MMMM");
+  useEffect(() => {
+    if (walletDetails.walletsData[0].transactions) {
+      transformTransactions();
+    }
+  }, [walletDetails.walletsData[0].transactions]);
 
-        let monthExists = false;
-        let updatedAcc = acc.map((obj: TransformedTransactions) => {
-          if (obj.month === month) {
-            monthExists = true;
-            return {
-              ...obj,
-              data: [trxn, ...obj.data],
+  const transformTransactions = () => {
+    const formatTransactions =
+      walletDetails.walletsData[0].transactions!.reduce(
+        (acc: any, trxn: Transaction) => {
+          // CREATE SECTIONS sorted by MONTH
+          let month = moment.unix(trxn.date).format("MMMM");
+
+          let monthExists = false;
+          let updatedAcc = acc.map((obj: TransformedTransactions) => {
+            if (obj.month === month) {
+              monthExists = true;
+              return {
+                ...obj,
+                data: [trxn, ...obj.data],
+              };
+            }
+            return obj;
+          });
+
+          // Month Entry does NOT exist
+          if (!monthExists) {
+            let sectionObject = {
+              month,
+              data: [trxn],
             };
+            return [sectionObject, ...acc];
           }
-          return obj;
-        });
-
-        // Month Entry does NOT exist
-        if (!monthExists) {
-          let sectionObject = {
-            month,
-            data: [trxn],
-          };
-          return [sectionObject, ...acc];
-        }
-        // Month Entry does exist
-        return updatedAcc;
-      },
-      []
-    );
+          // Month Entry does exist
+          return updatedAcc;
+        },
+        []
+      );
+    setTransformedTransactions(formatTransactions);
+  };
 
   return (
     <View style={styles.container}>
@@ -118,17 +132,24 @@ const WalletDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <SectionList
-        // NAME UNIQUE ENFORCED?
-        keyExtractor={(item) => item.date.toString()}
-        renderItem={({ item, section }) => {
-          return <TransactionItem transaction={item} />;
-        }}
-        renderSectionHeader={({ section: { month } }) => (
-          <TransactionItemHeader month={month} />
-        )}
-        sections={transformedTransactions}
-      />
+      {transformedTransactions ? (
+        <SectionList
+          // NAME UNIQUE ENFORCED?
+          keyExtractor={(item) => item.date.toString()}
+          renderItem={({ item, section }) => {
+            return <TransactionItem transaction={item} />;
+          }}
+          renderSectionHeader={({ section: { month } }) => (
+            <TransactionItemHeader month={month} />
+          )}
+          sections={transformedTransactions}
+        />
+      ) : (
+        <View style={styles.imgContainer}>
+          <Image style={styles.emptyImg} source={emptyImage} />
+          <Text style={styles.imgCaption}>No transaction history</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -172,6 +193,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
     color: background,
+  },
+  imgContainer: {
+    flexGrow: 1,
+    backgroundColor: background,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyImg: {
+    width: 250,
+    height: 250,
+  },
+  imgCaption: {
+    color: darkGrey,
   },
 });
 
