@@ -9,10 +9,13 @@ import { BCH_FULLSTACK_API_URL } from "@env";
 import {
   CREATE_WALLET_SUCCESS,
   FETCH_WALLETS_SUCCESS,
+  FETCH_WALLET_DETAILS_SUCCESS,
+  Transaction,
   Wallet,
   WalletActionTypes,
   Wallets,
 } from "../types/walletTypes";
+import { delay, roundNumber } from "../../helpers/utilities";
 
 const FULLSTACK_URL = BCH_FULLSTACK_API_URL;
 // if (__DEV__) {
@@ -58,6 +61,8 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
+            await delay(2000);
+
             walletsData[wdIndex].balance = balance;
           }
           let loadedWalletGroup = {
@@ -174,5 +179,87 @@ const createWallet = (updatedWallets: Wallets) => {
   return {
     type: CREATE_WALLET_SUCCESS,
     payload: updatedWallets,
+  };
+};
+
+export const thunkGetWalletDetails =
+  (
+    address: string,
+    walletName: string,
+    pId: string,
+    coinId: number
+  ): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch, getState) => {
+    try {
+      const {
+        data: { transactions },
+      } = await axios.get(
+        `${BCH_FULLSTACK_API_URL}/address/details/${address}`
+      );
+      // FREE BCH API, actorforth.org, ENFORCES 3 SECOND RATE LIMIT
+      await delay(3000);
+
+      const { data } = await axios.post(
+        `${BCH_FULLSTACK_API_URL}/transaction/details`,
+        { txids: transactions }
+      );
+      // GET CURRENT PRICE FROM MARKET STATE
+      // TODO - refactor dynamic
+      // TODO - feed price from detail screen as param
+      const { price } = getState().market[0].find((coin) => coin.id === 1831)!;
+
+      const formattedTransactions: Transaction[] = data.map((txn: any) => {
+        // DETERMINE SENT or RECEIVED
+        // inputs w/o selected 'address' are determined to be received
+        // TODO - needs reworked when HD wallets
+        const sent: boolean = !!txn.vin.filter(
+          (input: any) => input.cashAddress === address
+        ).length;
+
+        // DETERMINE VALUE OF TRANSACTION
+        const value: number = txn.vout.reduce((acc: number, output: any) => {
+          if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
+            // Sending transactions - EXCLUDE output with own address
+            acc += output.value;
+          } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
+            // Receiving transactions - INCLUDE output with own address
+            acc += output.value;
+          }
+          return acc;
+        }, 0);
+
+        return {
+          id: txn.txid,
+          fee: txn.fees,
+          confirmations: txn.confirmations,
+          date: txn.time,
+          fiatValue: +roundNumber((value * price).toString(), 2),
+          value,
+          address,
+          sent,
+        };
+      });
+      const walletGroup = getState().wallet;
+
+      let updatedWallets = walletGroup;
+      for (let wallets of walletGroup) {
+        if (wallets.coinId === coinId) {
+          for (let wallet of wallets.walletsData) {
+            if (wallet.name === walletName && wallet.privateKeyWIF === pId) {
+              wallet.transactions = formattedTransactions;
+            }
+          }
+        }
+      }
+      dispatch(getWalletDetails(updatedWallets));
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+const getWalletDetails = (payload: Wallets[]) => {
+  return {
+    type: FETCH_WALLET_DETAILS_SUCCESS,
+    payload,
   };
 };

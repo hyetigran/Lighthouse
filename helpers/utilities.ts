@@ -32,3 +32,5 @@ export const estimateTransactionBytes = (
 ) => {
   return inputCount * 149 + outputCount * 34 + 10;
 };
+
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
