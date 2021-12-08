@@ -18,7 +18,7 @@ interface ActionProps {
 }
 const TransactionItem = ({ transaction }: ActionProps) => {
   const { navigate } = useNavigation();
-  const { sent, dateDisplay } = transaction;
+  const { sent, dateDisplay, fiatValue, value } = transaction;
   return (
     <TouchableOpacity
       style={styles.container}
@@ -41,13 +41,13 @@ const TransactionItem = ({ transaction }: ActionProps) => {
           />
         )}
       </View>
-      <View style={styles.subInfoContainer}>
-        <Text style={styles.walletName}>{sent ? "Sent" : "Received"}</Text>
-        <Text style={styles.amountText}>{dateDisplay}</Text>
+      <View>
+        <Text style={styles.mainText}>{sent ? "Sent" : "Received"}</Text>
+        <Text style={styles.subText}>{dateDisplay}</Text>
       </View>
       <View style={styles.subInfoContainer}>
-        <Text style={styles.walletName}>0.000123 BCH</Text>
-        <Text style={styles.amountText}>50 USD</Text>
+        <Text style={styles.mainText}>{`${value} BCH`}</Text>
+        <Text style={styles.subText}>{`${fiatValue} USD`}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -75,12 +75,14 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingVertical: 20,
   },
-  subInfoContainer: {},
-  walletName: {
+  subInfoContainer: {
+    alignItems: "flex-end",
+  },
+  mainText: {
     fontSize: 14,
     fontWeight: "bold",
   },
-  amountText: {
+  subText: {
     color: darkGrey,
   },
 });

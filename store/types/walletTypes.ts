@@ -27,6 +27,7 @@ export interface Wallet {
 export interface Transaction {
   id: string;
   value: number;
+  fiatValue?: number;
   date: number;
   address: string;
   fee: number;

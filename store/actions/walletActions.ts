@@ -15,7 +15,7 @@ import {
   WalletActionTypes,
   Wallets,
 } from "../types/walletTypes";
-import { delay } from "../../helpers/utilities";
+import { delay, roundNumber } from "../../helpers/utilities";
 
 const FULLSTACK_URL = BCH_FULLSTACK_API_URL;
 // if (__DEV__) {
@@ -201,6 +201,11 @@ export const thunkGetWalletDetails =
         `${BCH_FULLSTACK_API_URL}/transaction/details`,
         { txids: transactions }
       );
+      // GET CURRENT PRICE FROM MARKET STATE
+      // TODO - refactor dynamic
+      // TODO - feed price from detail screen as param
+      const { price } = getState().market[0].find((coin) => coin.id === 1831)!;
+
       const formattedTransactions: Transaction[] = data.map((txn: any) => {
         // DETERMINE SENT or RECEIVED
         // inputs w/o selected 'address' are determined to be received
@@ -226,6 +231,7 @@ export const thunkGetWalletDetails =
           fee: txn.fees,
           confirmations: txn.confirmations,
           date: txn.time,
+          fiatValue: +roundNumber((value * price).toString(), 2),
           value,
           address,
           sent,

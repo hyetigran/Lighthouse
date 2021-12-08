@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import WalletItem from "./WalletItem";
 import { Wallets, Wallet } from "../../store/types/walletTypes";
 import Colors from "../../constants/Colors";
+import { RootState } from "../../store";
 
 interface ActionProps {
   wallets: Wallets;
@@ -15,8 +17,13 @@ const {
   background,
   secondaryText: lightGrey,
 } = Colors.light;
+
 const WalletCard = ({ wallets }: ActionProps) => {
   const { navigate } = useNavigation();
+  const price = useSelector(
+    (state: RootState) =>
+      state.market[0].find((coin) => coin.id === wallets.coinId)!.price
+  );
 
   return (
     <View style={styles.container}>
@@ -33,6 +40,7 @@ const WalletCard = ({ wallets }: ActionProps) => {
             wallet={wallet}
             logo={wallets.logo}
             navigate={navigate}
+            price={price}
           />
         ))}
     </View>

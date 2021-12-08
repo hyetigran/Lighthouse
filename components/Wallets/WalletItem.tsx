@@ -8,11 +8,12 @@ interface ActionProps {
   wallet: Wallet;
   logo: string;
   navigate: Function;
+  price: number;
 }
 
 const { tabIconDefault: darkGrey, secondaryText: lightGrey } = Colors.light;
 
-const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
+const WalletItem = ({ wallet, logo, navigate, price }: ActionProps) => {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -25,6 +26,7 @@ const WalletItem = ({ wallet, logo, navigate }: ActionProps) => {
             coinId: 1831,
             walletName: wallet.name,
             address: wallet.addressString,
+            price: price,
           },
         })
       }

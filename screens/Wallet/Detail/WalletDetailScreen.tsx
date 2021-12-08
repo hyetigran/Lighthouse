@@ -34,7 +34,7 @@ const WalletDetailScreen = () => {
   const [transformedTransactions, setTransformedTransactions] =
     useState<TransformedTransactions[]>();
   const {
-    params: { pId, coinId, walletName, address },
+    params: { pId, coinId, walletName, address, price },
   } = useRoute<DetailRouteProp>();
 
   const walletDetails = useSelector((state: RootState) => {
@@ -106,11 +106,13 @@ const WalletDetailScreen = () => {
     setIsLoading(false);
   };
 
+  const totalCoinBalance = walletDetails.walletsData[0].balance;
+  const totalFiatBalance = totalCoinBalance * price;
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
-        <Text style={styles.mainAmountText}>24.00 USD</Text>
-        <Text style={styles.subAmountText}>0.000123 BCH</Text>
+        <Text style={styles.mainAmountText}>{`${totalFiatBalance} USD`}</Text>
+        <Text style={styles.subAmountText}>{`${totalCoinBalance} BCH`}</Text>
         <View style={styles.actionContainer}>
           <TouchableOpacity
             style={styles.actionButton}

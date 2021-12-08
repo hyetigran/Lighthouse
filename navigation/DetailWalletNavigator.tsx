@@ -17,6 +17,7 @@ type ParamList = {
     coinId: number;
     walletName: string;
     address: string;
+    price: number;
   };
   Transaction: {
     tId: string;
