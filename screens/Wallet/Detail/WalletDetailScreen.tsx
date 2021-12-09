@@ -22,6 +22,8 @@ import { Transaction, Wallets } from "../../../store/types/walletTypes";
 import Spinner from "../../../components/UI/Spinner";
 import emptyImage from "../../../assets/images/empty.png";
 import { thunkAttachPrivateKey } from "../../../store/actions/sendActions";
+import { BCH_TO_SATOSHI } from "../../../constants/Variables";
+import { roundNumber } from "../../../helpers/utilities";
 
 const { gainGreenLite, background, gainGreen, darkGrey } = Colors.light;
 
@@ -102,8 +104,12 @@ const WalletDetailScreen = () => {
     });
   };
 
-  const totalCoinBalance = wallet[groupIndex].walletsData[walletIndex].balance;
-  const totalFiatBalance = totalCoinBalance * price;
+  const totalCoinBalance =
+    wallet[groupIndex].walletsData[walletIndex].balance / BCH_TO_SATOSHI;
+  const totalFiatBalance = roundNumber(
+    (totalCoinBalance * price).toString(),
+    2
+  );
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>

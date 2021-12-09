@@ -61,7 +61,7 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
-            await delay(2000);
+            await delay(1000);
 
             walletsData[wdIndex].balance = balance;
           }
@@ -197,7 +197,7 @@ export const thunkGetWalletDetails =
         `${BCH_FULLSTACK_API_URL}/address/details/${address}`
       );
       // FREE BCH API, actorforth.org, ENFORCES 3 SECOND RATE LIMIT
-      await delay(3000);
+      await delay(1000);
 
       const { data } = await axios.post(
         `${BCH_FULLSTACK_API_URL}/transaction/details`,
