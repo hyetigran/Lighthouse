@@ -195,7 +195,7 @@ export const thunkGetWalletDetails =
       } = await axios.get(
         `${BCH_FULLSTACK_API_URL}/address/details/${address}`
       );
-      // FREE BCH API, actorforth.org, ENFORCES 3 SECOND RATE LIMIT
+      // FREE BCH API, actorforth.org, ENFORCES 1 SECOND RATE LIMIT
       await delay(1000);
 
       const { data } = await axios.post(

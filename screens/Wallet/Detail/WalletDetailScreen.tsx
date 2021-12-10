@@ -121,7 +121,7 @@ const WalletDetailScreen = () => {
             onPress={() =>
               navigate("Receive", {
                 screen: "ReceiveTransactionScreen",
-                params: { pId },
+                params: { pk: pId },
               })
             }
           >

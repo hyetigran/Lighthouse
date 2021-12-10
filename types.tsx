@@ -54,7 +54,9 @@ export type SendParamList = {
 };
 
 export type ReceiveParamList = {
-  ReceiveTransactionScreen: undefined;
+  ReceiveTransactionScreen: {
+    pk?: string;
+  };
   EnterAmountScreen: undefined;
   SelectReceiveScreen: {
     pk: string;
