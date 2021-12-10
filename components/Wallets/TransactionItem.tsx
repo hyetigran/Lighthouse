@@ -25,8 +25,8 @@ const TransactionItem = ({ transaction }: ActionProps) => {
       onPress={() =>
         // TODO - make coinID dynamic
         navigate("DetailWalletNavigator", {
-          screen: "WalletTransactionDetail",
-          //   params: { pId: wallet.privateKeyWIF, id: 1831, name: wallet.name },
+          screen: "WalletTransactionDetailScreen",
+          params: { sent },
         })
       }
     >

@@ -2,18 +2,20 @@ import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 
 interface ActionProps {
-  id: number;
+  id?: number;
   name: string;
 }
 const HeaderTitle = (props: ActionProps) => {
   return (
     <View style={styles.header}>
-      <Image
-        style={styles.logo}
-        source={{
-          uri: `https://s2.coinmarketcap.com/static/img/coins/64x64/${props.id}.png`,
-        }}
-      />
+      {props.id && (
+        <Image
+          style={styles.logo}
+          source={{
+            uri: `https://s2.coinmarketcap.com/static/img/coins/64x64/${props.id}.png`,
+          }}
+        />
+      )}
       <Text style={styles.title}>{props.name}</Text>
     </View>
   );

@@ -77,5 +77,6 @@ export type DetailWalletParamList = {
   };
   WalletTransactionDetailScreen: {
     tId: string;
+    sent: boolean;
   };
 };

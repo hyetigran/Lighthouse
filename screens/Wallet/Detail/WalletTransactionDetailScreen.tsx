@@ -6,14 +6,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
+import { TransactionRouteProp } from "../../../navigation/DetailWalletNavigator";
 
 const { gainGreenLite, background } = Colors.light;
+
 const WalletTransactionDetailScreen = () => {
   //   const { sendData } = useSelector((state: RootState) => state.send);
   //   const { navigate } = useNavigation();
-  //   const {
-  //     params: { pId },
-  //   } = useRoute();
+  const { params } = useRoute<TransactionRouteProp>();
   const dispatch = useDispatch();
 
   return (

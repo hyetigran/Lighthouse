@@ -21,6 +21,7 @@ type ParamList = {
   };
   Transaction: {
     tId: string;
+    sent?: boolean;
   };
 };
 export default function DetailWalletNavigator() {
@@ -44,9 +45,18 @@ export default function DetailWalletNavigator() {
       <Stack.Screen
         name="WalletTransactionDetailScreen"
         component={WalletTransactionDetailScreen}
-        options={{
-          headerTitle: "keep name of wallet?",
-          headerBackTitle: "Back",
+        options={({ route }) => {
+          const headerTitle = route.params.sent
+            ? "Sent Funds"
+            : "Received Funds";
+          const params = {
+            ...route.params,
+            name: headerTitle,
+          };
+          return {
+            headerTitle: () => <HeaderTitle {...params} />,
+            headerBackTitle: " ",
+          };
         }}
       />
     </Stack.Navigator>
