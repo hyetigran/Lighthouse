@@ -13,3 +13,24 @@ export const marketCapFormatter = (mCap: number) => {
   }
   return `$${result} ${suffix}`;
 };
+
+export const roundNumber = (value: string, digits = 0) => {
+  const [, right] = String(value).split(".");
+  if (right && right.length <= digits) {
+    return value;
+  }
+
+  const decimals = Math.pow(10, digits);
+  return (
+    Math.round((Number(value) + Number.EPSILON) * decimals) / decimals
+  ).toString();
+};
+
+export const estimateTransactionBytes = (
+  inputCount: number,
+  outputCount: number
+) => {
+  return inputCount * 149 + outputCount * 34 + 10;
+};
+
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));

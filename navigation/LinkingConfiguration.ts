@@ -27,8 +27,22 @@ export default {
         screens: {
           TransactionSearch: "four",
           TransactionAdd: "five",
-          TransactionDetail: "five",
-        }
+          TransactionDetail: "six",
+        },
+      },
+      SendAddressScreen: {
+        screens: {
+          SendAddressScreen: "seven",
+          ChooseWalletScreen: "eight",
+          EnterAmountScreen: "nine",
+          ReviewTransactionScreen: "ten",
+        },
+      },
+      ReceiveTransactionScreen: {
+        screens: {
+          ReceiveTransactionScreen: "eleven",
+          EnterAmountScreen: "twelve",
+        },
       },
       NotFound: "*",
     },

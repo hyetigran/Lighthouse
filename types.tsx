@@ -1,6 +1,8 @@
 export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
+  Send: undefined;
+  Receive: undefined;
   NotFound: undefined;
 };
 
@@ -24,6 +26,8 @@ export type PortfolioTabParamsList = {
 
 export type WalletsTabParamsList = {
   MainWalletsScreen: undefined;
+  AddWalletNavigator: undefined;
+  DetailWalletNavigator: undefined;
 };
 
 export type TransactionParamList = {
@@ -37,4 +41,40 @@ export type TransactionParamList = {
     isOnlyTransaction?: boolean;
   };
   TransactionDetail: { id: number; name: string };
+};
+
+export type SendParamList = {
+  SendAddressScreen: undefined;
+  ScanAddressScreen: {
+    setSendAddress: () => void;
+  };
+  SelectSendScreen: undefined;
+  EnterAmountScreen: undefined;
+  ReviewTransactionScreen: undefined;
+  SuccessTransactionScreen: undefined;
+};
+
+export type ReceiveParamList = {
+  ReceiveTransactionScreen: undefined;
+  EnterAmountScreen: undefined;
+  SelectReceiveScreen: {
+    pk: string;
+  };
+};
+export type WalletParamList = {
+  AddWalletScreen: undefined;
+  CreateWalletScreen: undefined;
+};
+
+export type DetailWalletParamList = {
+  WalletDetailScreen: {
+    pId: string;
+    coinId: number;
+    walletName: string;
+    address: string;
+    price: number;
+  };
+  WalletTransactionDetailScreen: {
+    tId: string;
+  };
 };

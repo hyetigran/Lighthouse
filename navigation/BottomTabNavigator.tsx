@@ -15,6 +15,8 @@ import {
   MarketsTabParamList,
   WalletsTabParamsList,
 } from "../types";
+import AddWalletNavigator from "./WalletStack";
+import DetailWalletNavigator from "./DetailWalletNavigator";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -23,7 +25,7 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Portfolio"
+      initialRouteName="Markets"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
       <BottomTab.Screen
@@ -115,11 +117,21 @@ const WalletsTabStack = createStackNavigator<WalletsTabParamsList>();
 
 function TabWalletsNavigator() {
   return (
-    <WalletsTabStack.Navigator>
+    <WalletsTabStack.Navigator initialRouteName="MainWalletsScreen">
       <WalletsTabStack.Screen
         name="MainWalletsScreen"
         component={MainWalletsScreen}
         options={{ headerTitle: "Wallets" }}
+      />
+      <WalletsTabStack.Screen
+        name="AddWalletNavigator"
+        component={AddWalletNavigator}
+        options={{ headerShown: false }}
+      />
+      <WalletsTabStack.Screen
+        name="DetailWalletNavigator"
+        component={DetailWalletNavigator}
+        options={{ headerShown: false }}
       />
     </WalletsTabStack.Navigator>
   );

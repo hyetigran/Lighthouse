@@ -14,6 +14,8 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import TransactionStack from "./TransactionStack";
+import SendStack from "./SendStack";
+import ReceiveStack from "./ReceiveStack";
 import LinkingConfiguration from "./LinkingConfiguration";
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -50,6 +52,16 @@ function RootNavigator() {
         name="Transaction"
         options={{ gestureEnabled: false }}
         component={TransactionStack}
+      />
+      <Stack.Screen
+        name="Send"
+        options={{ gestureEnabled: false }}
+        component={SendStack}
+      />
+      <Stack.Screen
+        name="Receive"
+        options={{ gestureEnabled: false }}
+        component={ReceiveStack}
       />
       <Stack.Screen
         name="NotFound"
