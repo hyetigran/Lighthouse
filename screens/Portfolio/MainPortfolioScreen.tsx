@@ -40,6 +40,7 @@ export default function MainPortfolioScreen() {
     if (token) {
       // Login
       const deviceId = await AsyncStorage.getItem("deviceId");
+
       const resultLogin = await axios.post(`${PORTFOLIO_API_URL}/login`, {
         device_id: deviceId,
       });

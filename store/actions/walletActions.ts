@@ -81,11 +81,10 @@ export const thunkGetAllWallets =
 const fetchBalance = async (addressString: string) => {
   try {
     const {
-      data: { balanceSat, unconfirmedBalanceSat },
+      data: { balanceSat },
     } = await axios.get(`${FULLSTACK_URL}/address/details/${addressString}`);
 
-    const totalBalance = balanceSat + unconfirmedBalanceSat;
-    return totalBalance;
+    return balanceSat;
   } catch (error) {
     console.log("fetchBalance err", error);
   }
