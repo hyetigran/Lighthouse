@@ -38,6 +38,7 @@ export type TransactionParamList = {
     symbol: string;
     action?: string;
     txId?: string;
+    isOnlyTransaction?: boolean;
   };
   TransactionDetail: { id: number; name: string };
 };

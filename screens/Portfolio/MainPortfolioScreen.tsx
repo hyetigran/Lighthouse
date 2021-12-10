@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -16,12 +16,16 @@ import {
 import { View } from "../../components/Themed";
 import BigHero from "../../components/Portfolio/BigHero";
 import CoinList from "../../components/Portfolio/CoinPortfolio/CoinList";
+import InitialPortfolioSplash from "../../components/Portfolio/InitialPortfolioSplash";
 import Colors from "../../constants/Colors";
+import Auth from "../../helpers/auth";
+import { RootState } from "../../store";
 
 const { tint, tabIconDefault, secondaryText } = Colors.light;
 
 export default function MainPortfolioScreen() {
   const [isLoading, setIsLoading] = useState(false);
+  const portfolio = useSelector((state: RootState) => state.portfolio);
   const dispatch = useDispatch();
   const { navigate } = useNavigation();
 
@@ -31,20 +35,37 @@ export default function MainPortfolioScreen() {
     setIsLoading(false);
   }, []);
 
+  let totalMarketValue = 0;
+  let totalGainValue = 0;
+  let totalGainPercent = 0;
+
+  totalMarketValue = portfolio.portfolioCoins.reduce(
+    (acc, cur) => (acc += cur.marketValue),
+    0
+  );
+  const totalCostBasis = portfolio.portfolioCoins.reduce(
+    (acc, cur) => (acc += cur.costBasis),
+    0
+  );
+  totalGainValue = totalMarketValue - totalCostBasis;
+  totalGainPercent = (totalGainValue / totalCostBasis) * 100;
+
   const addTransactionHandler = () => {
     navigate("Transaction");
   };
 
   const handleInitialLoad = async () => {
     const token = await AsyncStorage.getItem("token");
-    if (token) {
+    if (typeof token === "string") {
       // Login
-      const deviceId = await AsyncStorage.getItem("deviceId");
-
-      const resultLogin = await axios.post(`${PORTFOLIO_API_URL}/login`, {
-        device_id: deviceId,
-      });
-      await AsyncStorage.setItem("token", resultLogin.data.access_token);
+      if (!Auth.isAuthenticated(token)) {
+        // Invalid token
+        const deviceId = await AsyncStorage.getItem("deviceId");
+        const resultLogin = await axios.post(`${PORTFOLIO_API_URL}/login`, {
+          device_id: deviceId,
+        });
+        await AsyncStorage.setItem("token", resultLogin.data.access_token);
+      }
       // Get 'Main' portfolio
       dispatch(thunkFetchPortfolio());
     } else {
@@ -67,10 +88,18 @@ export default function MainPortfolioScreen() {
       }
     }
   };
+  if (portfolio.portfolioCoins.length === 0) {
+    // Show initial Splash Component
+    return (
+      <View style={styles.container}>
+        <InitialPortfolioSplash />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <BigHero />
+      <BigHero data={{ totalGainPercent, totalGainValue, totalMarketValue }} />
       <View
         style={styles.separator}
         lightColor="#eee"
