@@ -19,7 +19,17 @@ const WalletTransactionDetailScreen = () => {
   return (
     <View style={styles.container}>
       <Text>Wallet transaction detail screen</Text>
-      {/* <Text>{pId}</Text> */}
+      <View style={styles.topContainer}>
+        <View>
+          {params.sent ? <Text>sent icon</Text> : <Text>received icon</Text>}
+          {params.sent ? <Text>Sent</Text> : <Text>Received</Text>}
+        </View>
+        <View>
+          <Text>BCH placeholder</Text>
+          <Text>USD placeholder</Text>
+        </View>
+      </View>
+      <View style={styles.detailContainer}></View>
     </View>
   );
 };
@@ -28,6 +38,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  topContainer: {},
+  detailContainer: {},
 });
 
 export default WalletTransactionDetailScreen;
