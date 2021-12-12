@@ -13,7 +13,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
 import { TransactionRouteProp } from "../../../navigation/DetailWalletNavigator";
-import DetailTxnReceive from "../../../components/Wallets/DetailTxnReceived";
+import DetailTxnReceived from "../../../components/Wallets/DetailTxnReceived";
+import DetailTxnSent from "../../../components/Wallets/DetailTxnSent";
 
 const {
   gainGreenLite,
@@ -73,8 +74,12 @@ const WalletTransactionDetailScreen = () => {
         </View>
       </View>
 
-      <View style={styles.sentRowContainer}>
-        <DetailTxnReceive walletName={walletName} address={address} />
+      <View>
+        {sent ? (
+          <DetailTxnSent walletName={walletName} address={address} />
+        ) : (
+          <DetailTxnReceived walletName={walletName} address={address} />
+        )}
       </View>
       <View style={styles.detailRowContainer}>
         <Text>Date</Text>
@@ -128,12 +133,11 @@ const styles = StyleSheet.create({
   fiatText: {
     fontSize: 40,
   },
-  sentRowContainer: {
-    borderBottomWidth: 1,
-    borderColor: border,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
+  // sentRowContainer: {
+  //   borderBottomWidth: 1,
+  //   borderColor: border,
+  //   paddingVertical: 20,
+  // },
   detailRowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -148,7 +152,8 @@ const styles = StyleSheet.create({
     width: "80%",
     alignSelf: "center",
     paddingVertical: 20,
-    marginVertical: 20,
+    marginTop: 20,
+    marginBottom: 50,
   },
   viewBlockchainText: {
     color: text,

@@ -10,7 +10,7 @@ interface ActionProps {
 
 const { darkGrey, text, secondaryText } = Colors.light;
 
-const DetailTxnReceive = ({ walletName, address }: ActionProps) => {
+const DetailTxnReceived = ({ walletName, address }: ActionProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Received To</Text>
@@ -30,11 +30,15 @@ const DetailTxnReceive = ({ walletName, address }: ActionProps) => {
   );
 };
 
-export default DetailTxnReceive;
+export default DetailTxnReceived;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderBottomColor: secondaryText,
+    borderBottomWidth: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   logo: {
     width: 32,
