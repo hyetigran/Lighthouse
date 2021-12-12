@@ -80,5 +80,6 @@ export type DetailWalletParamList = {
   };
   WalletTransactionDetailScreen: {
     transaction: Transaction;
+    walletName: string;
   };
 };

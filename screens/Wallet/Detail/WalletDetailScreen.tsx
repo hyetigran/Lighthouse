@@ -143,7 +143,9 @@ const WalletDetailScreen = () => {
             // NAME UNIQUE ENFORCED?
             keyExtractor={(item) => item.date.toString()}
             renderItem={({ item, section }) => {
-              return <TransactionItem transaction={item} />;
+              return (
+                <TransactionItem transaction={item} walletName={walletName} />
+              );
             }}
             renderSectionHeader={({ section: { month } }) => (
               <TransactionItemHeader month={month} />

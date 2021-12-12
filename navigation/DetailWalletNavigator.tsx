@@ -22,6 +22,7 @@ type ParamList = {
   };
   Transaction: {
     transaction: Transaction;
+    walletName: string;
   };
 };
 export default function DetailWalletNavigator() {

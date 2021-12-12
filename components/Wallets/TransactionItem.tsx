@@ -15,8 +15,9 @@ const {
 
 interface ActionProps {
   transaction: Transaction;
+  walletName: string;
 }
-const TransactionItem = ({ transaction }: ActionProps) => {
+const TransactionItem = ({ transaction, walletName }: ActionProps) => {
   const { navigate } = useNavigation();
   const { sent, dateDisplay, fiatValue, value } = transaction;
   return (
@@ -26,7 +27,7 @@ const TransactionItem = ({ transaction }: ActionProps) => {
         // TODO - make coinID dynamic
         navigate("DetailWalletNavigator", {
           screen: "WalletTransactionDetailScreen",
-          params: { transaction },
+          params: { transaction, walletName },
         })
       }
     >

@@ -21,6 +21,7 @@ const {
   tabIconDefault: lightGrey,
   darkGrey,
   secondaryText: border,
+  text,
 } = Colors.light;
 
 const WalletTransactionDetailScreen = () => {
@@ -35,7 +36,9 @@ const WalletTransactionDetailScreen = () => {
         dateDisplay,
         fee,
         confirmations,
+        address,
       },
+      walletName,
     },
   } = useRoute<TransactionRouteProp>();
   const dispatch = useDispatch();
@@ -71,7 +74,7 @@ const WalletTransactionDetailScreen = () => {
       </View>
 
       <View style={styles.sentRowContainer}>
-        <DetailTxnReceive />
+        <DetailTxnReceive walletName={walletName} address={address} />
       </View>
       <View style={styles.detailRowContainer}>
         <Text>Date</Text>
@@ -148,10 +151,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   viewBlockchainText: {
-    color: darkGrey,
+    color: text,
     textAlign: "center",
     fontSize: 20,
-    fontWeight: "bold",
   },
 });
 
