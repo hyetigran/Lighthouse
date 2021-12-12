@@ -1,3 +1,5 @@
+import { Transaction } from "./store/types/walletTypes";
+
 export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
@@ -77,7 +79,6 @@ export type DetailWalletParamList = {
     price: number;
   };
   WalletTransactionDetailScreen: {
-    tId: string;
-    sent: boolean;
+    transaction: Transaction;
   };
 };
