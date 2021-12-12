@@ -7,11 +7,9 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useRoute } from "@react-navigation/core";
 import { Ionicons } from "@expo/vector-icons";
 
-import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
 import { TransactionRouteProp } from "../../../navigation/DetailWalletNavigator";
 import DetailTxnReceived from "../../../components/Wallets/DetailTxnReceived";
@@ -44,7 +42,6 @@ const WalletTransactionDetailScreen = () => {
       walletName,
     },
   } = useRoute<TransactionRouteProp>();
-  const dispatch = useDispatch();
 
   const viewOnBlockchainHandler = () => {
     Linking.openURL(`${BLOCKCHAIR_URL}/transaction/${id}`);
