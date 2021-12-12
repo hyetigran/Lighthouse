@@ -1,5 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,26 +13,39 @@ import { Ionicons } from "@expo/vector-icons";
 import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
 import { TransactionRouteProp } from "../../../navigation/DetailWalletNavigator";
+import DetailTxnReceive from "../../../components/Wallets/DetailTxnReceived";
 
 const {
   gainGreenLite,
   background,
   tabIconDefault: lightGrey,
   darkGrey,
+  secondaryText: border,
 } = Colors.light;
 
 const WalletTransactionDetailScreen = () => {
   //   const { navigate } = useNavigation();
   const {
     params: {
-      transaction: { sent },
+      transaction: {
+        id,
+        sent,
+        value,
+        fiatValue,
+        dateDisplay,
+        fee,
+        confirmations,
+      },
     },
   } = useRoute<TransactionRouteProp>();
   const dispatch = useDispatch();
 
+  const viewOnBlockchainHandler = () => {};
+
   const sentText = sent ? "Sent" : "Received";
+  const confirmationText = confirmations > 6 ? "6+" : confirmations;
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.topContainer}>
         <View style={styles.sentContainer}>
           {sent ? (
@@ -46,12 +65,35 @@ const WalletTransactionDetailScreen = () => {
           <Text style={styles.sentText}>{sentText}</Text>
         </View>
         <View>
-          <Text>BCH placeholder</Text>
-          <Text>USD placeholder</Text>
+          <Text style={styles.cryptoText}>{`${value} BCH`}</Text>
+          <Text style={styles.fiatText}>{`${fiatValue} USD`}</Text>
         </View>
       </View>
-      <View style={styles.detailContainer}></View>
-    </View>
+
+      <View style={styles.sentRowContainer}>
+        <DetailTxnReceive />
+      </View>
+      <View style={styles.detailRowContainer}>
+        <Text>Date</Text>
+        <Text>{dateDisplay}</Text>
+      </View>
+      {sent && (
+        <View style={styles.detailRowContainer}>
+          <Text>Fee</Text>
+          <Text>{`${fee} BCH`}</Text>
+        </View>
+      )}
+      <View style={styles.detailRowContainer}>
+        <Text>Confirmations</Text>
+        <Text>{confirmationText}</Text>
+      </View>
+      <TouchableOpacity
+        onPress={viewOnBlockchainHandler}
+        style={styles.viewBlockchainButton}
+      >
+        <Text style={styles.viewBlockchainText}>View on blockchain</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
@@ -59,11 +101,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
+    backgroundColor: background,
   },
   topContainer: {
     borderBottomColor: lightGrey,
     borderBottomWidth: 1,
     paddingHorizontal: 20,
+    paddingBottom: 40,
   },
   sentContainer: {
     flexDirection: "row",
@@ -74,7 +118,41 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingLeft: 14,
   },
-  detailContainer: {},
+  cryptoText: {
+    fontSize: 20,
+    color: darkGrey,
+  },
+  fiatText: {
+    fontSize: 40,
+  },
+  sentRowContainer: {
+    borderBottomWidth: 1,
+    borderColor: border,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  detailRowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderColor: border,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  viewBlockchainButton: {
+    borderRadius: 4,
+    backgroundColor: lightGrey,
+    width: "80%",
+    alignSelf: "center",
+    paddingVertical: 20,
+    marginVertical: 20,
+  },
+  viewBlockchainText: {
+    color: darkGrey,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 });
 
 export default WalletTransactionDetailScreen;
