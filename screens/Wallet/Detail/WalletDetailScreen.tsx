@@ -22,6 +22,8 @@ import { Transaction, Wallets } from "../../../store/types/walletTypes";
 import Spinner from "../../../components/UI/Spinner";
 import emptyImage from "../../../assets/images/empty.png";
 import { thunkAttachPrivateKey } from "../../../store/actions/sendActions";
+import { BCH_TO_SATOSHI } from "../../../constants/Variables";
+import { roundNumber } from "../../../helpers/utilities";
 
 const { gainGreenLite, background, gainGreen, darkGrey } = Colors.light;
 
@@ -102,8 +104,12 @@ const WalletDetailScreen = () => {
     });
   };
 
-  const totalCoinBalance = wallet[groupIndex].walletsData[walletIndex].balance;
-  const totalFiatBalance = totalCoinBalance * price;
+  const totalCoinBalance =
+    wallet[groupIndex].walletsData[walletIndex].balance / BCH_TO_SATOSHI;
+  const totalFiatBalance = roundNumber(
+    (totalCoinBalance * price).toString(),
+    2
+  );
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -115,7 +121,7 @@ const WalletDetailScreen = () => {
             onPress={() =>
               navigate("Receive", {
                 screen: "ReceiveTransactionScreen",
-                params: { pId },
+                params: { pk: pId },
               })
             }
           >
@@ -137,7 +143,9 @@ const WalletDetailScreen = () => {
             // NAME UNIQUE ENFORCED?
             keyExtractor={(item) => item.date.toString()}
             renderItem={({ item, section }) => {
-              return <TransactionItem transaction={item} />;
+              return (
+                <TransactionItem transaction={item} walletName={walletName} />
+              );
             }}
             renderSectionHeader={({ section: { month } }) => (
               <TransactionItemHeader month={month} />

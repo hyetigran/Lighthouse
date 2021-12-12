@@ -1,3 +1,5 @@
+import { Transaction } from "./store/types/walletTypes";
+
 export type RootStackParamList = {
   Root: undefined;
   Transaction: undefined;
@@ -55,7 +57,9 @@ export type SendParamList = {
 };
 
 export type ReceiveParamList = {
-  ReceiveTransactionScreen: undefined;
+  ReceiveTransactionScreen: {
+    pk?: string;
+  };
   EnterAmountScreen: undefined;
   SelectReceiveScreen: {
     pk: string;
@@ -75,6 +79,7 @@ export type DetailWalletParamList = {
     price: number;
   };
   WalletTransactionDetailScreen: {
-    tId: string;
+    transaction: Transaction;
+    walletName: string;
   };
 };

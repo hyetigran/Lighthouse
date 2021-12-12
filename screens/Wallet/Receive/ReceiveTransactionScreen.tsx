@@ -11,10 +11,11 @@ import {
 import QRCode from "react-native-qrcode-svg";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { RootState } from "../../../store";
 import Colors from "../../../constants/Colors";
+import { ReceiveRouteProp } from "../../../navigation/ReceiveStack";
 
 const { tabIconDefault: darkGrey } = Colors.light;
 
@@ -27,11 +28,21 @@ const ReceiveTransactionScreen = () => {
     walletsData: wallets[0].walletsData[0],
   });
 
+  const { params } = useRoute<ReceiveRouteProp>();
+
   const { navigate } = useNavigation();
 
   // TODO - LIFECYCLE LISTEN FOR TXN
   useEffect(() => {
     // API REQUEST FOR ADDRESS BALANCE UPDATE
+  }, []);
+
+  useEffect(() => {
+    // Set Selected Wallet to the PK being received
+    if (params?.pk !== undefined) {
+      const eventData = { walletPK: params.pk };
+      selectWalletHandler(eventData);
+    }
   }, []);
 
   useEffect(() => {

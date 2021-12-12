@@ -61,7 +61,7 @@ export const thunkGetAllWallets =
             let balance = await fetchBalance(
               walletsData[wdIndex].addressString
             );
-            await delay(2000);
+            await delay(1000);
 
             walletsData[wdIndex].balance = balance;
           }
@@ -81,11 +81,10 @@ export const thunkGetAllWallets =
 const fetchBalance = async (addressString: string) => {
   try {
     const {
-      data: { balanceSat, unconfirmedBalanceSat },
+      data: { balanceSat },
     } = await axios.get(`${FULLSTACK_URL}/address/details/${addressString}`);
 
-    const totalBalance = balanceSat + unconfirmedBalanceSat;
-    return totalBalance;
+    return balanceSat;
   } catch (error) {
     console.log("fetchBalance err", error);
   }
@@ -196,8 +195,8 @@ export const thunkGetWalletDetails =
       } = await axios.get(
         `${BCH_FULLSTACK_API_URL}/address/details/${address}`
       );
-      // FREE BCH API, actorforth.org, ENFORCES 3 SECOND RATE LIMIT
-      await delay(3000);
+      // FREE BCH API, actorforth.org, ENFORCES 1 SECOND RATE LIMIT
+      await delay(1000);
 
       const { data } = await axios.post(
         `${BCH_FULLSTACK_API_URL}/transaction/details`,
@@ -217,10 +216,12 @@ export const thunkGetWalletDetails =
         ).length;
 
         // DETERMINE VALUE OF TRANSACTION
+        let addressSent = "";
         const value: number = txn.vout.reduce((acc: number, output: any) => {
           if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
             // Sending transactions - EXCLUDE output with own address
             acc += output.value;
+            addressSent = output.scriptPubKey.cashAddrs[0];
           } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
             // Receiving transactions - INCLUDE output with own address
             acc += output.value;
@@ -236,6 +237,7 @@ export const thunkGetWalletDetails =
           fiatValue: +roundNumber((value * price).toString(), 2),
           value,
           address,
+          addressSent,
           sent,
         };
       });

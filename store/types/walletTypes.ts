@@ -30,6 +30,7 @@ export interface Transaction {
   fiatValue?: number;
   date: number;
   address: string;
+  addressSent: string;
   fee: number;
   confirmations: number;
   sent: boolean;

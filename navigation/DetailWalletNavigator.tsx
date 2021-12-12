@@ -6,6 +6,7 @@ import { DetailWalletParamList } from "../types";
 import WalletDetailScreen from "../screens/Wallet/Detail/WalletDetailScreen";
 import WalletTransactionDetailScreen from "../screens/Wallet/Detail/WalletTransactionDetailScreen";
 import HeaderTitle from "../components/HeaderTitle";
+import { Transaction } from "../store/types/walletTypes";
 
 const Stack = createStackNavigator<DetailWalletParamList>();
 
@@ -20,7 +21,8 @@ type ParamList = {
     price: number;
   };
   Transaction: {
-    tId: string;
+    transaction: Transaction;
+    walletName: string;
   };
 };
 export default function DetailWalletNavigator() {
@@ -44,9 +46,18 @@ export default function DetailWalletNavigator() {
       <Stack.Screen
         name="WalletTransactionDetailScreen"
         component={WalletTransactionDetailScreen}
-        options={{
-          headerTitle: "keep name of wallet?",
-          headerBackTitle: "Back",
+        options={({ route }) => {
+          const headerTitle = route.params.transaction.sent
+            ? "Sent Funds"
+            : "Received Funds";
+          const params = {
+            ...route.params,
+            name: headerTitle,
+          };
+          return {
+            headerTitle: () => <HeaderTitle {...params} />,
+            headerBackTitle: " ",
+          };
         }}
       />
     </Stack.Navigator>

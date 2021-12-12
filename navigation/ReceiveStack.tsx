@@ -13,7 +13,7 @@ import { RouteProp } from "@react-navigation/native";
 export type ReceiveRouteProp = RouteProp<ParamList, "Receive">;
 type ParamList = {
   Receive: {
-    pk: string;
+    pk?: string;
   };
 };
 
