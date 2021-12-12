@@ -216,10 +216,12 @@ export const thunkGetWalletDetails =
         ).length;
 
         // DETERMINE VALUE OF TRANSACTION
+        let addressSent = "";
         const value: number = txn.vout.reduce((acc: number, output: any) => {
           if (sent && output.scriptPubKey.cashAddrs[0] !== address) {
             // Sending transactions - EXCLUDE output with own address
             acc += output.value;
+            addressSent = output.scriptPubKey.cashAddrs[0];
           } else if (!sent && output.scriptPubKey.cashAddrs[0] === address) {
             // Receiving transactions - INCLUDE output with own address
             acc += output.value;
@@ -235,6 +237,7 @@ export const thunkGetWalletDetails =
           fiatValue: +roundNumber((value * price).toString(), 2),
           value,
           address,
+          addressSent,
           sent,
         };
       });

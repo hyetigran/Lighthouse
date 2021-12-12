@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import Colors from "../../../constants/Colors";
 import { TransactionRouteProp } from "../../../navigation/DetailWalletNavigator";
 import DetailTxnReceived from "../../../components/Wallets/DetailTxnReceived";
 import DetailTxnSent from "../../../components/Wallets/DetailTxnSent";
+import { BLOCKCHAIR_URL } from "../../../constants/Variables";
 
 const {
   gainGreenLite,
@@ -26,7 +28,6 @@ const {
 } = Colors.light;
 
 const WalletTransactionDetailScreen = () => {
-  //   const { navigate } = useNavigation();
   const {
     params: {
       transaction: {
@@ -38,13 +39,16 @@ const WalletTransactionDetailScreen = () => {
         fee,
         confirmations,
         address,
+        addressSent,
       },
       walletName,
     },
   } = useRoute<TransactionRouteProp>();
   const dispatch = useDispatch();
 
-  const viewOnBlockchainHandler = () => {};
+  const viewOnBlockchainHandler = () => {
+    Linking.openURL(`${BLOCKCHAIR_URL}/transaction/${id}`);
+  };
 
   const sentText = sent ? "Sent" : "Received";
   const confirmationText = confirmations > 6 ? "6+" : confirmations;
@@ -76,7 +80,7 @@ const WalletTransactionDetailScreen = () => {
 
       <View>
         {sent ? (
-          <DetailTxnSent walletName={walletName} address={address} />
+          <DetailTxnSent walletName={walletName} address={addressSent} />
         ) : (
           <DetailTxnReceived walletName={walletName} address={address} />
         )}
