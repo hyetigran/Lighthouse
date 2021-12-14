@@ -20,19 +20,19 @@ import InitialPortfolioSplash from "../../components/Portfolio/InitialPortfolioS
 import Colors from "../../constants/Colors";
 import Auth from "../../helpers/auth";
 import { RootState } from "../../store";
+import Spinner from "../../components/UI/Spinner";
+import { delay } from "../../helpers/utilities";
 
 const { tint, tabIconDefault, secondaryText } = Colors.light;
 
 export default function MainPortfolioScreen() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const portfolio = useSelector((state: RootState) => state.portfolio);
   const dispatch = useDispatch();
   const { navigate } = useNavigation();
 
   useEffect(() => {
-    setIsLoading(true);
     handleInitialLoad();
-    setIsLoading(false);
   }, []);
 
   let totalMarketValue = 0;
@@ -68,6 +68,8 @@ export default function MainPortfolioScreen() {
       }
       // Get 'Main' portfolio
       dispatch(thunkFetchPortfolio());
+      await delay(1000);
+      setIsLoading(false);
     } else {
       const newDeviceId = uuid.v4();
       if (typeof newDeviceId === "string") {
@@ -85,10 +87,15 @@ export default function MainPortfolioScreen() {
 
         // Create 'Main' portfolio
         dispatch(thunkCreatePortfolio());
+        await delay(1000);
+        setIsLoading(false);
       }
     }
   };
-  if (portfolio.portfolioCoins.length === 0) {
+  if (isLoading) {
+    return <Spinner />;
+  }
+  if (portfolio.portfolioCoins.length === 0 && !isLoading) {
     // Show initial Splash Component
     return (
       <View style={styles.container}>
@@ -105,7 +112,9 @@ export default function MainPortfolioScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <CoinList isLoading={isLoading} />
+
+      <CoinList />
+
       <TouchableOpacity
         style={styles.actionButton}
         onPress={addTransactionHandler}
