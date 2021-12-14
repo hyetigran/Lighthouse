@@ -6,13 +6,10 @@ import { RootState } from "../../../store/index";
 import { Portfolio } from "../../../store/types/portfolioTypes";
 import CoinRow from "./CoinRow";
 
-interface ActionProps {
-  isLoading: boolean;
-}
 // TODO - create filter/sort component
 const SORT_FILTER = "marketValue";
 
-const CoinList = ({ isLoading }: ActionProps) => {
+const CoinList = () => {
   const mainPortfolio: Portfolio = useSelector(
     (state: RootState) => state.portfolio
   );
@@ -23,8 +20,7 @@ const CoinList = ({ isLoading }: ActionProps) => {
       contentContainerStyle={styles.scrollViewStyle}
       style={styles.container}
     >
-      {isLoading && <ActivityIndicator />}
-      {mainPortfolio!.portfolioCoins.length && !isLoading ? (
+      {mainPortfolio!.portfolioCoins.length ? (
         mainPortfolio?.portfolioCoins.map((pCoin) => (
           <CoinRow key={pCoin.coinId} data={pCoin} />
         ))

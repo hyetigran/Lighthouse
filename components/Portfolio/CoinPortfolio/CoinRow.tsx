@@ -16,10 +16,19 @@ const {
 } = Colors.light;
 
 const CoinRow = ({ data }: ActionProps) => {
-  const { logo, name, symbol, spotPrice, cryptoTotal, marketValue, coinId } =
-    data;
+  const {
+    logo,
+    name,
+    symbol,
+    spotPrice,
+    cryptoTotal,
+    marketValue,
+    coinId,
+    percentGain,
+    absoluteGain,
+  } = data;
   const { navigate } = useNavigation();
-  let gainLossColor = gainGreen;
+  let gainLossColor = absoluteGain > 0 ? gainGreen : lossRed;
 
   const handleNavigate = () => {
     navigate("Transaction", {
@@ -29,7 +38,6 @@ const CoinRow = ({ data }: ActionProps) => {
   };
 
   return (
-    // <View >
     <TouchableOpacity style={styles.container} onPress={handleNavigate}>
       <View style={styles.imgContainer}>
         <Image
@@ -62,17 +70,16 @@ const CoinRow = ({ data }: ActionProps) => {
         </View>
         <View style={styles.bottom}>
           <Text style={[styles.textPadd, { color: gainLossColor }]}>
-            abs gain
+            {absoluteGain.toFixed(2)}
           </Text>
           <Text
             style={[styles.textPadd, styles.boldText, { color: gainLossColor }]}
           >
-            % gain
+            {`${percentGain.toFixed(2)}%`}
           </Text>
         </View>
       </View>
     </TouchableOpacity>
-    // </View>
   );
 };
 
