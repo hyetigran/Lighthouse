@@ -112,9 +112,7 @@ export default function MainPortfolioScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-
       <CoinList />
-
       <TouchableOpacity
         style={styles.actionButton}
         onPress={addTransactionHandler}

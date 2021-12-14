@@ -27,6 +27,7 @@ const CoinRow = ({ data }: ActionProps) => {
       params: { id: coinId, name },
     });
   };
+  console.log("data", data);
 
   return (
     // <View >
